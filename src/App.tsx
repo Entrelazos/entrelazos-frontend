@@ -4,6 +4,8 @@ import { CartContextProvider } from './contexts/CartContext'
 import { Router } from './Router'
 import { GlobalStyle } from './styles/global'
 import { defaultTheme } from './styles/themes/default'
+import { AuthProvider } from './auth'
+import {AppRouter} from './router/AppRouter'
 
 export function App() {
   return (
@@ -12,7 +14,9 @@ export function App() {
 
       <BrowserRouter>
         <CartContextProvider>
-          <Router />
+          <AuthProvider>
+            <AppRouter />
+          </AuthProvider>
         </CartContextProvider>
       </BrowserRouter>
     </ThemeProvider>
