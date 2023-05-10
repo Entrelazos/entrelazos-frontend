@@ -4,21 +4,21 @@ import { CartContextProvider } from './contexts/CartContext'
 import { Router } from './Router'
 import { GlobalStyle } from './styles/global'
 import { defaultTheme } from './styles/themes/default'
-import { AuthProvider } from './auth'
-import {AppRouter} from './router/AppRouter'
+import { AppRouter } from './router/AppRouter'
+import { Provider } from 'react-redux'
+import { store } from './store/store'
 
 export function App() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <GlobalStyle />
-
-      <BrowserRouter>
-        <CartContextProvider>
-          <AuthProvider>
-            <AppRouter />
-          </AuthProvider>
-        </CartContextProvider>
-      </BrowserRouter>
+      <Provider store={store}>
+        <BrowserRouter>
+          <CartContextProvider>
+              <AppRouter />
+          </CartContextProvider>
+        </BrowserRouter>
+      </Provider>
     </ThemeProvider>
   )
 }

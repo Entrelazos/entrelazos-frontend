@@ -2,14 +2,14 @@ import React, { useContext, useEffect, useState } from "react";
 import { BiMenuAltRight } from "react-icons/bi";
 import { AiOutlineClose } from "react-icons/ai";
 import { Link, useNavigate, NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
 import "./navbar.scss";
 import coffeLogoImage from '../../assets/entreLazosLogo.png';
-import { AuthContext } from '../../auth/context/AuthContext';
+import { startLogout } from '../../store/auth';
 
-function Navbar() {
-    const { user, logout } = useContext(AuthContext);
-    
+function Navbar() {  
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [menuOpen, setMenuOpen] = useState(false);
     const [size, setSize] = useState({
         width: 0,
@@ -17,7 +17,7 @@ function Navbar() {
     });
     
     const handleLogout=() => {
-        logout();
+        dispatch(startLogout());
         navigate('/login');
     }
 
@@ -69,7 +69,7 @@ function Navbar() {
                         </li>
 
                         <li style={{fontSize: "19px", color:"rgb(162, 162, 246)", fontWeight: "bold"}}>
-                            {user?.name}
+                            user?.name
                         </li>
                         
                         

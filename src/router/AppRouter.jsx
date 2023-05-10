@@ -1,41 +1,43 @@
 import { Route, Routes } from 'react-router-dom';
-
-import { Router } from '../Router';
+import { useDispatch, useSelector } from 'react-redux';
 import Login from '../pages/Login/Login';
 import { PrivateRoute } from './PrivateRoute';
-import { PublicRoute } from './PublicRoute';
-
+import { AuthRoutes } from './PublicRoute';
+import { Navigate } from 'react-router-dom';
 
 
 export const AppRouter = () => {
+  const { status } = useSelector( state => state.auth );
   return (
     <>
 
         <Routes>
-            
-            <Route path="login/*" element={
-                <PublicRoute>
+
+        {
+          (status === 'authenticated')
+           ? <Route path="/*" element={
+              <PrivateRoute />
+            } />
+           : <Route path="/*" element={
+                <AuthRoutes>
                   {/* <LoginPage /> */}
                   <Routes>
                     <Route path="/*" element={<Login />} />
                   </Routes>
-                </PublicRoute>
+                </AuthRoutes>
               }
             />
-            
-            
-            <Route path="/*" element={
-              <PrivateRoute>
-                <Router />
-              </PrivateRoute>
-            } />
+        }
 
-            {/* <Route path="login" element={<LoginPage />} /> */}
-            {/* <Route path="/*" element={ <HeroesRoutes />} /> */}
-            
-            
+        <Route path='/*' element={ <Navigate to='/login' />  } />
 
-        </Routes>
+        {/* Login y Registro */}
+        {/* <Route path="/auth/*" element={ <AuthRoutes /> } /> */}
+
+        {/* JournalApp */}
+        {/* <Route path="/*" element={ <JournalRoutes /> } /> */}
+
+    </Routes>
     
     </>
   )
