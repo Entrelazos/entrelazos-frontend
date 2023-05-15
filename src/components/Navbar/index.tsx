@@ -4,7 +4,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { Link, useNavigate, NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import "./navbar.scss";
-import coffeLogoImage from '../../assets/entreLazosLogo.png';
+import entreLazosLogoImage from '../../assets/entreLazosLogoHorizontal.png';
 import { startLogout } from '../../store/auth';
 
 function Navbar() {  
@@ -47,7 +47,7 @@ function Navbar() {
         <header className="header">
             <div className="header__content">
                 <NavLink to="/">
-                    <img width={70} src={coffeLogoImage} alt="" />
+                    <img width={200} src={entreLazosLogoImage} alt="" />
                 </NavLink>
                 <nav
                     className={`${"header__content__nav"} 

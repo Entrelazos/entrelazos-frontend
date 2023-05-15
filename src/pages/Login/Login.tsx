@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-import coffeLogoImage from '../../assets/entreLazosLogo.png';
+import entreLazosLogoImage from '../../assets/entreLazosLogoVertical.png';
 
 function Copyright(props: any) {
   return (
@@ -59,10 +59,8 @@ export default function Login() {
             alignItems: 'center',
           }}
         >
-          <img width={90} src={coffeLogoImage} alt="" />
-          <Typography component="h1" variant="h5">
-            Iniciar Sesión
-          </Typography>
+          <img width={150} src={entreLazosLogoImage} alt="" />
+          
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
