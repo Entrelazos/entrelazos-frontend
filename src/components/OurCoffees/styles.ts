@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const OurCoffeesContainer = styled.section`
   width: 100%;
@@ -7,7 +7,7 @@ export const OurCoffeesContainer = styled.section`
   @media (max-width: 700px) {
     margin-top: 23rem;
   }
-`
+`;
 
 export const CoffeeList = styled.div`
   width: 100%;
@@ -26,4 +26,4 @@ export const CoffeeList = styled.div`
   @media (max-width: 560px) {
     grid-template-columns: 1fr;
   }
-`
+`;

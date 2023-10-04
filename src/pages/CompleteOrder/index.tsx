@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars */
-import { CompleteOrderForm } from './components/CompleteOrderForm'
-import { SelectedCoffees } from './components/SelectedCoffees'
-import { CompleteOrderContainer } from './styles'
-import { useForm, FormProvider } from 'react-hook-form'
-import * as zod from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useNavigate } from 'react-router-dom'
-import { useCart } from '../../hooks/useCart'
+import { CompleteOrderForm } from './components/CompleteOrderForm';
+import { SelectedCoffees } from './components/SelectedCoffees';
+import { CompleteOrderContainer } from './styles';
+import { useForm, FormProvider } from 'react-hook-form';
+import * as zod from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigate } from 'react-router-dom';
+import { useCart } from '../../hooks/useCart';
 
 enum PaymentMethods {
   credit = 'credit',
@@ -24,14 +24,14 @@ const confirmOrderFormValidationSchema = zod.object({
   uf: zod.string().min(1, 'Informe a UF'),
   paymentMethod: zod.nativeEnum(PaymentMethods, {
     errorMap: () => {
-      return { message: 'Informe o método de pagamento' }
+      return { message: 'Informe o método de pagamento' };
     },
   }),
-})
+});
 
-export type OrderData = zod.infer<typeof confirmOrderFormValidationSchema>
+export type OrderData = zod.infer<typeof confirmOrderFormValidationSchema>;
 
-type ConfirmOrderFormData = OrderData
+type ConfirmOrderFormData = OrderData;
 
 export function CompleteOrderPage() {
   const confirmOrderForm = useForm<ConfirmOrderFormData>({
@@ -39,29 +39,29 @@ export function CompleteOrderPage() {
     defaultValues: {
       paymentMethod: undefined,
     },
-  })
+  });
 
-  const { handleSubmit } = confirmOrderForm
+  const { handleSubmit } = confirmOrderForm;
 
-  const navigate = useNavigate()
-  const { cleanCart } = useCart()
+  const navigate = useNavigate();
+  const { cleanCart } = useCart();
 
   function handleConfirmOrder(data: ConfirmOrderFormData) {
     navigate('/orderConfirmed', {
       state: data,
-    })
-    cleanCart()
+    });
+    cleanCart();
   }
 
   return (
     <FormProvider {...confirmOrderForm}>
       <CompleteOrderContainer
-        className="container"
+        className='container'
         onSubmit={handleSubmit(handleConfirmOrder)}
       >
         <CompleteOrderForm />
         <SelectedCoffees />
       </CompleteOrderContainer>
     </FormProvider>
-  )
+  );
 }

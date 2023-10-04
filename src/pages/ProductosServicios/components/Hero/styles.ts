@@ -1,7 +1,7 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
-import heroBackgroundImage from '../../../../assets/hero-background.png'
-import { TitleText } from '../../../../components/Typography'
+import heroBackgroundImage from '../../../../assets/hero-background.png';
+import { TitleText } from '../../../../components/Typography';
 
 export const HeroContainer = styled.section`
   width: 100%;
@@ -11,9 +11,9 @@ export const HeroContainer = styled.section`
   display: flex;
   align-items: center;
   justify-content: center;
-  border-top: 0.3px solid rgba(0,0,0, 0.13 );
+  border-top: 0.3px solid rgba(0, 0, 0, 0.13);
   text-align: center;
-`
+`;
 
 export const HeroContent = styled.div`
   display: flex;
@@ -41,11 +41,11 @@ export const HeroContent = styled.div`
       width: 100%;
     }
   }
-`
+`;
 
 export const HeroTitle = styled(TitleText)`
   margin-bottom: 1rem;
-`
+`;
 
 export const BenefitsContainer = styled.div`
   width: 100%;
@@ -59,4 +59,4 @@ export const BenefitsContainer = styled.div`
     margin-top: 3rem;
     font-size: 1.1rem;
   }
-`
+`;

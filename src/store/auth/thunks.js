@@ -2,64 +2,53 @@
 import { checkingCredentials, logout, login } from './';
 
 export const checkingAuthentication = () => {
-    return async (dispatch) => {
-
-        dispatch(checkingCredentials());
-
-    }
-}
-
+  return async (dispatch) => {
+    dispatch(checkingCredentials());
+  };
+};
 
 export const startGoogleSignIn = () => {
-    return async (dispatch) => {
+  return async (dispatch) => {
+    dispatch(checkingCredentials());
 
-        dispatch(checkingCredentials());
+    //const result = await singInWithGoogle();
+    //if ( !result.ok ) return dispatch( logout( result.errorMessage ) );
 
-        //const result = await singInWithGoogle();
-        //if ( !result.ok ) return dispatch( logout( result.errorMessage ) );
+    dispatch(login(result));
+  };
+};
 
-        dispatch(login(result))
+export const startCreatingUserWithEmailPassword = ({
+  email,
+  password,
+  displayName,
+}) => {
+  return async (dispatch) => {
+    dispatch(checkingCredentials());
 
-    }
-}
+    //const result = await registerUserWithEmailPassword({ email, password, displayName });
+    //if ( !result.ok ) return dispatch( logout( result.errorMessage ) );
 
-
-export const startCreatingUserWithEmailPassword = ({ email, password, displayName }) => {
-    return async (dispatch) => {
-
-        dispatch(checkingCredentials());
-
-        //const result = await registerUserWithEmailPassword({ email, password, displayName });
-        //if ( !result.ok ) return dispatch( logout( result.errorMessage ) );
-
-        dispatch(login(result))
-
-    }
-
-}
-
+    dispatch(login(result));
+  };
+};
 
 export const startLoginWithEmailPassword = ({ email, password }) => {
-    return async (dispatch) => {
+  return async (dispatch) => {
+    dispatch(checkingCredentials());
 
-        dispatch(checkingCredentials());
+    //const result = await loginWithEmailPassword({ email, password });
+    //console.log(result);
 
-        //const result = await loginWithEmailPassword({ email, password });
-        //console.log(result);
-
-        //if ( !result.ok ) return dispatch( logout( result ) );
-        dispatch(login({ displayName: 'Juan Diego', email: email }));
-
-    }
-}
-
+    //if ( !result.ok ) return dispatch( logout( result ) );
+    dispatch(login({ displayName: 'Juan Diego', email: email }));
+  };
+};
 
 export const startLogout = () => {
-    return async( dispatch ) => {
-
+  return async (dispatch) => {
     //  await logoutFirebase();
 
     dispatch(logout());
-
-    }
-}
+  };
+};

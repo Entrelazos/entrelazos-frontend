@@ -1,7 +1,7 @@
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components';
 
 interface QuantityInputContainerProps {
-  size?: 'medium' | 'small'
+  size?: 'medium' | 'small';
 }
 
 export const QuantityInputContainer = styled.div<QuantityInputContainerProps>`
@@ -39,7 +39,7 @@ export const QuantityInputContainer = styled.div<QuantityInputContainerProps>`
     css`
       padding: 0.3rem 0.5rem;
     `}
-`
+`;
 
 export const IconWrapper = styled.button.attrs({
   type: 'button',
@@ -58,4 +58,4 @@ export const IconWrapper = styled.button.attrs({
   &:not(:disabled):hover {
     color: ${({ theme }) => theme.colors['brand-purple-dark']};
   }
-`
+`;

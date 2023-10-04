@@ -1,10 +1,10 @@
-import { ReactNode } from 'react'
-import { IconContainer, InfoWithIconContainer } from './styles'
+import { ReactNode } from 'react';
+import { IconContainer, InfoWithIconContainer } from './styles';
 
 interface InfoWithIconProps {
-  icon: ReactNode
-  text: string | ReactNode
-  iconColor: string
+  icon: ReactNode;
+  text: string | ReactNode;
+  iconColor: string;
 }
 
 export function InfoWithIcon({ icon, text, iconColor }: InfoWithIconProps) {
@@ -13,5 +13,5 @@ export function InfoWithIcon({ icon, text, iconColor }: InfoWithIconProps) {
       <IconContainer iconColor={iconColor}>{icon}</IconContainer>
       {typeof text === 'string' ? <p>{text}</p> : text}
     </InfoWithIconContainer>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components'
+import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyle = createGlobalStyle`
   * {
@@ -44,4 +44,4 @@ export const GlobalStyle = createGlobalStyle`
     border-radius: 2rem;
     background: ${({ theme }) => theme.colors['brand-purple']}
   }
-`
+`;

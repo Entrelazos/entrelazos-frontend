@@ -1,16 +1,16 @@
-import { forwardRef, InputHTMLAttributes } from 'react'
-import { RegularText } from '../Typography'
+import { forwardRef, InputHTMLAttributes } from 'react';
+import { RegularText } from '../Typography';
 import {
   InputWrapper,
   InputStyleContainer,
   InputStyled,
   RightText,
-} from './styles'
+} from './styles';
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
-  error?: string
-  rightText?: string
-}
+  error?: string;
+  rightText?: string;
+};
 
 // eslint-disable-next-line react/display-name
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -21,8 +21,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <InputStyled ref={ref} {...props} />
           {rightText && <RightText>{rightText}</RightText>}
         </InputStyleContainer>
-        {error && <RegularText size="s">{error}</RegularText>}
+        {error && <RegularText size='s'>{error}</RegularText>}
       </InputWrapper>
-    )
-  },
-)
+    );
+  }
+);

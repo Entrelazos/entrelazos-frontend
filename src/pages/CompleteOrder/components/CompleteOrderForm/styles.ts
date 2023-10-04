@@ -1,18 +1,18 @@
-import styled from 'styled-components'
-import { SectionBaseStyle } from '../../styles'
+import styled from 'styled-components';
+import { SectionBaseStyle } from '../../styles';
 
 export const CompleteOrderFormContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   width: 100%;
-`
+`;
 
 export const FormSectionContainer = styled(SectionBaseStyle)`
   display: flex;
   flex-direction: column;
   gap: 2rem;
-`
+`;
 
 export const AddressFormContainer = styled.div`
   width: 100%;
@@ -50,7 +50,7 @@ export const AddressFormContainer = styled.div`
       max-width: 100% !important;
     }
   }
-`
+`;
 
 export const PaymentMethodOptionsContainer = styled.div`
   display: flex;
@@ -64,4 +64,4 @@ export const PaymentMethodOptionsContainer = styled.div`
     flex-direction: column;
     gap: 0;
   }
-`
+`;
