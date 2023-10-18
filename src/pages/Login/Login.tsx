@@ -48,8 +48,9 @@ export default function Login() {
       email: data.get('email'),
       password: data.get('password'),
     });
+    const creds = { email: data.get('email'), password: data.get('password') }
     dispatch(
-      startLoginWithEmailPassword(data.get('email'), data.get('password'))
+      startLoginWithEmailPassword(creds)
     );
     navigate('/', { replace: true });
   };
