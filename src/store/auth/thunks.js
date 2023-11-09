@@ -1,5 +1,6 @@
 //import { loginWithEmailPassword, registerUserWithEmailPassword, singInWithGoogle, logoutFirebase } from '../../firebase/providers';
-import { checkingCredentials, logout, login } from './';
+import axios from 'axios';
+import { checkingCredentials, logout, login, authError, registerUserSuccess, registerUserError, clearAuthStateReducer } from './';
 
 export const checkingAuthentication = () => {
     return async (dispatch) => {
@@ -39,27 +40,87 @@ export const startCreatingUserWithEmailPassword = ({ email, password, displayNam
 }
 
 
-export const startLoginWithEmailPassword = ({ email, password }) => {
+export const startLoginWithEmailPassword = (email, password) => {
     return async (dispatch) => {
-
         dispatch(checkingCredentials());
+        axios.post('http://127.0.0.1:3000/auth/login', {
+            email: email,//"correo@prueba3.com",
+            password: password //"Ab!12345678"
+        },
+            {
+                headers: {
+                    "Content-type": "application/json",
+                }
+            })
+            .then(function (response) {
+                if (response.status === 201) {
+                    dispatch(login({ displayName: 'Juan Diego', email: email }));
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+                dispatch(authError());
+            });
 
         //const result = await loginWithEmailPassword({ email, password });
         //console.log(result);
 
         //if ( !result.ok ) return dispatch( logout( result ) );
-        dispatch(login({ displayName: 'Juan Diego', email: email }));
+
 
     }
 }
 
+export const startRegister = (cellphone, email, password, identification, is_active, name, role_id, city_id) => {
+    return async (dispatch) => {
+        dispatch(checkingCredentials());
+        axios.post('http://127.0.0.1:3000/user/', {
+            cellphone: cellphone,
+            email: email,
+            password: password,
+            identification: identification,
+            is_active: is_active,
+            name: name,
+            role_id: role_id,
+            city_id: city_id
+        },
+            {
+                headers: {
+                    "Content-type": "application/json",
+                }
+            })
+            .then(function (response) {
+                if (response.status === 201) {
+                    console.log("response ok");
+                    dispatch(registerUserSuccess());
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+                dispatch(registerUserError());
+            });
+
+        //const result = await loginWithEmailPassword({ email, password });
+        //console.log(result);
+
+        //if ( !result.ok ) return dispatch( logout( result ) );
+
+
+    }
+}
+
+export const clearAuthState = () => {
+    return async (dispatch) => {
+        dispatch(clearAuthStateReducer());
+    }
+}
 
 export const startLogout = () => {
-    return async( dispatch ) => {
+    return async (dispatch) => {
 
-    //  await logoutFirebase();
+        //  await logoutFirebase();
 
-    dispatch(logout());
+        dispatch(logout());
 
     }
 }

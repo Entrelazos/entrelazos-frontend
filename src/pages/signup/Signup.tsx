@@ -1,5 +1,7 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { useDispatch, useSelector, connect } from 'react-redux';
+import "react-toastify/dist/ReactToastify.css";
+import { toast } from 'react-toastify';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -10,7 +12,7 @@ import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { startLoginWithEmailPassword } from '../../store/auth';
+import { startRegister, clearAuthState } from '../../store/auth';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -22,7 +24,7 @@ function Copyright(props: any) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        ENTRELAZOS
+        Your Website
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -32,20 +34,43 @@ function Copyright(props: any) {
 
 const theme = createTheme();
 
-export function Login({authError}) {
+export function Signup({ resgisterUserSucces }) {
   //const { login } = useContext(AuthContext);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    dispatch(startLoginWithEmailPassword(data.get('email'), data.get('password')));
-    navigate('/', { replace: true });
+    dispatch(startRegister(data.get('cellphone'), data.get('email'), data.get('password'), data.get('identification'), true, data.get('name'), 1, 1));
+    //navigate('/', { replace: true });
   };
 
-  const handleGoToRegister = () => {
-    navigate('/signup', { replace: true });
+  const handleGoToLogin = () => {
+    dispatch(clearAuthState());
+    navigate('/', { replace: true });
   }
+
+  const successRegisterNotification = (resgisterUserSucces) => {
+    if (resgisterUserSucces === true) {
+      toast.success('Usuario registrado!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      setTimeout(()=>{
+        handleGoToLogin();
+      }, 1000);
+    };
+  }
+
+  useEffect(() => {
+    successRegisterNotification(resgisterUserSucces);
+  }, [resgisterUserSucces]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -66,8 +91,28 @@ export function Login({authError}) {
               margin="normal"
               required
               fullWidth
+              id="name"
+              label="Nombre completo"
+              name="name"
+              autoComplete="name"
+              autoFocus
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="identification"
+              label="Identificación"
+              name="identification"
+              autoComplete="identification"
+              autoFocus
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
               id="email"
-              label="Email Address"
+              label="Correo electrónico"
               name="email"
               autoComplete="email"
               autoFocus
@@ -76,37 +121,41 @@ export function Login({authError}) {
               margin="normal"
               required
               fullWidth
+              id="cellphone"
+              label="Celular"
+              name="cellphone"
+              autoComplete="cellphone"
+              autoFocus
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
               name="password"
-              label="Password"
+              label="Contraseña"
               type="password"
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
+            {/*<FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
-            />
-            {authError ? <h6 style={{color: "red"}}>Oops, parece que ha habido un error. Revise su correo y contraseña e inténtelo de nuevo.</h6>: null}
+        />*/}
+            {resgisterUserSucces === false ? <h6 style={{ color: "red" }}>Oops, parece que ha habido un error.</h6> : null}
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 1, mb: 2 }}
+              sx={{ mt: 1, mb: 1 }}
             >
-              Iniciar Sesión
+              REGISTRARSE
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link onClick={handleGoToRegister} variant="body2">
-                  {"No tienes una cuenta? regístrate"}
-                </Link>
-              </Grid>
-            </Grid>
+
+            <Typography style={{ fontSize: 18, color: "#1976d2", marginTop: "10px" }} variant="body2" color="text.secondary" align="center">
+              <Link onClick={handleGoToLogin} color="inherit">
+                <b>¿Ya tienes una cuenta?</b>
+              </Link>
+            </Typography>
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
@@ -116,7 +165,7 @@ export function Login({authError}) {
 }
 
 const mapStateToProps = state => ({
-  authError: state.auth.authError,
+  resgisterUserSucces: state.auth.resgisterUserSucces,
 });
 
-export default connect(mapStateToProps)(Login);
+export default connect(mapStateToProps)(Signup);
