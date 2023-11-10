@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, connect } from 'react-redux';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -19,15 +19,10 @@ import entreLazosLogoImage from '../../assets/entreLazosLogoVertical.png';
 
 function Copyright(props: any) {
   return (
-    <Typography
-      variant='body2'
-      color='text.secondary'
-      align='center'
-      {...props}
-    >
+    <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link color='inherit' href='https://mui.com/'>
-        Your Website
+      <Link color="inherit" href="https://mui.com/">
+        ENTRELAZOS
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -37,27 +32,24 @@ function Copyright(props: any) {
 
 const theme = createTheme();
 
-export default function Login() {
+export function Login({authError}) {
   //const { login } = useContext(AuthContext);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-    const creds = { email: data.get('email'), password: data.get('password') }
-    dispatch(
-      startLoginWithEmailPassword(creds)
-    );
+    dispatch(startLoginWithEmailPassword(data.get('email'), data.get('password')));
     navigate('/', { replace: true });
   };
 
+  const handleGoToRegister = () => {
+    navigate('/signup', { replace: true });
+  }
+
   return (
     <ThemeProvider theme={theme}>
-      <Container component='main' maxWidth='xs'>
+      <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
           sx={{
@@ -67,55 +59,51 @@ export default function Login() {
             alignItems: 'center',
           }}
         >
-          <img width={150} src={entreLazosLogoImage} alt='' />
+          <img width={150} src={entreLazosLogoImage} alt="" />
 
-          <Box
-            component='form'
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
-              margin='normal'
+              margin="normal"
               required
               fullWidth
-              id='email'
-              label='Email Address'
-              name='email'
-              autoComplete='email'
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
               autoFocus
             />
             <TextField
-              margin='normal'
+              margin="normal"
               required
               fullWidth
-              name='password'
-              label='Password'
-              type='password'
-              id='password'
-              autoComplete='current-password'
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
             />
             <FormControlLabel
-              control={<Checkbox value='remember' color='primary' />}
-              label='Remember me'
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
             />
+            {authError ? <h6 style={{color: "red"}}>Oops, parece que ha habido un error. Revise su correo y contraseña e inténtelo de nuevo.</h6>: null}
             <Button
-              type='submit'
+              type="submit"
               fullWidth
-              variant='contained'
-              sx={{ mt: 3, mb: 2 }}
+              variant="contained"
+              sx={{ mt: 1, mb: 2 }}
             >
-              Sign In
+              Iniciar Sesión
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href='#' variant='body2'>
+                <Link href="#" variant="body2">
                   Forgot password?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href='#' variant='body2'>
-                  {"Don't have an account? Sign Up"}
+                <Link onClick={handleGoToRegister} variant="body2">
+                  {"No tienes una cuenta? regístrate"}
                 </Link>
               </Grid>
             </Grid>
@@ -126,3 +114,9 @@ export default function Login() {
     </ThemeProvider>
   );
 }
+
+const mapStateToProps = state => ({
+  authError: state.auth.authError,
+});
+
+export default connect(mapStateToProps)(Login);
