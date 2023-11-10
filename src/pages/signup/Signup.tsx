@@ -1,6 +1,6 @@
 import { useContext, useEffect } from 'react';
 import { useDispatch, useSelector, connect } from 'react-redux';
-import "react-toastify/dist/ReactToastify.css";
+import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -21,9 +21,14 @@ import entreLazosLogoImage from '../../assets/entreLazosLogoVertical.png';
 
 function Copyright(props: any) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+    <Typography
+      variant='body2'
+      color='text.secondary'
+      align='center'
+      {...props}
+    >
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
+      <Link color='inherit' href='https://mui.com/'>
         Your Website
       </Link>{' '}
       {new Date().getFullYear()}
@@ -41,32 +46,43 @@ export function Signup({ resgisterUserSucces }) {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    dispatch(startRegister(data.get('cellphone'), data.get('email'), data.get('password'), data.get('identification'), true, data.get('name'), 1, 1));
+    dispatch(
+      startRegister(
+        data.get('cellphone'),
+        data.get('email'),
+        data.get('password'),
+        data.get('identification'),
+        true,
+        data.get('name'),
+        1,
+        1
+      )
+    );
     //navigate('/', { replace: true });
   };
 
   const handleGoToLogin = () => {
     dispatch(clearAuthState());
     navigate('/', { replace: true });
-  }
+  };
 
   const successRegisterNotification = (resgisterUserSucces) => {
     if (resgisterUserSucces === true) {
       toast.success('Usuario registrado!', {
-        position: "top-right",
+        position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: "light",
+        theme: 'light',
       });
-      setTimeout(()=>{
+      setTimeout(() => {
         handleGoToLogin();
       }, 1000);
-    };
-  }
+    }
+  };
 
   useEffect(() => {
     successRegisterNotification(resgisterUserSucces);
@@ -74,7 +90,7 @@ export function Signup({ resgisterUserSucces }) {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Container component='main' maxWidth='xs'>
         <CssBaseline />
         <Box
           sx={{
@@ -84,75 +100,89 @@ export function Signup({ resgisterUserSucces }) {
             alignItems: 'center',
           }}
         >
-          <img width={150} src={entreLazosLogoImage} alt="" />
+          <img width={150} src={entreLazosLogoImage} alt='' />
 
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box
+            component='form'
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
+          >
             <TextField
-              margin="normal"
+              margin='normal'
               required
               fullWidth
-              id="name"
-              label="Nombre completo"
-              name="name"
-              autoComplete="name"
+              id='name'
+              label='Nombre completo'
+              name='name'
+              autoComplete='name'
               autoFocus
             />
             <TextField
-              margin="normal"
+              margin='normal'
               required
               fullWidth
-              id="identification"
-              label="Identificación"
-              name="identification"
-              autoComplete="identification"
+              id='identification'
+              label='Identificación'
+              name='identification'
+              autoComplete='identification'
               autoFocus
             />
             <TextField
-              margin="normal"
+              margin='normal'
               required
               fullWidth
-              id="email"
-              label="Correo electrónico"
-              name="email"
-              autoComplete="email"
+              id='email'
+              label='Correo electrónico'
+              name='email'
+              autoComplete='email'
               autoFocus
             />
             <TextField
-              margin="normal"
+              margin='normal'
               required
               fullWidth
-              id="cellphone"
-              label="Celular"
-              name="cellphone"
-              autoComplete="cellphone"
+              id='cellphone'
+              label='Celular'
+              name='cellphone'
+              autoComplete='cellphone'
               autoFocus
             />
             <TextField
-              margin="normal"
+              margin='normal'
               required
               fullWidth
-              name="password"
-              label="Contraseña"
-              type="password"
-              id="password"
-              autoComplete="current-password"
+              name='password'
+              label='Contraseña'
+              type='password'
+              id='password'
+              autoComplete='current-password'
             />
             {/*<FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
         />*/}
-            {resgisterUserSucces === false ? <h6 style={{ color: "red" }}>Oops, parece que ha habido un error.</h6> : null}
+            {resgisterUserSucces === false ? (
+              <h6 style={{ color: 'red' }}>
+                Oops, parece que ha habido un error.
+              </h6>
+            ) : null}
             <Button
-              type="submit"
+              type='submit'
               fullWidth
-              variant="contained"
+              variant='contained'
               sx={{ mt: 1, mb: 1 }}
             >
               REGISTRARSE
             </Button>
 
-            <Typography style={{ fontSize: 18, color: "#1976d2", marginTop: "10px" }} variant="body2" color="text.secondary" align="center">
-              <Link onClick={handleGoToLogin} color="inherit">
+            <Typography
+              style={{ fontSize: 18, color: '#1976d2', marginTop: '10px' }}
+              variant='body2'
+              color='text.secondary'
+              align='center'
+            >
+              <Link onClick={handleGoToLogin} color='inherit'>
                 <b>¿Ya tienes una cuenta?</b>
               </Link>
             </Typography>
@@ -164,7 +194,7 @@ export function Signup({ resgisterUserSucces }) {
   );
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   resgisterUserSucces: state.auth.resgisterUserSucces,
 });
 
