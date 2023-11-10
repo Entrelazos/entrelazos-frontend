@@ -1,6 +1,7 @@
 //import { loginWithEmailPassword, registerUserWithEmailPassword, singInWithGoogle, logoutFirebase } from '../../firebase/providers';
 import axios from 'axios';
 import { checkingCredentials, logout, login, authError, registerUserSuccess, registerUserError, clearAuthStateReducer } from './';
+import { login as loginService } from "../../services/auth/authService";
 
 export const checkingAuthentication = () => {
     return async (dispatch) => {
@@ -43,31 +44,8 @@ export const startCreatingUserWithEmailPassword = ({ email, password, displayNam
 export const startLoginWithEmailPassword = (email, password) => {
     return async (dispatch) => {
         dispatch(checkingCredentials());
-        axios.post('http://127.0.0.1:3000/auth/login', {
-            email: email,//"correo@prueba3.com",
-            password: password //"Ab!12345678"
-        },
-            {
-                headers: {
-                    "Content-type": "application/json",
-                }
-            })
-            .then(function (response) {
-                if (response.status === 201) {
-                    dispatch(login({ displayName: 'Juan Diego', email: email }));
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-                dispatch(authError());
-            });
-
-        //const result = await loginWithEmailPassword({ email, password });
-        //console.log(result);
-
-        //if ( !result.ok ) return dispatch( logout( result ) );
-
-
+        const {accessToken, refreshToken} = await loginService({email, password});
+        dispatch(login({ displayName: 'Juan Diego', email, accessToken, refreshToken }));
     }
 }
 

@@ -10,11 +10,13 @@ export const authSlice = createSlice({
         photoURL: null,
         errorMessage: null,
         authError: null,
-        resgisterUserSucces: null
+        resgisterUserSucces: null,
+        accessToken: null,
+        refreshToken: null
     },
     reducers: {
         login: (state, { payload }) => {
-            state.status = 'authenticated', // 'checking', 'not-authenticated', 'authenticated'
+            state.status = 'authenticated'; // 'checking', 'not-authenticated', 'authenticated'
                 state.uid = payload.uid;
             state.email = payload.email;
             state.displayName = payload.displayName;
@@ -22,9 +24,11 @@ export const authSlice = createSlice({
             state.errorMessage = null;
             state.authError = false;
             state.resgisterUserSucces = null;
+            state.accessToken = payload.accessToken;
+            state.refreshToken = payload.refreshToken;
         },
         logout: (state, { payload }) => {
-            state.status = 'not-authenticated', // 'checking', 'not-authenticated', 'authenticated'
+            state.status = 'not-authenticated'; // 'checking', 'not-authenticated', 'authenticated'
                 state.uid = null;
             state.email = null;
             state.displayName = null;
@@ -32,6 +36,8 @@ export const authSlice = createSlice({
             state.errorMessage = payload?.errorMessage;
             state.authError = false;
             state.resgisterUserSucces = null;
+            state.accessToken = null;
+            state.refreshToken = null;
         },
         checkingCredentials: (state) => {
             state.status = 'checking';
@@ -53,7 +59,9 @@ export const authSlice = createSlice({
             state.photoURL= null;
             state.errorMessage= null;
             state.authError= null;
-            state.resgisterUserSucces= null
+            state.resgisterUserSucces= null;
+            state.accessToken = null;
+            state.refreshToken = null;
         }
     }
 });
