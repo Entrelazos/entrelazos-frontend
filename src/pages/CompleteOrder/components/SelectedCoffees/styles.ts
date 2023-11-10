@@ -1,5 +1,5 @@
-import styled from 'styled-components'
-import { SectionBaseStyle } from '../../styles'
+import styled from 'styled-components';
+import { SectionBaseStyle } from '../../styles';
 
 export const SelectedCoffeesContainer = styled.div`
   display: flex;
@@ -10,14 +10,14 @@ export const SelectedCoffeesContainer = styled.div`
   @media (max-width: 1000px) {
     width: 100%;
   }
-`
+`;
 
 export const DetailsContainer = styled(SectionBaseStyle)`
   border-radius: 6px 44px 6px 44px;
   display: flex;
   flex-direction: column;
   padding: 2rem;
-`
+`;
 
 export const ConfirmationSectionContainer = styled.section`
   display: flex;
@@ -29,4 +29,4 @@ export const ConfirmationSectionContainer = styled.section`
     align-items: center;
     justify-content: space-between;
   }
-`
+`;

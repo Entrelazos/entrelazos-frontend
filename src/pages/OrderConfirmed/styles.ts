@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const OrderConfirmedContainer = styled.div`
   display: flex;
@@ -24,7 +24,7 @@ export const OrderConfirmedContainer = styled.div`
       flex-direction: column;
     }
   }
-`
+`;
 
 export const OrderDetailsContainer = styled.div`
   padding: 2.5rem;
@@ -45,4 +45,4 @@ export const OrderDetailsContainer = styled.div`
     border-radius: 7px 37px 7px 37px;
     background: linear-gradient(102.89deg, #dbac2c 2.61%, #8047f8 98.76%);
   }
-`
+`;

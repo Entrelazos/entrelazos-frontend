@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components';
 
 export const PaymentMethodContainer = styled.div`
   width: 100%;
@@ -17,7 +17,7 @@ export const PaymentMethodContainer = styled.div`
       }
     `}
   }
-`
+`;
 
 export const ContentContainer = styled.div`
   padding: 0 1rem;
@@ -43,4 +43,4 @@ export const ContentContainer = styled.div`
   }
 
   user-select: none;
-`
+`;

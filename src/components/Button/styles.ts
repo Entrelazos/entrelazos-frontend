@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const ButtonContainer = styled.button`
   padding: 0.75rem 2.8rem;
@@ -21,4 +21,4 @@ export const ButtonContainer = styled.button`
   &:not(:disabled):hover {
     background: ${({ theme }) => theme.colors['brand-yellow-dark']};
   }
-`
+`;

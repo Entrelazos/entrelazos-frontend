@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components';
 
 export const InputWrapper = styled.div`
   width: 100%;
@@ -10,10 +10,10 @@ export const InputWrapper = styled.div`
   > p {
     color: ${({ theme }) => theme.colors['base-error']};
   }
-`
+`;
 
 interface InputContainerProps {
-  hasError: boolean
+  hasError: boolean;
 }
 
 export const InputStyleContainer = styled.div<InputContainerProps>`
@@ -38,7 +38,7 @@ export const InputStyleContainer = styled.div<InputContainerProps>`
     css`
       border-color: ${theme.colors['base-error']};
     `}
-`
+`;
 
 export const InputStyled = styled.input`
   width: 100%;
@@ -52,11 +52,11 @@ export const InputStyled = styled.input`
   &::placeholder {
     color: ${({ theme }) => theme.colors['base-label']};
   }
-`
+`;
 
 export const RightText = styled.p`
   font-size: 0.75rem;
   margin-right: 0.75rem;
   font-style: italic;
   color: ${({ theme }) => theme.colors['base-label']};
-`
+`;

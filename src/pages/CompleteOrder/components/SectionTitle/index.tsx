@@ -1,11 +1,11 @@
-import { ReactNode } from 'react'
-import { RegularText } from '../../../../components/Typography'
-import { SectionTitleContainer } from './styles'
+import { ReactNode } from 'react';
+import { RegularText } from '../../../../components/Typography';
+import { SectionTitleContainer } from './styles';
 
 interface SectionTitleProps {
-  title: string
-  subtitle: string
-  icon: ReactNode
+  title: string;
+  subtitle: string;
+  icon: ReactNode;
 }
 
 export function SectionTitle({ title, subtitle, icon }: SectionTitleProps) {
@@ -13,9 +13,9 @@ export function SectionTitle({ title, subtitle, icon }: SectionTitleProps) {
     <SectionTitleContainer>
       {icon}
       <div>
-        <RegularText color="subtitle">{title}</RegularText>
-        <RegularText size="s">{title}</RegularText>
+        <RegularText color='subtitle'>{title}</RegularText>
+        <RegularText size='s'>{title}</RegularText>
       </div>
     </SectionTitleContainer>
-  )
+  );
 }

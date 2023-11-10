@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components';
 
 export const HeaderContainer = styled.header`
   width: 100%;
@@ -18,16 +18,16 @@ export const HeaderContainer = styled.header`
     align-items: center;
     justify-content: space-between;
   }
-`
+`;
 
 export const HeaderButtonsContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 0.75rem;
-`
+`;
 
 interface HeaderButtonProps {
-  variant: 'purple' | 'yellow'
+  variant: 'purple' | 'yellow';
 }
 
 export const HeaderButton = styled.button<HeaderButtonProps>`
@@ -76,4 +76,4 @@ export const HeaderButton = styled.button<HeaderButtonProps>`
         color: ${theme.colors['brand-purple']};
       }
     `}
-`
+`;

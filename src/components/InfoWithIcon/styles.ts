@@ -1,13 +1,13 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const InfoWithIconContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 0.75rem;
-`
+`;
 
 interface IconContainerProps {
-  iconColor: string
+  iconColor: string;
 }
 
 export const IconContainer = styled.div<IconContainerProps>`
@@ -21,4 +21,4 @@ export const IconContainer = styled.div<IconContainerProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-`
+`;

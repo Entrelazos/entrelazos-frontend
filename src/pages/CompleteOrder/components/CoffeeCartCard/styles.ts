@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const CoffeeCartCardContainer = styled.div`
   width: 100%;
@@ -35,7 +35,7 @@ export const CoffeeCartCardContainer = styled.div`
       align-self: flex-end;
     }
   }
-`
+`;
 
 export const ActionsContainer = styled.div`
   margin-top: 0.5rem;
@@ -54,7 +54,7 @@ export const ActionsContainer = styled.div`
       max-width: 100%;
     }
   }
-`
+`;
 
 export const RemoveButton = styled.button`
   display: flex;
@@ -76,4 +76,4 @@ export const RemoveButton = styled.button`
   &:hover {
     background: ${({ theme }) => theme.colors['base-hover']};
   }
-`
+`;

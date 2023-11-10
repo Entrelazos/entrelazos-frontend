@@ -115,4 +115,4 @@ export const coffees = [
     photo: 'irlandes.png',
     price: 9.9,
   },
-]
+];

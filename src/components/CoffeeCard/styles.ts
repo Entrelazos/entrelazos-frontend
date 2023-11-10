@@ -1,5 +1,5 @@
-import styled from 'styled-components'
-import { TitleText, RegularText } from '../Typography'
+import styled from 'styled-components';
+import { TitleText, RegularText } from '../Typography';
 
 export const CoffeeCardContainer = styled.div`
   width: 100%;
@@ -18,7 +18,7 @@ export const CoffeeCardContainer = styled.div`
     height: 7.5rem;
     margin-top: -5rem;
   }
-`
+`;
 
 export const Tags = styled.div`
   width: 100%;
@@ -39,7 +39,7 @@ export const Tags = styled.div`
     border-radius: 999px;
     font-weight: 700;
   }
-`
+`;
 
 export const Name = styled(TitleText).attrs({
   size: 's',
@@ -47,14 +47,14 @@ export const Name = styled(TitleText).attrs({
   weight: '700',
 })`
   margin-bottom: 0.5rem;
-`
+`;
 
 export const Description = styled(RegularText).attrs({
   size: 's',
   color: 'label',
 })`
   margin-bottom: 2rem;
-`
+`;
 
 export const CardFooter = styled.div`
   width: 100%;
@@ -71,7 +71,7 @@ export const CardFooter = styled.div`
       line-height: 0.75rem;
     }
   }
-`
+`;
 
 export const AddCartWrapper = styled.div`
   width: 7.5rem;
@@ -93,4 +93,4 @@ export const AddCartWrapper = styled.div`
       background: ${({ theme }) => theme.colors['brand-purple']};
     }
   }
-`
+`;
