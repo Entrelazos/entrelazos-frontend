@@ -11,7 +11,7 @@ import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import { MuiTelInput } from 'mui-tel-input'
+import { MuiTelInput } from 'mui-tel-input';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { startRegister, clearAuthState } from '../../store/auth';
 import Typography from '@mui/material/Typography';
@@ -43,30 +43,34 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export function Signup({ resgisterUserSucces }) {
-  //const { login } = useContext(AuthContext);
-
   const validationSchema = {
-    email: yup.string().email('Correo invalido').required('El correo es obligatorio'),
-    password: yup.string().required('La contraseña es obligatoria').min(8, 'La contraseña debe tener al menos 8 caracteres')
+    email: yup
+      .string()
+      .email('Correo invalido')
+      .required('El correo es obligatorio'),
+    password: yup
+      .string()
+      .required('La contraseña es obligatoria')
+      .min(8, 'La contraseña debe tener al menos 8 caracteres')
       .matches(
         /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
         'La contraseña debe de estar conformada por una letra mayuscula, una letra minuscula, un digito, y un caracter especial'
       ),
-    confirmPassword: yup.string()
+    confirmPassword: yup
+      .string()
       .oneOf([yup.ref('password'), null], 'Las contraseñas deben coincidir')
       .required('Por favor confirma tu contraseña'),
 
     identification: yup.string().required('La identificacion es obligatioria'),
-    cellphone: yup.string()
+    cellphone: yup
+      .string()
       .required('El numero de celular es obligatiorio')
       .matches(/^\+\d{1,15}$/, 'Formato de numero de celular incorrecto'),
     name: yup.string().required('El nombre es obligatorio'),
-
   };
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
 
   const formik = useFormValidation(
     {
@@ -75,12 +79,10 @@ export function Signup({ resgisterUserSucces }) {
       confirmPassword: '',
       identification: '',
       cellphone: '',
-      name: ''
-      // Initialize other form fields as needed
+      name: '',
     },
     validationSchema,
     (values) => {
-      // Process the form data (e.g., send it to the server)
       console.log('Form submitted:', values);
 
       const { cellphone, email, password, identification, name } = values;
@@ -96,7 +98,7 @@ export function Signup({ resgisterUserSucces }) {
           1,
           1
         )
-      )
+      );
     }
   );
 
@@ -159,7 +161,7 @@ export function Signup({ resgisterUserSucces }) {
               value={formik.values.name}
               onChange={formik.handleChange}
               error={formik.touched.name && Boolean(formik.errors.name)}
-              helperText={formik.touched.name && formik.errors.name as string}
+              helperText={formik.touched.name && (formik.errors.name as string)}
             />
             <TextField
               margin='normal'
@@ -172,8 +174,14 @@ export function Signup({ resgisterUserSucces }) {
               autoFocus
               value={formik.values.identification}
               onChange={formik.handleChange}
-              error={formik.touched.identification && Boolean(formik.errors.identification)}
-              helperText={formik.touched.identification && formik.errors.identification as string}
+              error={
+                formik.touched.identification &&
+                Boolean(formik.errors.identification)
+              }
+              helperText={
+                formik.touched.identification &&
+                (formik.errors.identification as string)
+              }
             />
             <TextField
               margin='normal'
@@ -187,7 +195,9 @@ export function Signup({ resgisterUserSucces }) {
               value={formik.values.email}
               onChange={formik.handleChange}
               error={formik.touched.email && Boolean(formik.errors.email)}
-              helperText={formik.touched.email && formik.errors.email as string}
+              helperText={
+                formik.touched.email && (formik.errors.email as string)
+              }
             />
             <MuiTelInput
               defaultCountry='CO'
@@ -201,8 +211,12 @@ export function Signup({ resgisterUserSucces }) {
               autoFocus
               value={formik.values.cellphone}
               onChange={(value) => formik.setFieldValue('cellphone', value)}
-              error={formik.touched.cellphone && Boolean(formik.errors.cellphone)}
-              helperText={formik.touched.cellphone && formik.errors.cellphone as string}
+              error={
+                formik.touched.cellphone && Boolean(formik.errors.cellphone)
+              }
+              helperText={
+                formik.touched.cellphone && (formik.errors.cellphone as string)
+              }
             />
             <TextField
               margin='normal'
@@ -216,7 +230,9 @@ export function Signup({ resgisterUserSucces }) {
               value={formik.values.password}
               onChange={formik.handleChange}
               error={formik.touched.password && Boolean(formik.errors.password)}
-              helperText={formik.touched.password && formik.errors.password as string}
+              helperText={
+                formik.touched.password && (formik.errors.password as string)
+              }
             />
             <TextField
               margin='normal'
@@ -229,8 +245,14 @@ export function Signup({ resgisterUserSucces }) {
               autoComplete='confirm-password'
               value={formik.values.confirmPassword}
               onChange={formik.handleChange}
-              error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
-              helperText={formik.touched.confirmPassword && formik.errors.confirmPassword as string}
+              error={
+                formik.touched.confirmPassword &&
+                Boolean(formik.errors.confirmPassword)
+              }
+              helperText={
+                formik.touched.confirmPassword &&
+                (formik.errors.confirmPassword as string)
+              }
             />
             {/*<FormControlLabel
               control={<Checkbox value="remember" color="primary" />}

@@ -1,4 +1,3 @@
-// authService.ts
 import axios, { AxiosResponse } from 'axios';
 
 interface Credentials {
@@ -27,8 +26,7 @@ export const login = async (
 };
 
 export const logout = (): void => {
-  clearAuthToken(); // Clear the authentication token from Axios headers
-  // Additional logout logic (e.g., redirecting, clearing local storage, etc.)
+  clearAuthToken();
 };
 
 export const getCurrentUser = async (): Promise<any> => {
@@ -38,7 +36,6 @@ export const getCurrentUser = async (): Promise<any> => {
 
 const setAuthToken = (accessToken: string): void => {
   if (accessToken) {
-    // Set the authentication token in Axios headers
     authService.defaults.headers.common[
       'Authorization'
     ] = `Bearer ${accessToken}`;
