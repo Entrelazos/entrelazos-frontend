@@ -16,6 +16,8 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import entreLazosLogoImage from '../../assets/entreLazosLogoVertical.png';
+import { useFormValidation } from '../../hooks/useFormValidation';
+import * as yup from 'yup';
 
 function Copyright(props: any) {
   return (
@@ -39,16 +41,42 @@ const theme = createTheme();
 
 export function Login({ authError }) {
   //const { login } = useContext(AuthContext);
+  const validationSchema = {
+    email: yup.string().email('Formato de correo invalido').required('El correo es obligatorio'),
+    password: yup.string().required('La contraseña es obligatoria')
+  };
+
+
+  const formik = useFormValidation(
+    {
+      email: '',
+      password: '',
+      // Initialize other form fields as needed
+    },
+    validationSchema,
+    (values) => {
+      // Process the form data (e.g., send it to the server)
+      console.log('Form submitted:', values);
+      const { email, password } = values
+      // event.preventDefault();
+
+      dispatch(
+        startLoginWithEmailPassword(email, password)
+      );
+      // navigate('/', { replace: true });
+    }
+  );
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    dispatch(
-      startLoginWithEmailPassword(data.get('email'), data.get('password'))
-    );
-    navigate('/', { replace: true });
-  };
+  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+  //   const data = new FormData(event.currentTarget);
+  //   dispatch(
+  //     startLoginWithEmailPassword(data.get('email'), data.get('password'))
+  //   );
+  //   navigate('/', { replace: true });
+  // };
 
   const handleGoToRegister = () => {
     navigate('/signup', { replace: true });
@@ -70,7 +98,7 @@ export function Login({ authError }) {
 
           <Box
             component='form'
-            onSubmit={handleSubmit}
+            onSubmit={formik.handleSubmit}
             noValidate
             sx={{ mt: 1 }}
           >
@@ -83,6 +111,10 @@ export function Login({ authError }) {
               name='email'
               autoComplete='email'
               autoFocus
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              helperText={formik.touched.email && formik.errors.email as string}
             />
             <TextField
               margin='normal'
@@ -93,6 +125,10 @@ export function Login({ authError }) {
               type='password'
               id='password'
               autoComplete='current-password'
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password as string}
             />
             <FormControlLabel
               control={<Checkbox value='remember' color='primary' />}
