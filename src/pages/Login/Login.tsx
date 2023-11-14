@@ -1,6 +1,4 @@
-import { useContext } from 'react';
-import { useDispatch, useSelector, connect } from 'react-redux';
-import Avatar from '@mui/material/Avatar';
+import { useDispatch, connect } from 'react-redux';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -9,7 +7,6 @@ import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { startLoginWithEmailPassword } from '../../store/auth';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
@@ -64,7 +61,7 @@ export function Login({ authError }) {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
+
   const handleGoToRegister = () => {
     navigate('/signup', { replace: true });
   };
