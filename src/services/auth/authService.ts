@@ -17,17 +17,13 @@ const authService = axios.create({
 export const login = async (
   credentials: Credentials
 ): Promise<AuthResponse> => {
-  try {
-    const response: AxiosResponse<AuthResponse> = await authService.post(
-      '/login',
-      credentials
-    );
-    const { accessToken } = response.data;
-    setAuthToken(accessToken); // Set the authentication token in Axios headers
-    return response.data;
-  } catch (error) {
-    console.log(error);
-  }
+  const response: AxiosResponse<AuthResponse> = await authService.post(
+    '/login',
+    credentials
+  );
+  const { accessToken } = response.data;
+  setAuthToken(accessToken); // Set the authentication token in Axios headers
+  return response.data;
 };
 
 export const logout = (): void => {
@@ -36,12 +32,8 @@ export const logout = (): void => {
 };
 
 export const getCurrentUser = async (): Promise<any> => {
-  try {
-    const response: AxiosResponse<any> = await authService.get('/user');
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
+  const response: AxiosResponse<any> = await authService.get('/user');
+  return response.data;
 };
 
 const setAuthToken = (accessToken: string): void => {
