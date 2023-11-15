@@ -10,7 +10,7 @@ interface AuthResponse {
 }
 
 const authService = axios.create({
-  baseURL: `${import.meta.env.VITE_BASE_URL}/auth`,
+  baseURL: import.meta.env.VITE_BASE_URL ? `${import.meta.env.VITE_BASE_URL}/auth` : 'https://pear-clear-sockeye.cyclic.app/auth',
 });
 
 export const login = async (
