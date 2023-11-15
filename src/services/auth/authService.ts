@@ -1,4 +1,3 @@
-// authService.ts
 import axios, { AxiosResponse } from 'axios';
 
 interface Credentials {
@@ -11,42 +10,32 @@ interface AuthResponse {
 }
 
 const authService = axios.create({
-  baseURL: `${import.meta.env.VITE_BASE_URL}/auth`,
+  baseURL: import.meta.env.VITE_BASE_URL ? `${import.meta.env.VITE_BASE_URL}/auth` : 'https://pear-clear-sockeye.cyclic.app/auth',
 });
 
 export const login = async (
   credentials: Credentials
 ): Promise<AuthResponse> => {
-  try {
-    const response: AxiosResponse<AuthResponse> = await authService.post(
-      '/login',
-      credentials
-    );
-    const { accessToken } = response.data;
-    setAuthToken(accessToken); // Set the authentication token in Axios headers
-    return response.data;
-  } catch (error) {
-    console.log(error);
-  }
+  const response: AxiosResponse<AuthResponse> = await authService.post(
+    '/login',
+    credentials
+  );
+  const { accessToken } = response.data;
+  setAuthToken(accessToken); // Set the authentication token in Axios headers
+  return response.data;
 };
 
 export const logout = (): void => {
-  clearAuthToken(); // Clear the authentication token from Axios headers
-  // Additional logout logic (e.g., redirecting, clearing local storage, etc.)
+  clearAuthToken();
 };
 
 export const getCurrentUser = async (): Promise<any> => {
-  try {
-    const response: AxiosResponse<any> = await authService.get('/user');
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
+  const response: AxiosResponse<any> = await authService.get('/user');
+  return response.data;
 };
 
 const setAuthToken = (accessToken: string): void => {
   if (accessToken) {
-    // Set the authentication token in Axios headers
     authService.defaults.headers.common[
       'Authorization'
     ] = `Bearer ${accessToken}`;

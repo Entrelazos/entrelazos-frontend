@@ -46,13 +46,18 @@ export const startCreatingUserWithEmailPassword = ({
 export const startLoginWithEmailPassword = (email, password) => {
   return async (dispatch) => {
     dispatch(checkingCredentials());
-    const { accessToken, refreshToken } = await loginService({
-      email,
-      password,
-    });
-    dispatch(
-      login({ displayName: 'Juan Diego', email, accessToken, refreshToken })
-    );
+    try {
+      const { accessToken, refreshToken } = await loginService({
+        email,
+        password,
+      });
+      dispatch(
+        login({ displayName: 'Juan Diego', email, accessToken, refreshToken })
+      );
+    } catch (error) {
+      console.log(error);
+      dispatch(authError(true));
+    }
   };
 };
 
