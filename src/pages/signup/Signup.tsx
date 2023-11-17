@@ -60,7 +60,7 @@ export function Signup({ resgisterUserSucces }) {
     cellphone: yup
       .string()
       .required('El numero de celular es obligatiorio')
-      .matches(/^\+\d{1,15}$/, 'Formato de numero de celular incorrecto'),
+      .matches(/^\+\d{1,3}\s?\d{1,3}\s?\d{1,10}$/, 'Formato de numero de celular incorrecto'),
     name: yup.string().required('El nombre es obligatorio'),
   };
 
