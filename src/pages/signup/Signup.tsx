@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import entreLazosLogoImage from '../../assets/entreLazosLogoVertical.png';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import * as yup from 'yup';
-import "./Signup.scss"
+import "./Signup.scss";
 
 function Copyright(props: any) {
   return (
@@ -147,7 +147,7 @@ export function Signup({ resgisterUserSucces }) {
             sx={{ mt: 1 }}
           >
 
-            <Grid container spacing={2} className="grid-system">
+            <Grid container spacing={2} className="grid-system-form">
               <Grid item xs={12} md={6} xl>
                 <TextField
                   margin='normal'
