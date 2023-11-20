@@ -3,6 +3,7 @@ import { useDispatch, connect } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
 import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
@@ -16,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import entreLazosLogoImage from '../../assets/entreLazosLogoVertical.png';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import * as yup from 'yup';
+import "./Signup.scss"
 
 function Copyright(props: any) {
   return (
@@ -144,115 +146,127 @@ export function Signup({ resgisterUserSucces }) {
             noValidate
             sx={{ mt: 1 }}
           >
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              id='name'
-              label='Nombre completo'
-              name='name'
-              autoComplete='name'
-              autoFocus
-              value={formik.values.name}
-              onChange={formik.handleChange}
-              error={formik.touched.name && Boolean(formik.errors.name)}
-              helperText={formik.touched.name && (formik.errors.name as string)}
-            />
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              id='identification'
-              label='Identificación'
-              name='identification'
-              autoComplete='identification'
-              autoFocus
-              value={formik.values.identification}
-              onChange={formik.handleChange}
-              error={
-                formik.touched.identification &&
-                Boolean(formik.errors.identification)
-              }
-              helperText={
-                formik.touched.identification &&
-                (formik.errors.identification as string)
-              }
-            />
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              id='email'
-              label='Correo electrónico'
-              name='email'
-              autoComplete='email'
-              autoFocus
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              error={formik.touched.email && Boolean(formik.errors.email)}
-              helperText={
-                formik.touched.email && (formik.errors.email as string)
-              }
-            />
-            <MuiTelInput
-              defaultCountry='CO'
-              margin='normal'
-              required
-              fullWidth
-              id='cellphone'
-              label='Celular'
-              name='cellphone'
-              autoComplete='cellphone'
-              autoFocus
-              value={formik.values.cellphone}
-              onChange={(value) => formik.setFieldValue('cellphone', value)}
-              error={
-                formik.touched.cellphone && Boolean(formik.errors.cellphone)
-              }
-              helperText={
-                formik.touched.cellphone && (formik.errors.cellphone as string)
-              }
-            />
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              name='password'
-              label='Contraseña'
-              type='password'
-              id='password'
-              autoComplete='current-password'
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              helperText={
-                formik.touched.password && (formik.errors.password as string)
-              }
-            />
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              name='confirmPassword'
-              label='Confirmar contraseña'
-              type='password'
-              id='confirmPassword'
-              autoComplete='confirm-password'
-              value={formik.values.confirmPassword}
-              onChange={formik.handleChange}
-              error={
-                formik.touched.confirmPassword &&
-                Boolean(formik.errors.confirmPassword)
-              }
-              helperText={
-                formik.touched.confirmPassword &&
-                (formik.errors.confirmPassword as string)
-              }
-            />
-            {/*<FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-        />*/}
+
+            <Grid container spacing={2} className="grid-system">
+              <Grid item xs={12} md={6} xl>
+                <TextField
+                  margin='normal'
+                  required
+                  fullWidth
+                  id='name'
+                  label='Nombre completo'
+                  name='name'
+                  autoComplete='name'
+                  autoFocus
+                  value={formik.values.name}
+                  onChange={formik.handleChange}
+                  error={formik.touched.name && Boolean(formik.errors.name)}
+                  helperText={formik.touched.name && (formik.errors.name as string)}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  margin='normal'
+                  required
+                  fullWidth
+                  id='email'
+                  label='Correo electrónico'
+                  name='email'
+                  autoComplete='email'
+                  autoFocus
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  error={formik.touched.email && Boolean(formik.errors.email)}
+                  helperText={
+                    formik.touched.email && (formik.errors.email as string)
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  margin='normal'
+                  required
+                  fullWidth
+                  id='identification'
+                  label='Identificación'
+                  name='identification'
+                  autoComplete='identification'
+                  autoFocus
+                  value={formik.values.identification}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.identification &&
+                    Boolean(formik.errors.identification)
+                  }
+                  helperText={
+                    formik.touched.identification &&
+                    (formik.errors.identification as string)
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <MuiTelInput
+                  defaultCountry='CO'
+                  margin='normal'
+                  required
+                  fullWidth
+                  id='cellphone'
+                  label='Celular'
+                  name='cellphone'
+                  autoComplete='cellphone'
+                  autoFocus
+                  value={formik.values.cellphone}
+                  onChange={(value) => formik.setFieldValue('cellphone', value)}
+                  error={
+                    formik.touched.cellphone && Boolean(formik.errors.cellphone)
+                  }
+                  helperText={
+                    formik.touched.cellphone && (formik.errors.cellphone as string)
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  margin='normal'
+                  required
+                  fullWidth
+                  name='password'
+                  label='Contraseña'
+                  type='password'
+                  id='password'
+                  autoComplete='current-password'
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  error={formik.touched.password && Boolean(formik.errors.password)}
+                  helperText={
+                    formik.touched.password && (formik.errors.password as string)
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  margin='normal'
+                  required
+                  fullWidth
+                  name='confirmPassword'
+                  label='Confirmar contraseña'
+                  type='password'
+                  id='confirmPassword'
+                  autoComplete='confirm-password'
+                  value={formik.values.confirmPassword}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.confirmPassword &&
+                    Boolean(formik.errors.confirmPassword)
+                  }
+                  helperText={
+                    formik.touched.confirmPassword &&
+                    (formik.errors.confirmPassword as string)
+                  }
+                />
+              </Grid>
+            </Grid>
+
             {resgisterUserSucces === false ? (
               <h6 style={{ color: 'red' }}>
                 Oops, parece que ha habido un error.
