@@ -60,7 +60,7 @@ export function Signup({ resgisterUserSucces }) {
     cellphone: yup
       .string()
       .required('El numero de celular es obligatiorio')
-      .matches(/^\+\d{1,15}$/, 'Formato de numero de celular incorrecto'),
+      .matches(/^\+\d{7,15}$/, 'Formato de numero de celular incorrecto'),
     name: yup.string().required('El nombre es obligatorio'),
   };
 
@@ -204,8 +204,8 @@ export function Signup({ resgisterUserSucces }) {
               name='cellphone'
               autoComplete='cellphone'
               autoFocus
-              value={formik.values.cellphone}
-              onChange={(value) => formik.setFieldValue('cellphone', value)}
+              value={formik.values.cellphone.replace(/\s+/g, '')}
+              onChange={(value) => formik.setFieldValue('cellphone', value.replace(/\s+/g, ''))}
               error={
                 formik.touched.cellphone && Boolean(formik.errors.cellphone)
               }
