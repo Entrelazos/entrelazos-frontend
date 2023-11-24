@@ -10,7 +10,9 @@ interface AuthResponse {
 }
 
 const authService = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL ? `${import.meta.env.VITE_BASE_URL}/auth` : 'https://pear-clear-sockeye.cyclic.app/auth',
+  baseURL: import.meta.env.VITE_BASE_URL
+    ? `${import.meta.env.VITE_BASE_URL}/auth`
+    : 'https://pear-clear-sockeye.cyclic.app/auth',
 });
 
 export const login = async (
@@ -27,6 +29,19 @@ export const login = async (
 
 export const logout = (): void => {
   clearAuthToken();
+};
+
+export const getNewAccessToken = async (
+  refreshToken: string
+): Promise<AuthResponse> => {
+  try {
+    const response = await authService.post('/refresh-token', { refreshToken });
+    const { accessToken } = response.data;
+    setAuthToken(accessToken); // Set the authentication token in Axios headers
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const getCurrentUser = async (): Promise<any> => {

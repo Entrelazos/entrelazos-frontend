@@ -52,7 +52,6 @@ export function Login({ authError }) {
     },
     validationSchema,
     (values) => {
-      console.log('Form submitted:', values);
       const { email, password } = values;
 
       dispatch(startLoginWithEmailPassword(email, password));
