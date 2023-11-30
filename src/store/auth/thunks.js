@@ -4,12 +4,16 @@ import {
   checkingCredentials,
   logout,
   login,
+  setNewAccessToken,
   authError,
   registerUserSuccess,
   registerUserError,
   clearAuthStateReducer,
 } from './';
-import { login as loginService } from '../../services/auth/authService';
+import {
+  getNewAccessToken as getNewAccessTokenService,
+  login as loginService,
+} from '../../services/auth/authService';
 
 export const checkingAuthentication = () => {
   return async (dispatch) => {
@@ -107,6 +111,18 @@ export const startRegister = (
     //console.log(result);
 
     //if ( !result.ok ) return dispatch( logout( result ) );
+  };
+};
+
+export const getNewAccessToken = (refreshToken) => {
+  return async (dispatch, getState) => {
+    try {
+      const currentState = getState();
+      const { accessToken } = await getNewAccessTokenService(refreshToken);
+      dispatch(setNewAccessToken({ accessToken }));
+    } catch (error) {
+      console.log(error);
+    }
   };
 };
 
