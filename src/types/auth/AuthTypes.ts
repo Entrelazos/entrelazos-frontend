@@ -15,6 +15,10 @@ export interface RegisterData {
 }
 
 export interface AuthResponse {
+  name: string;
+  email: string;
+  id: string;
+  is_active: boolean;
   accessToken: string;
   refreshToken: string;
 }
