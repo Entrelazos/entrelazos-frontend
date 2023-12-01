@@ -39,7 +39,7 @@ function Copyright(props: any) {
 
 const theme = createTheme();
 
-export function Signup({ resgisterUserSucces }) {
+export function Signup({ registerUserSucces }) {
   const validationSchema = {
     email: yup
       .string()
@@ -85,16 +85,16 @@ export function Signup({ resgisterUserSucces }) {
       const { cellphone, email, password, identification, name } = values;
 
       dispatch(
-        startRegister(
+        startRegister({
           cellphone,
           email,
           password,
           identification,
-          true,
+          is_active: true,
           name,
-          1,
-          1
-        )
+          role_id: 1,
+          city_id: 1
+        })
       );
     }
   );
@@ -104,8 +104,8 @@ export function Signup({ resgisterUserSucces }) {
     navigate('/', { replace: true });
   };
 
-  const successRegisterNotification = (resgisterUserSucces) => {
-    if (resgisterUserSucces === true) {
+  const successRegisterNotification = (registerUserSucces) => {
+    if (registerUserSucces === true) {
       toast.success('Usuario registrado!', {
         position: 'top-right',
         autoClose: 5000,
@@ -123,8 +123,8 @@ export function Signup({ resgisterUserSucces }) {
   };
 
   useEffect(() => {
-    successRegisterNotification(resgisterUserSucces);
-  }, [resgisterUserSucces]);
+    successRegisterNotification(registerUserSucces);
+  }, [registerUserSucces]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -267,7 +267,7 @@ export function Signup({ resgisterUserSucces }) {
               </Grid>
             </Grid>
 
-            {resgisterUserSucces === false ? (
+            {registerUserSucces === false ? (
               <h6 style={{ color: 'red' }}>
                 Oops, parece que ha habido un error.
               </h6>
@@ -300,7 +300,7 @@ export function Signup({ resgisterUserSucces }) {
 }
 
 const mapStateToProps = (state) => ({
-  resgisterUserSucces: state.auth.resgisterUserSucces,
+  registerUserSucces: state.auth.registerUserSucces,
 });
 
 export default connect(mapStateToProps)(Signup);

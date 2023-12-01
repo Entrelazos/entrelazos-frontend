@@ -1,42 +1,48 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AuthState } from '../../types/auth/AuthTypes';
+
+const initialState: AuthState = {
+  status: 'checking',
+  uid: null,
+  email: null,
+  displayName: null,
+  photoURL: null,
+  errorMessage: null,
+  authError: null,
+  registerUserSucces: null,
+  accessToken: null,
+  refreshToken: null,
+};
 
 export const authSlice = createSlice({
   name: 'auth',
-  initialState: {
-    status: 'checking',
-    uid: null,
-    email: null,
-    displayName: null,
-    photoURL: null,
-    errorMessage: null,
-    authError: null,
-    resgisterUserSucces: null,
-    accessToken: null,
-    refreshToken: null,
-  },
+  initialState,
   reducers: {
-    login: (state, { payload }) => {
+    login: (state, { payload }: PayloadAction<AuthState>) => {
       return {
         ...state,
         ...payload,
         status: 'authenticated',
         errorMessage: null,
         authError: false,
-        resgisterUserSucces: null,
+        registerUserSucces: null,
       };
     },
-    logout: (state, { payload }) => {
+    logout: (state, { payload }: PayloadAction<{ errorMessage: string }>) => {
       return {
         ...state,
         status: 'not-authenticated',
         errorMessage: payload?.errorMessage,
         authError: false,
-        resgisterUserSucces: null,
+        registerUserSucces: null,
         accessToken: null,
         refreshToken: null,
       };
     },
-    setNewAccessToken: (state, { payload }) => ({
+    setNewAccessToken: (
+      state,
+      { payload }: PayloadAction<{ accessToken: string }>
+    ) => ({
       ...state,
       accessToken: payload.accessToken,
     }),
@@ -47,10 +53,14 @@ export const authSlice = createSlice({
       state.authError = true;
     },
     registerUserSuccess: (state) => {
-      state.resgisterUserSucces = true;
+      state.registerUserSucces = true;
     },
-    registerUserError: (state) => {
-      state.resgisterUserSucces = false;
+    registerUserError: (
+      state,
+      { payload }: PayloadAction<{ errorMessage: string }>
+    ) => {
+      state.registerUserSucces = false;
+      state.errorMessage = payload?.errorMessage;
     },
     clearAuthStateReducer: (state) => {
       return {
@@ -58,7 +68,7 @@ export const authSlice = createSlice({
         status: 'checking',
         errorMessage: null,
         authError: null,
-        resgisterUserSucces: null,
+        registerUserSucces: null,
         accessToken: null,
         refreshToken: null,
       };
@@ -77,3 +87,5 @@ export const {
   registerUserError,
   clearAuthStateReducer,
 } = authSlice.actions;
+
+export default authSlice.reducer;
