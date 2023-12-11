@@ -79,7 +79,7 @@ export const startLoginWithEmailPassword = ({
       );
     } catch (error) {
       console.log(error);
-      dispatch(authError(true));
+      dispatch(authError());
     }
   };
 };
