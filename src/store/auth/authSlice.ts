@@ -1,6 +1,22 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AuthState } from '../../types/auth/AuthTypes';
 
+interface LoginPayload {
+  payload: AuthState;
+}
+
+interface LogoutPayload {
+  payload: { errorMessage: string };
+}
+
+interface SetNewAccessTokenPayload {
+  payload: { accessToken: string };
+}
+
+interface RegisterUserErrorPayload {
+  payload: { errorMessage: string };
+}
+
 const initialState: AuthState = {
   status: 'checking',
   uid: null,
@@ -18,7 +34,7 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    login: (state, { payload }: PayloadAction<AuthState>) => {
+    login: (state, { payload }: PayloadAction<LoginPayload['payload']>) => {
       return {
         ...state,
         ...payload,
@@ -28,7 +44,7 @@ export const authSlice = createSlice({
         registerUserSucces: null,
       };
     },
-    logout: (state, { payload }: PayloadAction<{ errorMessage: string }>) => {
+    logout: (state, { payload }: PayloadAction<LogoutPayload['payload']>) => {
       return {
         ...state,
         status: 'not-authenticated',
@@ -41,7 +57,7 @@ export const authSlice = createSlice({
     },
     setNewAccessToken: (
       state,
-      { payload }: PayloadAction<{ accessToken: string }>
+      { payload }: PayloadAction<SetNewAccessTokenPayload['payload']>
     ) => ({
       ...state,
       accessToken: payload.accessToken,
@@ -49,7 +65,7 @@ export const authSlice = createSlice({
     checkingCredentials: (state) => {
       state.status = 'checking';
     },
-    authError: (state) => {
+    authError: (state: AuthState) => {
       state.authError = true;
     },
     registerUserSuccess: (state) => {
@@ -57,7 +73,7 @@ export const authSlice = createSlice({
     },
     registerUserError: (
       state,
-      { payload }: PayloadAction<{ errorMessage: string }>
+      { payload }: PayloadAction<RegisterUserErrorPayload['payload']>
     ) => {
       state.registerUserSucces = false;
       state.errorMessage = payload?.errorMessage;

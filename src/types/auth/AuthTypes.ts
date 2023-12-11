@@ -24,14 +24,14 @@ export interface AuthResponse {
 }
 
 export interface AuthState {
-  status: 'checking' | 'authenticated' | 'not-authenticated';
+  status?: 'checking' | 'authenticated' | 'not-authenticated';
   uid: string | null;
   email: string | null;
   displayName: string | null;
-  photoURL: string | null;
-  errorMessage: string | null;
-  authError: boolean | null;
-  registerUserSucces: boolean | null;
-  accessToken: string | null;
-  refreshToken: string | null;
+  photoURL?: string | null;
+  errorMessage?: string | null;
+  authError?: boolean | null;
+  registerUserSucces?: boolean | null;
+  accessToken?: string | null;
+  refreshToken?: string | null;
 }
