@@ -1,13 +1,3 @@
-import { jwtDecode } from 'jwt-decode';
-export const decodeJWT = (token: string) => {
-  try {
-    const decoded = jwtDecode(token);
-    return decoded;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 export function base64UrlDecode(base64Url: string): string {
   const padding = '='.repeat((4 - (base64Url.length % 4)) % 4);
   const base64 = (base64Url + padding).replace(/-/g, '+').replace(/_/g, '/');
