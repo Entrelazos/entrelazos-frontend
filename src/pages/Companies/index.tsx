@@ -1,15 +1,14 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import companyService from '../../services/companies/companyService';
-import { fetchApiData } from '../../store/api/thunks';
 import { AppDispatch } from '../../store/store';
 import { CompanyApiResponse } from '../../types/api/ApiTypes';
 import CardComponent from '../../components/Card';
 import Grid from '@mui/material/Unstable_Grid2';
 import { Container } from '@mui/material';
+import { fetchCompaniesData } from '../../store/companies/companiesThunks';
 
 interface RootState {
-  api: {
+  companies: {
     data: CompanyApiResponse | null;
     loading: boolean;
     error: string | null;
@@ -18,13 +17,10 @@ interface RootState {
 
 const CompaniesPage: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { data, loading, error } = useSelector((state: RootState) => state.api);
+  const { data, loading, error } = useSelector((state: RootState) => state.companies);
 
   useEffect(() => {
-    const fetchData = async () => {
-      dispatch(fetchApiData({ apiService: companyService, method: 'GET', data: null }));
-    };
-    fetchData();
+    dispatch(fetchCompaniesData());
   }, [dispatch]);
 
   const renderContent = () => {
