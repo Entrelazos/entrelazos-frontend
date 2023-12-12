@@ -17,7 +17,8 @@ companyService.interceptors.request.use(
 
 export const getAllCompanies = async (): Promise<any> => {
   try {
-    const response: AxiosResponse<CompanyApiResponse> = await companyService.get('');
+    const response: AxiosResponse<CompanyApiResponse> =
+      await companyService.get('');
     return response.data;
   } catch (error) {}
 };

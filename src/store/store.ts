@@ -5,7 +5,7 @@ import companiesSlice from './companies/companiesSlice';
 export const store = configureStore({
   reducer: {
     auth: authSlice.reducer,
-    companies: companiesSlice
+    companies: companiesSlice,
   },
 });
 

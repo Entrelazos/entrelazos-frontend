@@ -37,7 +37,7 @@ const companiesSlice = createSlice({
       .addCase(
         fetchCompaniesData.fulfilled,
         (state, action: PayloadAction<CompanyApiResponse>) => {
-          debugger
+          debugger;
           state.loading = false;
           state.data = action.payload;
         }
