@@ -1,6 +1,6 @@
 // apiSlice.ts
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { fetchApiData } from './thunks';
 
 interface ApiState {
@@ -31,7 +31,7 @@ const apiSlice = createSlice({
       })
       .addCase(fetchApiData.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload as string;
       });
   },
 });
