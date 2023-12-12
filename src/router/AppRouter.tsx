@@ -14,17 +14,7 @@ const AppRouter: React.FC = () => {
       {status === 'authenticated' ? (
         <Route path='/*' element={<PrivateRoute />} />
       ) : (
-        <Route
-          path='/*'
-          element={
-            <AuthRoutes>
-              {/* <LoginPage /> */}
-              <Routes>
-                <Route path='/*' element={<Login />} />
-              </Routes>
-            </AuthRoutes>
-          }
-        />
+        <Route path='/*' element={<AuthRoutes />} />
       )}
 
       <Route path='/*' element={<Navigate to='/login' />} />
