@@ -15,11 +15,7 @@ interface FetchApiDataParams {
 export const fetchApiData = createAsyncThunk(
   'api/fetchApiData',
   async ({ apiService, method = 'GET', data = null }: FetchApiDataParams) => {
-    try {
-      const response: AxiosResponse<any> = await apiService({ method, data });
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+    const response: AxiosResponse<any> = await apiService({ method, data });
+    return response.data;
   }
 );
