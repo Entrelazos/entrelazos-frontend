@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BiMenuAltRight } from 'react-icons/bi';
 import { AiOutlineClose } from 'react-icons/ai';
 import { Link, useNavigate, NavLink } from 'react-router-dom';
@@ -6,8 +6,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import './navbar.scss';
 import entreLazosLogoImage from '../../assets/entreLazosLogoHorizontal.png';
 import { startLogout } from '../../store/auth';
+import { RootState } from '../../store/store';
 
 function Navbar() {
+  const { displayName } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -83,7 +85,7 @@ function Navbar() {
                 fontWeight: 'bold',
               }}
             >
-              user?.name
+              {displayName}
             </li>
 
             <button className='btn btn__login' onClick={handleLogout}>

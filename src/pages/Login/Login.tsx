@@ -54,7 +54,7 @@ export function Login({ authError }) {
     (values) => {
       const { email, password } = values;
 
-      dispatch(startLoginWithEmailPassword(email, password));
+      dispatch(startLoginWithEmailPassword({ email, password }));
     }
   );
 

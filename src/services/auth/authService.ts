@@ -1,19 +1,23 @@
 import axios, { AxiosResponse } from 'axios';
-
-interface Credentials {
-  username: string;
-  password: string;
-}
-
-interface AuthResponse {
-  accessToken: string;
-}
+import { Credentials, RegisterData, AuthResponse } from '../../types/auth/AuthTypes';
 
 const authService = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL
     ? `${import.meta.env.VITE_BASE_URL}/auth`
     : 'https://pear-clear-sockeye.cyclic.app/auth',
 });
+
+export const register = async (
+  registerData: RegisterData
+): Promise<AuthResponse> => {
+  const response: AxiosResponse<AuthResponse> = await authService.post(
+    '/register',
+    registerData
+  );
+  const { accessToken } = response.data;
+  setAuthToken(accessToken); // Set the authentication token in Axios headers
+  return response.data;
+};
 
 export const login = async (
   credentials: Credentials
