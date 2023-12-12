@@ -4,6 +4,9 @@ import companyService from '../../services/companies/companyService';
 import { fetchApiData } from '../../store/api/thunks';
 import { AppDispatch } from '../../store/store';
 import { CompanyApiResponse } from '../../types/api/ApiTypes';
+import CardComponent from '../../components/Card';
+import Grid from '@mui/material/Unstable_Grid2';
+import { Container } from '@mui/material';
 
 interface RootState {
   api: {
@@ -19,11 +22,10 @@ const CompaniesPage: FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      // Dispatch the async thunk without awaiting it directly
-      dispatch(fetchApiData({ apiService: companyService, method: 'GET', data: "test" }));
+      dispatch(fetchApiData({ apiService: companyService, method: 'GET', data: null }));
     };
     fetchData();
-  }, []);
+  }, [dispatch]);
 
   const renderContent = () => {
     if (loading) {
@@ -36,21 +38,22 @@ const CompaniesPage: FC = () => {
 
     if (data) {
       return (
-        <div>
-          {/* Display the fetched data here */}
-          <ul>
+        <Container maxWidth="xl">
+          <Grid container spacing={2} padding={2}>
             {data?.items.map((item) => (
-              <li key={item.id}>{item.name}</li>
+              <Grid key={item.id} xs={12} md={6} lg={4}>
+                <CardComponent title={item.name} content={item.description} image='https://placehold.co/600x400'></CardComponent>
+              </Grid>
             ))}
-          </ul>
-        </div>
+          </Grid>
+        </Container>
       );
     }
 
     return null;
   };
 
-  return <div>{renderContent()}</div>;
+  return renderContent();
 };
 
 export default CompaniesPage;
