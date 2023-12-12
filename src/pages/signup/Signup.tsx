@@ -18,6 +18,7 @@ import entreLazosLogoImage from '../../assets/entreLazosLogoVertical.png';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import * as yup from 'yup';
 import './Signup.scss';
+import { AppDispatch } from '../../store/store';
 
 function Copyright(props: any) {
   return (
@@ -70,7 +71,7 @@ export function Signup({ registerUserSucces }) {
   };
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const formik = useFormValidation(
     {

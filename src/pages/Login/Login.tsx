@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import entreLazosLogoImage from '../../assets/entreLazosLogoVertical.png';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import * as yup from 'yup';
+import { AppDispatch } from '../../store/store';
 
 function Copyright(props: any) {
   return (
@@ -59,7 +60,7 @@ export function Login({ authError }) {
   );
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleGoToRegister = () => {
     navigate('/signup', { replace: true });

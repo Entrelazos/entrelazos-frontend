@@ -6,12 +6,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import './navbar.scss';
 import entreLazosLogoImage from '../../assets/entreLazosLogoHorizontal.png';
 import { startLogout } from '../../store/auth';
-import { RootState } from '../../store/store';
+import { AppDispatch, RootState } from '../../store/store';
 
 function Navbar() {
   const { displayName } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [menuOpen, setMenuOpen] = useState(false);
   const [size, setSize] = useState({
     width: 0,
