@@ -1,5 +1,4 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-// import { fetchCompaniesData } from './companiesThunks';
 import { CompanyApiResponse } from '../../types/api/ApiTypes';
 import { AxiosResponse } from 'axios';
 import { getAllCompanies } from '../../services/companies/companyService';
@@ -37,7 +36,6 @@ const companiesSlice = createSlice({
       .addCase(
         fetchCompaniesData.fulfilled,
         (state, action: PayloadAction<CompanyApiResponse>) => {
-          debugger;
           state.loading = false;
           state.data = action.payload;
         }
