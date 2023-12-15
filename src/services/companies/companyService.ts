@@ -3,7 +3,7 @@ import {
   requestInterceptor,
   requestErrorInterceptor,
 } from '../interceptors/authInterceptors';
-import { CompanyApiResponse } from '../../types/api/ApiTypes';
+import { CompanyApiResponse } from '../../types/companies/CompaniesTypes';
 
 const companyService = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL

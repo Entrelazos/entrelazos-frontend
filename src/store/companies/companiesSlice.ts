@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { CompanyApiResponse } from '../../types/api/ApiTypes';
+import { CompanyApiResponse } from '../../types/companies/CompaniesTypes';
 import { AxiosResponse } from 'axios';
 import { getAllCompanies } from '../../services/companies/companyService';
 

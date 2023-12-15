@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../store/store';
-import { CompanyApiResponse } from '../../types/api/ApiTypes';
+import { CompanyApiResponse } from '../../types/companies/CompaniesTypes';
 import CardComponent from '../../components/Card';
 import Grid from '@mui/material/Unstable_Grid2';
 import { Container } from '@mui/material';

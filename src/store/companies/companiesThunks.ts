@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { getAllCompanies } from '../../services/companies/companyService';
-import { CompanyApiResponse } from '../../types/api/ApiTypes';
+import { CompanyApiResponse } from '../../types/companies/CompaniesTypes';
 
 export const fetchCompaniesData = createAsyncThunk(
   'companies/fetchCompaniesData',
