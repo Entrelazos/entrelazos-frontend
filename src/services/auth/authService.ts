@@ -1,5 +1,9 @@
 import axios, { AxiosResponse } from 'axios';
-import { Credentials, RegisterData, AuthResponse } from '../../types/auth/AuthTypes';
+import {
+  Credentials,
+  RegisterData,
+  AuthResponse,
+} from '../../types/auth/AuthTypes';
 
 const authService = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL
@@ -55,9 +59,8 @@ export const getCurrentUser = async (): Promise<any> => {
 
 const setAuthToken = (accessToken: string): void => {
   if (accessToken) {
-    authService.defaults.headers.common[
-      'Authorization'
-    ] = `Bearer ${accessToken}`;
+    authService.defaults.headers.common['Authorization'] =
+      `Bearer ${accessToken}`;
   } else {
     delete authService.defaults.headers.common['Authorization'];
   }

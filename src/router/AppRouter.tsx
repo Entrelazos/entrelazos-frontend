@@ -12,22 +12,12 @@ const AppRouter: React.FC = () => {
   return (
     <Routes>
       {status === 'authenticated' ? (
-        <Route path="/*" element={<PrivateRoute />} />
+        <Route path='/*' element={<PrivateRoute />} />
       ) : (
-        <Route
-          path="/*"
-          element={
-            <AuthRoutes>
-              {/* <LoginPage /> */}
-              <Routes>
-                <Route path="/*" element={<Login />} />
-              </Routes>
-            </AuthRoutes>
-          }
-        />
+        <Route path='/*' element={<AuthRoutes />} />
       )}
 
-      <Route path="/*" element={<Navigate to="/login" />} />
+      <Route path='/*' element={<Navigate to='/login' />} />
 
       {/* Login y Registro */}
       {/* <Route path="/auth/*" element={ <AuthRoutes /> } /> */}

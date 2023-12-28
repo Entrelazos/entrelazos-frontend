@@ -59,41 +59,41 @@ const CardComponent: React.FC<CardComponentProps> = ({
     <Card>
       <CardHeader
         avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+          <Avatar sx={{ bgcolor: red[500] }} aria-label='recipe'>
             {avatarTitle}
           </Avatar>
         }
         action={
-          <IconButton aria-label="settings">
+          <IconButton aria-label='settings'>
             <MoreVertIcon />
           </IconButton>
         }
         title={title}
         subheader={subheader}
       />
-      <CardMedia component="img" height="194" image={image} alt={title} />
+      <CardMedia component='img' height='194' image={image} alt={title} />
       <CardContent>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant='body2' color='text.secondary'>
           {content}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
+        <IconButton aria-label='add to favorites'>
           <FavoriteIcon />
         </IconButton>
-        <IconButton aria-label="share">
+        <IconButton aria-label='share'>
           <ShareIcon />
         </IconButton>
         <ExpandMore
           expand={expanded}
           onClick={handleExpandClick}
           aria-expanded={expanded}
-          aria-label="show more"
+          aria-label='show more'
         >
           <ExpandMoreIcon />
         </ExpandMore>
       </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
+      <Collapse in={expanded} timeout='auto' unmountOnExit>
         <CardContent>
           <Typography paragraph>{expandedContent}</Typography>
         </CardContent>

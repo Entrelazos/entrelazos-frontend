@@ -17,7 +17,8 @@ import { useNavigate } from 'react-router-dom';
 import entreLazosLogoImage from '../../assets/entreLazosLogoVertical.png';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import * as yup from 'yup';
-import "./Signup.scss";
+import './Signup.scss';
+import { AppDispatch } from '../../store/store';
 
 function Copyright(props: any) {
   return (
@@ -62,12 +63,15 @@ export function Signup({ registerUserSucces }) {
     cellphone: yup
       .string()
       .required('El numero de celular es obligatiorio')
-      .matches(/^\+\d{1,3}\s?\d{1,3}\s?\d{1,10}$/, 'Formato de numero de celular incorrecto'),
+      .matches(
+        /^\+\d{1,3}\s?\d{1,3}\s?\d{1,10}$/,
+        'Formato de numero de celular incorrecto'
+      ),
     name: yup.string().required('El nombre es obligatorio'),
   };
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const formik = useFormValidation(
     {
@@ -93,7 +97,7 @@ export function Signup({ registerUserSucces }) {
           is_active: true,
           name,
           role_id: 1,
-          city_id: 1
+          city_id: 1,
         })
       );
     }
@@ -146,8 +150,7 @@ export function Signup({ registerUserSucces }) {
             noValidate
             sx={{ mt: 1 }}
           >
-
-            <Grid container spacing={2} className="grid-system-form">
+            <Grid container spacing={2} className='grid-system-form'>
               <Grid item xs={12} md={6} xl>
                 <TextField
                   margin='normal'
@@ -161,7 +164,9 @@ export function Signup({ registerUserSucces }) {
                   value={formik.values.name}
                   onChange={formik.handleChange}
                   error={formik.touched.name && Boolean(formik.errors.name)}
-                  helperText={formik.touched.name && (formik.errors.name as string)}
+                  helperText={
+                    formik.touched.name && (formik.errors.name as string)
+                  }
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -221,7 +226,8 @@ export function Signup({ registerUserSucces }) {
                     formik.touched.cellphone && Boolean(formik.errors.cellphone)
                   }
                   helperText={
-                    formik.touched.cellphone && (formik.errors.cellphone as string)
+                    formik.touched.cellphone &&
+                    (formik.errors.cellphone as string)
                   }
                 />
               </Grid>
@@ -237,9 +243,12 @@ export function Signup({ registerUserSucces }) {
                   autoComplete='current-password'
                   value={formik.values.password}
                   onChange={formik.handleChange}
-                  error={formik.touched.password && Boolean(formik.errors.password)}
+                  error={
+                    formik.touched.password && Boolean(formik.errors.password)
+                  }
                   helperText={
-                    formik.touched.password && (formik.errors.password as string)
+                    formik.touched.password &&
+                    (formik.errors.password as string)
                   }
                 />
               </Grid>
