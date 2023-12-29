@@ -45,7 +45,7 @@ export function Home() {
           <div className='card p-2' style={{ borderRadius: '15px' }}>
             <Link
               className='normalButtons'
-              to='/productosyservicios'
+              to='/productos-servicios'
               style={{ textDecoration: 'none' }}
             >
               <img

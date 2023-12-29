@@ -1,7 +1,6 @@
 import React from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import Login from '../pages/Login/Login';
 import { PrivateRoute } from './PrivateRoute';
 import { AuthRoutes } from './PublicRoute';
 import { RootState } from '../store/store';
