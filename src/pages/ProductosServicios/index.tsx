@@ -15,8 +15,8 @@ export function ProductosServicios() {
               key={item.image}
             >
               <img
-                srcSet={`/src/assets/categories-icons/${item.image}`}
-                src={`/src/assets/categories-icons/${item.image}`}
+                srcSet={`../../assets/categories-icons/${item.image}`}
+                src={`../../assets/categories-icons/${item.image}`}
                 alt={item.name}
                 loading="lazy"
               />
