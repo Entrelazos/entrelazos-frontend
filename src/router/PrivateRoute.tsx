@@ -14,7 +14,7 @@ export const PrivateRoute: React.FC = () => {
         <Route path='/' element={<Home />} />
 
         <Route path='/ofertas' element={<Ofertas />} />
-        <Route path='/productosyservicios' element={<ProductosServicios />} />
+        <Route path='/productos-servicios' element={<ProductosServicios />} />
         <Route path='/empresas' element={<CompaniesPage />} />
         <Route path='/*' element={<Navigate to='/' />} />
       </Routes>

@@ -1,0 +1,18 @@
+export const CATEGORIES = [
+  { name: 'Otros', image: 'otros.png' },
+  { name: 'Escolar', image: 'escolar.png' },
+  { name: 'Postres y Alimentación', image: 'postres-alimentacion.png' },
+  { name: 'Juguetería', image: 'jugueteria.png' },
+  { name: 'Artesanías', image: 'artesanias.png' },
+  { name: 'Regalos', image: 'regalos.png' },
+  { name: 'Salud', image: 'salud.png' },
+  { name: 'Libros', image: 'libros.png' },
+  { name: 'Ropa', image: 'ropa.png' },
+  { name: 'Formación', image: 'formacion.png' },
+  { name: 'Perfumería y Cosméticos', image: 'perfumeria-cosmeticos.png' },
+  { name: 'Mascotas', image: 'mascotas.png' },
+  { name: 'Tecnología', image: 'tecnologia.png' },
+  { name: 'Calzado', image: 'calzado.png' },
+  { name: 'Música', image: 'musica.png' },
+  { name: 'Bebés', image: 'bebes.png' },
+];

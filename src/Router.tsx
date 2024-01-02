@@ -13,7 +13,7 @@ export function Router() {
         <Route path='/completeOrder' element={<CompleteOrderPage />} />
         <Route path='/orderConfirmed' element={<OrderConfirmedPage />} />
         <Route path='/pruebas' element={<h1>Pruebas</h1>} />
-        <Route path='/productosyservicios' element={<OurCoffees />} />
+        <Route path='/productos-servicios' element={<OurCoffees />} />
       </Route>
     </Routes>
   );
