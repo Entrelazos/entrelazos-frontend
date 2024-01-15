@@ -3,7 +3,6 @@ import { DefaultLayout } from './layout/Default';
 import { Home } from './pages/Home';
 import { CompleteOrderPage } from './pages/CompleteOrder';
 import { OrderConfirmedPage } from './pages/OrderConfirmed';
-import { OurCoffees } from './components/OurCoffees';
 
 export function Router() {
   return (
@@ -13,7 +12,6 @@ export function Router() {
         <Route path='/completeOrder' element={<CompleteOrderPage />} />
         <Route path='/orderConfirmed' element={<OrderConfirmedPage />} />
         <Route path='/pruebas' element={<h1>Pruebas</h1>} />
-        <Route path='/productos-servicios' element={<OurCoffees />} />
       </Route>
     </Routes>
   );

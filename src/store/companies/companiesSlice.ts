@@ -1,7 +1,6 @@
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { CompanyApiResponse } from '../../types/companies/CompaniesTypes';
-import { AxiosResponse } from 'axios';
-import { getAllCompanies } from '../../services/companies/companyService';
+import { fetchCompaniesData } from './companiesThunks';
 
 interface CompanyState {
   data: CompanyApiResponse | null;
@@ -14,14 +13,6 @@ const initialState: CompanyState = {
   loading: false,
   error: null,
 };
-
-export const fetchCompaniesData = createAsyncThunk(
-  'companies/fetchCompaniesData',
-  async (): Promise<CompanyApiResponse> => {
-    const response: AxiosResponse<any> = await getAllCompanies();
-    return response.data;
-  }
-);
 
 const companiesSlice = createSlice({
   name: 'companies',
