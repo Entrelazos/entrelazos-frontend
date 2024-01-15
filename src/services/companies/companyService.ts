@@ -1,8 +1,4 @@
 import axios, { AxiosResponse } from 'axios';
-import {
-  requestInterceptor,
-  requestErrorInterceptor,
-} from '../interceptors/authInterceptors';
 import { CompanyApiResponse } from '../../types/companies/CompaniesTypes';
 
 const companyService = axios.create({
@@ -10,10 +6,6 @@ const companyService = axios.create({
     ? `${import.meta.env.VITE_BASE_URL}/companies`
     : 'https://pear-clear-sockeye.cyclic.app/companies',
 });
-companyService.interceptors.request.use(
-  requestInterceptor,
-  requestErrorInterceptor
-);
 
 export const getAllCompanies = async (): Promise<any> => {
   try {

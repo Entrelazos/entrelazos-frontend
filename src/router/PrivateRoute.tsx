@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { Home } from '../pages/Home';
 import { Header } from '../components/Header/index';
 import { Ofertas } from '../pages/Ofertas';
-import { ProductosServicios } from '../pages/ProductosServicios';
+import ProductosServicios from '../pages/ProductosServicios';
 import CompaniesPage from '../pages/Companies';
 
 export const PrivateRoute: React.FC = () => {

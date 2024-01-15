@@ -15,4 +15,8 @@ export const CATEGORIES = [
   { name: 'Calzado', image: 'calzado.png' },
   { name: 'Música', image: 'musica.png' },
   { name: 'Bebés', image: 'bebes.png' },
-];
+].sort((a, b) => {
+  if (a.name === 'Otros') return 1; // 'Otros' will be at the end
+  if (b.name === 'Otros') return -1;
+  return a.name.localeCompare(b.name);
+});
