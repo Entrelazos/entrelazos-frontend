@@ -9,11 +9,8 @@ import heroImage from '../../../../assets/compras.jpg';
 import { RegularText } from '../../../../components/Typography';
 import { InfoWithIcon } from '../../../../components/InfoWithIcon';
 import { ShoppingCart, Package, Timer, Coffee } from 'phosphor-react';
-import { useTheme } from 'styled-components';
 
 export function Hero() {
-  const { colors } = useTheme();
-
   return (
     <HeroContainer>
       <HeroContent className='container'>

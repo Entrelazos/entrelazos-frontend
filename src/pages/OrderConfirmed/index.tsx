@@ -5,19 +5,17 @@ import confirmedOrderIllustration from '../../assets/confirmed-order.svg';
 import { InfoWithIcon } from '../../components/InfoWithIcon';
 
 import { MapPin, Clock, CurrencyDollar } from 'phosphor-react';
-import { useTheme } from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { OrderData } from '../CompleteOrder';
 import { paymentMethods } from '../CompleteOrder/components/CompleteOrderForm/PaymentMethodOptions';
 import { useEffect } from 'react';
+import { colors } from '@mui/material';
 
 interface LocationType {
   state: OrderData;
 }
 
 export function OrderConfirmedPage() {
-  const { colors } = useTheme();
-
   const { state } = useLocation() as LocationType;
 
   const navigate = useNavigate();

@@ -9,7 +9,7 @@ import { MapPin, ShoppingCart } from 'phosphor-react';
 import coffeLogoImage from '../../assets/entreLazosLogo.png';
 import { NavLink } from 'react-router-dom';
 import { useCart } from '../../hooks/useCart';
-import Navbar from '../../components/Navbar/index';
+import Navbar from '../../components/Navbar';
 
 export function Header() {
   const { cartQuantity } = useCart();

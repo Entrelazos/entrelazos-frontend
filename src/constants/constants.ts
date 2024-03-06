@@ -20,3 +20,9 @@ export const CATEGORIES = [
   if (b.name === 'Otros') return -1;
   return a.name.localeCompare(b.name);
 });
+
+export const DRAWER_ITEMS = [
+  { name: 'Home', link: '/' },
+  { name: 'Productos y Servicios', link: '/productos-servicios' },
+  { name: 'Empresas', link: '/empresas' },
+];

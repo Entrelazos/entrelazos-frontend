@@ -35,7 +35,11 @@ function Copyright(props: any) {
   );
 }
 
-const theme = createTheme();
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 
 export function Login({ authError }) {
   const validationSchema = {
@@ -67,7 +71,7 @@ export function Login({ authError }) {
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={darkTheme}>
       <Container component='main' maxWidth='xs'>
         <CssBaseline />
         <Box
