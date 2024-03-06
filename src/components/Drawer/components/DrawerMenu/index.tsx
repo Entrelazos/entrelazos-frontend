@@ -8,7 +8,7 @@ interface DrawerMenuProperties {
 }
 
 const DrawerMenu: FC<DrawerMenuProperties> = ({ text, icon: Icon, link }) => (
-"test"
+    "test"
 );
 
 export default DrawerMenu

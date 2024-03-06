@@ -17,7 +17,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import { ExpandLess, ExpandMore, Home, Inbox, Mail } from '@mui/icons-material';
 import { Collapse, ListSubheader } from '@mui/material';
 import { FC } from 'react';
 import DrawerItem from './components/DrawerItem';
@@ -175,7 +175,11 @@ const MiniDrawer: FC<DrawerProperties<any>> = ({ items, link }) => {
               </ListItemButton>
             </ListItem>
           ))}
-          <DrawerItem text="Sample" icon={InboxIcon} link="/productos-servicios"/>
+          <DrawerItem text="Sample" icon={InboxIcon} link="/productos-servicios" drawerOpen={open} />
+          <DrawerItem text="Parent" icon={Home} drawerOpen={open}>
+            <DrawerItem text="Child 1" icon={Inbox} link="/inbox" drawerOpen={open} />
+            <DrawerItem text="Child 2" icon={Mail} link="/mail" drawerOpen={open} />
+          </DrawerItem>
         </List>
         <Divider />
         <List
@@ -204,7 +208,7 @@ const MiniDrawer: FC<DrawerProperties<any>> = ({ items, link }) => {
               >
                 <MailIcon />
               </ListItemIcon>
-              <ListItemText primary="Home" sx={{ opacity: open ? 1 : 0 }} />
+              <ListItemText primary="Parent" sx={{ opacity: open ? 1 : 0 }} />
               {openItem ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
           </ListItem>
