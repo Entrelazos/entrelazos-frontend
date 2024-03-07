@@ -21,6 +21,7 @@ import { ExpandLess, ExpandMore, Home, Inbox, Mail } from '@mui/icons-material';
 import { Collapse, ListSubheader } from '@mui/material';
 import { FC } from 'react';
 import DrawerItem from './components/DrawerItem';
+import { DRAWER_ITEMS } from '../../constants/constants';
 
 const drawerWidth = 240;
 
@@ -148,112 +149,12 @@ const MiniDrawer: FC<DrawerProperties<any>> = ({ items, link }) => {
         <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
           component="nav"
           aria-labelledby="nested-list-subheader"
-          subheader={
+          subheader={open &&
             <ListSubheader component="div" id="nested-list-subheader">
-              SECTION 1
+              MENU
             </ListSubheader>
           }>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-          <DrawerItem text="Sample" icon={InboxIcon} link="/productos-servicios" drawerOpen={open} />
-          <DrawerItem text="Parent" icon={Home} drawerOpen={open}>
-            <DrawerItem text="Child 1" icon={Inbox} link="/inbox" drawerOpen={open} />
-            <DrawerItem text="Child 2" icon={Mail} link="/mail" drawerOpen={open} />
-          </DrawerItem>
-        </List>
-        <Divider />
-        <List
-          sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
-          component="nav"
-          aria-labelledby="nested-list-subheader"
-          subheader={
-            <ListSubheader component="div" id="nested-list-subheader">
-              SECTION 2
-            </ListSubheader>
-          }>
-          <ListItem disablePadding onClick={handleClick} sx={{ display: 'flex' }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
-                }}
-              >
-                <MailIcon />
-              </ListItemIcon>
-              <ListItemText primary="Parent" sx={{ opacity: open ? 1 : 0 }} />
-              {openItem ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-          </ListItem>
-          <Collapse in={openItem} timeout="auto" unmountOnExit>
-            <List sx={{ paddingLeft: theme.spacing(4) }} component="div" disablePadding>
-              <ListItem disablePadding sx={{ display: 'block' }}>
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <MailIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Home" sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>
-              <ListItem disablePadding sx={{ display: 'block' }}>
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <MailIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Home" sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>
-            </List>
-          </Collapse>
+          {DRAWER_ITEMS.map(({ name, link, icon }) => <DrawerItem key={name} text={name} link={link} icon={icon} drawerOpen={open} />)}
         </List>
       </Drawer>
     </>

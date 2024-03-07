@@ -1,3 +1,5 @@
+import { Home, LocalMall, Business } from '@mui/icons-material';
+
 export const CATEGORIES = [
   { name: 'Otros', image: 'otros.png' },
   { name: 'Escolar', image: 'escolar.png' },
@@ -22,7 +24,11 @@ export const CATEGORIES = [
 });
 
 export const DRAWER_ITEMS = [
-  { name: 'Home', link: '/' },
-  { name: 'Productos y Servicios', link: '/productos-servicios' },
-  { name: 'Empresas', link: '/empresas' },
+  { name: 'Home', link: '/', icon: Home },
+  {
+    name: 'Productos y Servicios',
+    link: '/productos-servicios',
+    icon: LocalMall,
+  },
+  { name: 'Empresas', link: '/empresas', icon: Business },
 ];

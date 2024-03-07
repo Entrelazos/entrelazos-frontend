@@ -57,7 +57,7 @@ const DrawerItem: FC<DrawerItemProperties> = ({ text, icon: Icon, link, children
                         <Icon />
                     </ListItemIcon>
                     <ListItemText primary={text} sx={{ opacity: drawerOpen ? 1 : 0 }} />
-                    {children && (open ? <ExpandLess /> : <ExpandMore />)}
+                    {children && drawerOpen && (open ? <ExpandLess /> : <ExpandMore />)}
                 </ListItemButton>
             </ListItem>
             <Collapse in={open} timeout="auto" unmountOnExit>
