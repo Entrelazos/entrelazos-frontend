@@ -6,9 +6,9 @@ import { Link } from 'react-router-dom';
 
 
 interface DrawerItemProperties {
-    text: String
+    text: string
     icon: SvgIconComponent
-    link?: String
+    link?: string
     key?: string
     children?: Array<ReactElement>;
     drawerOpen?: Boolean
@@ -38,8 +38,8 @@ const DrawerItem: FC<DrawerItemProperties> = ({ text, icon: Icon, link, children
         <>
             <ListItem disablePadding sx={{ display: 'block' }}>
                 <ListItemButton
-                    component={Link} // Use Link component from React Router
-                    to={link} // Specify the destination of the link
+                    component={Link}
+                    to={link}
                     sx={{
                         minHeight: 48,
                         justifyContent: drawerOpen ? 'initial' : 'center',

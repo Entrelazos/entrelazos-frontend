@@ -12,6 +12,12 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
 const darkTheme = createTheme({
+  typography: {
+    fontFamily: [
+      'Public Sans',
+      'sans-serif', // Backup font
+    ].join(','),
+  },
   palette: {
     mode: 'dark',
   },
