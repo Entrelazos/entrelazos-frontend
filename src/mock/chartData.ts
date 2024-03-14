@@ -14,9 +14,6 @@ export const radialBarData = (theme: Theme): ApexOptions => ({
     width: 380,
     type: 'radialBar',
   },
-  theme: {
-    mode: theme.palette.mode,
-  },
   plotOptions: {
     radialBar: {
       dataLabels: {
@@ -114,9 +111,6 @@ export const splineAreaData = (theme: Theme): ApexOptions => ({
     zoom: {
       enabled: false,
     },
-  },
-  theme: {
-    mode: theme.palette.mode,
   },
   dataLabels: {
     enabled: false,
