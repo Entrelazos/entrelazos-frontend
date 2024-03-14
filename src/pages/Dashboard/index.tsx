@@ -9,12 +9,21 @@ import ReactApexChart from "react-apexcharts";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCompaniesData } from "../../store/companies/companiesThunks";
 import { AppDispatch } from "../../store/store";
-import { CompanyApiResponse } from "../../types/companies/CompaniesTypes";
+import { CompanyApiResponse, CompanyItem } from "../../types/companies/CompaniesTypes";
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import ReactCountryFlag from "react-country-flag";
 
 const columns: GridColDef[] = [
   { field: 'name', headerName: 'Nombre', width: 70, flex: 1 },
   { field: 'description', headerName: 'Descripcion', flex: 1 },
+  {
+    field: 'country', headerName: 'Pais', flex: 1, renderCell(params) {
+      return <ReactCountryFlag countryCode={params.row.country} style={{
+        fontSize: '1.5rem',
+        lineHeight: '2em',
+      }}></ReactCountryFlag>
+    },
+  },
   { field: 'type', headerName: 'Tipo', flex: 1 },
 ];
 
@@ -47,15 +56,16 @@ const Dashboard: FC = () => {
     return <p>{error}</p>;
   }
 
-  let rows = [];
-  if (data) {
-    rows = data.items.map((company, index) => ({
-      id: index + 1,
-      name: company.name,
-      description: company.description,
-      type: company.type
-    }));
-  }
+  const { items, meta } = data || { items: [], meta: { currentPage: 1, itemsPerPage: 10 } };
+
+  const rows = items.map((company: CompanyItem, index: number) => ({
+    id: index + 1,
+    name: company.name,
+    description: company.description,
+    type: company.type,
+    country: company?.address[0]?.city?.region?.country?.alpha_code || ""
+  }));
+
 
   return (
     <Container maxWidth="xl">
@@ -91,7 +101,7 @@ const Dashboard: FC = () => {
                   columns={columns}
                   initialState={{
                     pagination: {
-                      paginationModel: { page: data.meta.currentPage, pageSize: data.meta.itemsPerPage },
+                      paginationModel: { page: meta.currentPage, pageSize: meta.itemsPerPage },
                     },
                   }}
                   pageSizeOptions={[5, 10]}
