@@ -10,11 +10,24 @@ interface ChartCardProperties {
   chartSeries: Array<number>;
 }
 
-const ChartDataCard: React.FC<ChartCardProperties> = ({ title, subtitle, chartOptions, chartSeries }) => (
+const ChartDataCard: React.FC<ChartCardProperties> = ({
+  title,
+  subtitle,
+  chartOptions,
+  chartSeries,
+}) => (
   <Card raised sx={{ borderRadius: '12px' }}>
-    <CardHeader title={title} subheader={subtitle} titleTypographyProps={{ fontSize: '1.125rem', fontWeight: "700" }} />
+    <CardHeader
+      title={title}
+      subheader={subtitle}
+      titleTypographyProps={{ fontSize: '1.125rem', fontWeight: '700' }}
+    />
     <CardContent>
-      <ReactApexChart options={chartOptions} series={chartSeries} type="radialBar" />
+      <ReactApexChart
+        options={chartOptions}
+        series={chartSeries}
+        type='radialBar'
+      />
     </CardContent>
   </Card>
 );

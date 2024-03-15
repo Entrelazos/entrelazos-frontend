@@ -7,7 +7,6 @@ import { CompleteOrderFormContainer, FormSectionContainer } from './styles';
 import { colors } from '@mui/material';
 
 export function CompleteOrderForm() {
-  
   return (
     <CompleteOrderFormContainer>
       <TitleText size='xs' color='subtitle'>

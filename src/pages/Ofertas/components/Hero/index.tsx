@@ -12,7 +12,6 @@ import { ShoppingCart, Package, Timer, Coffee } from 'phosphor-react';
 import { colors } from '@mui/material';
 
 export function Hero() {
-
   return (
     <HeroContainer>
       <HeroContent className='container'>

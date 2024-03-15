@@ -1,4 +1,7 @@
-import { requestInterceptor, requestErrorInterceptor } from "../services/interceptors/authInterceptors";
+import {
+  requestInterceptor,
+  requestErrorInterceptor,
+} from '../services/interceptors/authInterceptors';
 
 const setupInterceptors = (instance) => {
   instance.interceptors.request.use(

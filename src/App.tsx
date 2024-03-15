@@ -23,7 +23,6 @@ const darkTheme = createTheme({
   },
 });
 
-
 export function App() {
   return (
     <ThemeProvider theme={darkTheme}>

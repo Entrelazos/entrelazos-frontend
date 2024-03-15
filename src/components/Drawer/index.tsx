@@ -77,26 +77,26 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-    boxSizing: 'border-box',
-    ...(open && {
-      ...openedMixin(theme),
-      '& .MuiDrawer-paper': openedMixin(theme),
-    }),
-    ...(!open && {
-      ...closedMixin(theme),
-      '& .MuiDrawer-paper': closedMixin(theme),
-    }),
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+  width: drawerWidth,
+  flexShrink: 0,
+  whiteSpace: 'nowrap',
+  boxSizing: 'border-box',
+  ...(open && {
+    ...openedMixin(theme),
+    '& .MuiDrawer-paper': openedMixin(theme),
   }),
-);
+  ...(!open && {
+    ...closedMixin(theme),
+    '& .MuiDrawer-paper': closedMixin(theme),
+  }),
+}));
 
 interface DrawerProperties<T> {
-  items?: Array<T>,
-  link?: String
+  items?: Array<T>;
+  link?: String;
 }
 
 const MiniDrawer: FC<DrawerProperties<any>> = ({ items, link }) => {
@@ -116,17 +116,16 @@ const MiniDrawer: FC<DrawerProperties<any>> = ({ items, link }) => {
     setOpenItem(!openItem);
   };
 
-
   return (
     <>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar position='fixed' open={open}>
         <Toolbar>
           <IconButton
-            color="inherit"
-            aria-label="open drawer"
+            color='inherit'
+            aria-label='open drawer'
             onClick={handleDrawerOpen}
-            edge="start"
+            edge='start'
             sx={{
               marginRight: 5,
               ...(open && { display: 'none' }),
@@ -134,27 +133,43 @@ const MiniDrawer: FC<DrawerProperties<any>> = ({ items, link }) => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant='h6' noWrap component='div'>
             Entrelazos
           </Typography>
         </Toolbar>
       </AppBar>
-      <Drawer variant="permanent" open={open}>
+      <Drawer variant='permanent' open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            {theme.direction === 'rtl' ? (
+              <ChevronRightIcon />
+            ) : (
+              <ChevronLeftIcon />
+            )}
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
-          component="nav"
-          aria-labelledby="nested-list-subheader"
-          subheader={open &&
-            <ListSubheader component="div" id="nested-list-subheader">
-              MENU
-            </ListSubheader>
-          }>
-          {DRAWER_ITEMS.map(({ name, link, icon }) => <DrawerItem key={name} text={name} link={link} icon={icon} drawerOpen={open} />)}
+        <List
+          sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+          component='nav'
+          aria-labelledby='nested-list-subheader'
+          subheader={
+            open && (
+              <ListSubheader component='div' id='nested-list-subheader'>
+                MENU
+              </ListSubheader>
+            )
+          }
+        >
+          {DRAWER_ITEMS.map(({ name, link, icon }) => (
+            <DrawerItem
+              key={name}
+              text={name}
+              link={link}
+              icon={icon}
+              drawerOpen={open}
+            />
+          ))}
         </List>
       </Drawer>
     </>

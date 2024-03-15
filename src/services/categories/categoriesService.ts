@@ -16,4 +16,3 @@ export const getCategories = async (): Promise<any> => {
 };
 
 export default categoriesService;
-

@@ -15,12 +15,15 @@ export const PrivateRoute: React.FC = () => {
     <>
       <Box sx={{ display: 'flex' }}>
         <MiniDrawer />
-        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
           <DrawerHeader></DrawerHeader>
           <Routes>
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/ofertas' element={<Ofertas />} />
-            <Route path='/productos-servicios' element={<ProductosServicios />} />
+            <Route
+              path='/productos-servicios'
+              element={<ProductosServicios />}
+            />
             <Route path='/empresas' element={<CompaniesPage />} />
             <Route path='/*' element={<Navigate to='/dashboard' />} />
           </Routes>

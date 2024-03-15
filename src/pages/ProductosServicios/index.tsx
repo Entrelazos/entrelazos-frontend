@@ -1,4 +1,11 @@
-import { ImageListItem, ImageListItemBar, IconButton, Grid, ImageList, Box, useMediaQuery } from '@mui/material';
+import {
+  ImageListItem,
+  ImageListItemBar,
+  IconButton,
+  ImageList,
+  Box,
+  useMediaQuery,
+} from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import { CATEGORIES } from '../../constants/constants';
 import { CategoryApiResponse } from '../../types/categories/CategoryTypes';
@@ -15,11 +22,14 @@ interface RootState {
   };
 }
 
-
 const ProductosServicios: FC = () => {
   const isExtraSmallScreen = useMediaQuery('(max-width:400px)');
-  const isSmallScreen = useMediaQuery('(min-width:401px) and (max-width:600px)');
-  const isMediumScreen = useMediaQuery('(min-width:601px) and (max-width:960px)');
+  const isSmallScreen = useMediaQuery(
+    '(min-width:401px) and (max-width:600px)'
+  );
+  const isMediumScreen = useMediaQuery(
+    '(min-width:601px) and (max-width:960px)'
+  );
   const isLargeScreen = useMediaQuery('(min-width:961px)');
 
   const dispatch = useDispatch<AppDispatch>();
@@ -35,7 +45,7 @@ const ProductosServicios: FC = () => {
     let cols = 5; // Default number of columns
 
     if (isExtraSmallScreen) {
-      cols = 1
+      cols = 1;
     } else if (isSmallScreen) {
       cols = 2;
     } else if (isMediumScreen) {
@@ -55,14 +65,12 @@ const ProductosServicios: FC = () => {
         <Box>
           <ImageList cols={cols} gap={20}>
             {CATEGORIES.map((item) => (
-              <ImageListItem
-                key={item.image}
-              >
+              <ImageListItem key={item.image}>
                 <img
                   srcSet={`/categories-icons/${item.image}`}
                   src={`/categories-icons/${item.image}`}
                   alt={item.name}
-                  loading="lazy"
+                  loading='lazy'
                 />
                 <ImageListItemBar
                   title={item.name}
