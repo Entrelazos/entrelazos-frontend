@@ -1,14 +1,12 @@
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { Home } from '../pages/Home';
-import { Header } from '../components/Header/index';
 import { Ofertas } from '../pages/Ofertas';
 import ProductosServicios from '../pages/ProductosServicios';
 import CompaniesPage from '../pages/Companies';
 import { Box } from '@mui/material';
-import AppRouter from './AppRouter';
 import MiniDrawer, { DrawerHeader } from '../components/Drawer';
 import Dashboard from '../pages/Dashboard';
+import Breadcrumb from '../components/Breadcrumb';
 
 export const PrivateRoute: React.FC = () => {
   return (
@@ -17,6 +15,9 @@ export const PrivateRoute: React.FC = () => {
         <MiniDrawer />
         <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
           <DrawerHeader></DrawerHeader>
+          <Box marginBottom={3}>
+            <Breadcrumb />
+          </Box>
           <Routes>
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/ofertas' element={<Ofertas />} />
