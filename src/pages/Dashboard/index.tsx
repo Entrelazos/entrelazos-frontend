@@ -68,7 +68,7 @@ const Dashboard: FC = () => {
 
 
   return (
-    <Container maxWidth="xl">
+    <Box>
       <Grid2 container spacing={3}>
         <Grid2 xs={12} md={4} >
           <SimpleDataCard title="Total Active Users" mainText="18,000" subtitle="10%" Icon={Home} />
@@ -112,7 +112,7 @@ const Dashboard: FC = () => {
           </Grid2>
         }
       </Grid2>
-    </Container>
+    </Box>
   )
 }
 export default Dashboard;
