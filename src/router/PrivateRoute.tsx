@@ -7,6 +7,7 @@ import { Box } from '@mui/material';
 import MiniDrawer, { DrawerHeader } from '../components/Drawer';
 import Dashboard from '../pages/Dashboard';
 import Breadcrumb from '../components/Breadcrumb';
+import AddCompanies from '../pages/Companies/companies.add';
 
 export const PrivateRoute: React.FC = () => {
   return (
@@ -26,6 +27,7 @@ export const PrivateRoute: React.FC = () => {
               element={<ProductosServicios />}
             />
             <Route path='/empresas' element={<CompaniesPage />} />
+            <Route path='/empresas/agregar' element={<AddCompanies />} />
             <Route path='/*' element={<Navigate to='/dashboard' />} />
           </Routes>
         </Box>

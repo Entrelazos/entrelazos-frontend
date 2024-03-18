@@ -1,8 +1,8 @@
 import { FC, useEffect } from 'react';
 import SimpleDataCard from '../../components/SimpleDataCard';
-import { Box, Card, CardHeader, Container, useTheme } from '@mui/material';
+import { Box, Button, Card, CardHeader, useTheme } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-import { Home } from '@mui/icons-material';
+import { Home, Add } from '@mui/icons-material';
 import ChartDataCard from '../../components/ChartCard';
 import {
   radialBarData,
@@ -18,8 +18,10 @@ import {
   CompanyApiResponse,
   CompanyItem,
 } from '../../types/companies/CompaniesTypes';
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import ReactCountryFlag from 'react-country-flag';
+import { Link } from 'react-router-dom';
+
 
 const columns: GridColDef[] = [
   { field: 'name', headerName: 'Nombre', width: 70, flex: 1 },
@@ -87,6 +89,11 @@ const Dashboard: FC = () => {
 
   return (
     <Box>
+      <Box display="flex" justifyContent="right" marginBottom={4}>
+        <Button variant="contained" startIcon={<Add />} component={Link} to="/empresas/agregar">
+          Añadir una empresa
+        </Button>
+      </Box>
       <Grid2 container spacing={3}>
         <Grid2 xs={12} md={4}>
           <SimpleDataCard

@@ -12,7 +12,17 @@ export const getAllCompanies = async (): Promise<any> => {
     const response: AxiosResponse<CompanyApiResponse> =
       await companyService.get('');
     return response.data;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const createCompany = async (payload): Promise<any> => {
+  try {
+    await companyService.post('', payload);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export default companyService;

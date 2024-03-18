@@ -1,19 +1,10 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '../../store/store';
-import { CompanyApiResponse } from '../../types/companies/CompaniesTypes';
+import { AppDispatch, RootState } from '../../store/store';
 import CardComponent from '../../components/Card';
 import Grid from '@mui/material/Unstable_Grid2';
 import { Container } from '@mui/material';
 import { fetchCompaniesData } from '../../store/companies/companiesThunks';
-
-interface RootState {
-  companies: {
-    data: CompanyApiResponse | null;
-    loading: boolean;
-    error: string | null;
-  };
-}
 
 const CompaniesPage: FC = () => {
   const dispatch = useDispatch<AppDispatch>();

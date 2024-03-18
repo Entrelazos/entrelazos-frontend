@@ -7,6 +7,8 @@ import categoriesService from '../services/categories/categoriesService';
 import productsSlice from './products/productsSlice';
 import productService from '../services/products/productsService';
 import { setupInterceptors } from '../utils/common';
+import geoSlice from './geo/geoSlice';
+import geoService from '../services/geo/geoService';
 
 export const store = configureStore({
   reducer: {
@@ -14,12 +16,14 @@ export const store = configureStore({
     companies: companiesSlice,
     categories: categoriesSlice,
     products: productsSlice,
+    geo: geoSlice,
   },
 });
 
 setupInterceptors(companyService);
 setupInterceptors(categoriesService);
 setupInterceptors(productService);
+setupInterceptors(geoService);
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
