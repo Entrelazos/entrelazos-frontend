@@ -34,9 +34,7 @@ const AddCompanies: FC = () => {
     };
     return (
         <Box display="flex" gap={2} justifyContent="center" >
-            <Paper sx={{ padding: "24px", borderRadius: "1rem" }}>
-                <CompanyForm handleSubmit={handleSubmit} />
-            </Paper>
+            <CompanyForm handleSubmit={handleSubmit} />
         </Box>
     )
 }

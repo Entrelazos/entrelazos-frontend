@@ -5,11 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import { fetchCountries } from '../../store/geo/geoThunks';
 
-interface Country {
-    code: string;
-    name: string;
-}
-
 interface CountrySelectorProps {
     sx?: CSSProperties;
 }
@@ -18,12 +13,6 @@ const handleCountrySelect = (countryCode) => {
     console.log('Selected country:', countryCode);
     // Do something with the selected country code
 };
-const countries: Country[] = [
-    { code: 'US', name: 'United States' },
-    { code: 'CA', name: 'Canada' },
-    { code: 'GB', name: 'United Kingdom' },
-    // Add more countries as needed
-];
 
 const CountrySelector: FC<CountrySelectorProps> = ({ sx }) => {
     const [selectedCountry, setSelectedCountry] = useState<string>('');

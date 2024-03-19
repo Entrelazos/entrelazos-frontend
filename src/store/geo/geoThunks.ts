@@ -6,6 +6,6 @@ export const fetchCountries = createAsyncThunk(
   'geo/fetchCountries',
   async (): Promise<CountryType[]> => {
     const response: CountryType[] = await getCountries();
-    return response;
+    return response.filter((country) => country.code === '57');
   }
 );
