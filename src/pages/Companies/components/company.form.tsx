@@ -1,23 +1,50 @@
-import React, { FC, useState } from 'react';
-import { Grid, TextField, Button, Typography, Card, CardHeader, CardContent } from '@mui/material';
-import CountrySelector from '../../../components/CountrySelect';
-import CompanyAddressComponent from './company.address.component';
+import { FC, useState } from 'react';
+import { Grid, TextField, Button, Card, CardHeader, CardContent } from '@mui/material';
+import CompanyAddressComponent, { AddressData } from './company.address.component';
+
+export interface FormData {
+    name: string;
+    type: string;
+    nit: string;
+    addresses: AddressData[];
+}
 
 interface CompanyFormProperties {
-    handleSubmit: React.FormEventHandler<HTMLFormElement>;
+    handleSubmit: (formData: FormData) => void;
 }
 
 const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
-    const [addressComponents, setAddressComponents] = useState<number>(1); // Initial count of address components
+    const [companyInfo, setCompanyInfo] = useState({ name: '', type: '', nit: '' });
+    const [addresses, setAddresses] = useState<AddressData[]>([{ nomenclature: '', region: '', city: '', country: '' }]);
+
+    const handleCompanyInfoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCompanyInfo({ ...companyInfo, [event.target.name]: event.target.value });
+    };
+
+    const handleAddressChange = (index: number, newData: AddressData) => {
+        console.log('====================================');
+        console.log(newData);
+        console.log('====================================');
+        setAddresses(prevAddresses => {
+            const updatedAddresses = [...prevAddresses];
+            updatedAddresses[index] = newData;
+            return updatedAddresses;
+        });
+    };
+
+    const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        handleSubmit({ name: companyInfo.name, type: companyInfo.type, nit: companyInfo.nit, addresses });
+    };
 
     const addAddressComponent = () => {
-        setAddressComponents(prevCount => prevCount + 1);
+        setAddresses(prevAddresses => [...prevAddresses, { nomenclature: '', region: '', city: '', country: '' }]);
     };
 
     return (
-        <form onSubmit={handleSubmit} style={{ width: '100%', display: "flex", flexDirection: "column", gap: "20px" }}>
-            <Card raised sx={{ borderRadius: '12px' }} >
-                <CardHeader title="Informacion de la Empresa" />
+        <form onSubmit={handleFormSubmit}>
+            <Card raised>
+                {/* Company information fields */}
                 <CardContent>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
@@ -26,6 +53,8 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                                 label="Nombre"
                                 variant="outlined"
                                 fullWidth
+                                value={companyInfo.name}
+                                onChange={handleCompanyInfoChange}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -34,6 +63,8 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                                 label="Tipo"
                                 variant="outlined"
                                 fullWidth
+                                value={companyInfo.type}
+                                onChange={handleCompanyInfoChange}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -42,6 +73,8 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                                 label="NIT"
                                 variant="outlined"
                                 fullWidth
+                                value={companyInfo.nit}
+                                onChange={handleCompanyInfoChange}
                             />
                         </Grid>
                     </Grid>
@@ -49,28 +82,27 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
             </Card>
 
             {/* Rendering address components based on the count */}
-            {[...Array(addressComponents)].map((_, index) => (
+            {addresses.map((address, index) => (
                 <Card key={index} raised sx={{ borderRadius: '12px', marginTop: '20px' }}>
                     <CardHeader title={`Dirección ${index + 1}`} />
                     <CardContent>
                         <Grid container spacing={2}>
-                            <CompanyAddressComponent />
+                            <CompanyAddressComponent
+                                address={address}
+                                onChange={(newData: AddressData) => handleAddressChange(index, newData)}
+                            />
                         </Grid>
                     </CardContent>
                 </Card>
             ))}
 
-            <Grid item xs={12} style={{ marginTop: '16px' }}>
-                <Button type="button" variant="contained" color="primary" onClick={addAddressComponent}>
-                    Agregar Dirección
-                </Button>
-            </Grid>
+            <Button type="button" variant="contained" color="primary" onClick={addAddressComponent}>
+                Agregar Dirección
+            </Button>
 
-            <Grid item xs={12} style={{ marginTop: '16px' }}>
-                <Button type="submit" variant="contained" color="primary">
-                    Crear
-                </Button>
-            </Grid>
+            <Button type="submit" variant="contained" color="primary">
+                Crear
+            </Button>
         </form>
     );
 };
