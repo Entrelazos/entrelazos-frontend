@@ -7,7 +7,7 @@ import { Box } from '@mui/material';
 import MiniDrawer, { DrawerHeader } from '../components/Drawer';
 import Dashboard from '../pages/Dashboard';
 import Breadcrumb from '../components/Breadcrumb';
-import AddCompanies from '../pages/Companies/companies.add';
+import AddCompanies from '../pages/Companies/add/companies.add';
 
 export const PrivateRoute: React.FC = () => {
   return (

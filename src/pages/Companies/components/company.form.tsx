@@ -1,6 +1,8 @@
 import { FC, useState } from 'react';
-import { Grid, TextField, Button, Card, CardHeader, CardContent } from '@mui/material';
+import { Grid, TextField, Button, Card, CardHeader, CardContent, Box, Fade } from '@mui/material';
 import CompanyAddressComponent, { AddressData } from './company.address.component';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import '../companies.form.styles.scss';
 
 export interface FormData {
     name: string;
@@ -22,9 +24,6 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
     };
 
     const handleAddressChange = (index: number, newData: AddressData) => {
-        console.log('====================================');
-        console.log(newData);
-        console.log('====================================');
         setAddresses(prevAddresses => {
             const updatedAddresses = [...prevAddresses];
             updatedAddresses[index] = newData;
@@ -42,10 +41,14 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
         setAddresses(prevAddresses => [...prevAddresses, { nomenclature: '', region: '', city: '', country: '' }]);
     };
 
+    const removeAddressComponent = () => {
+        setAddresses(prevAddresses => prevAddresses.slice(0, -1));
+    };
+
     return (
-        <form onSubmit={handleFormSubmit}>
-            <Card raised>
-                {/* Company information fields */}
+        <form onSubmit={handleFormSubmit} style={{ width: '100%', display: "flex", flexDirection: "column", gap: "20px" }}>
+            <Card raised sx={{ borderRadius: '12px' }}>
+                <CardHeader title='Informacion' />
                 <CardContent>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
@@ -83,27 +86,43 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
             </Card>
 
             {/* Rendering address components based on the count */}
-            {addresses.map((address, index) => (
-                <Card key={index} raised sx={{ borderRadius: '12px', marginTop: '20px' }}>
-                    <CardHeader title={`Dirección ${index + 1}`} />
-                    <CardContent>
-                        <Grid container spacing={2}>
-                            <CompanyAddressComponent
-                                address={address}
-                                onChange={(newData: AddressData) => handleAddressChange(index, newData)}
-                            />
-                        </Grid>
-                    </CardContent>
-                </Card>
-            ))}
+            <Card variant='outlined' sx={{ borderRadius: '12px' }}>
+                <CardHeader title='Direcciones' />
+                <CardContent>
+                    <TransitionGroup style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+                        {addresses.map((address, index) => (
+                            <CSSTransition key={index} timeout={300} classNames='fade'>
+                                <div style={{ flex: '1 1 500px' }}>
+                                    <Card raised sx={{ borderRadius: '12px' }}>
+                                        <CardHeader title={`Dirección ${index + 1}`} />
+                                        <CardContent>
+                                            <Grid container spacing={2}>
+                                                <CompanyAddressComponent
+                                                    address={address}
+                                                    onChange={(newData: AddressData) => handleAddressChange(index, newData)}
+                                                />
+                                            </Grid>
+                                        </CardContent>
+                                    </Card>
+                                </div>
+                            </CSSTransition>
+                        ))}
+                    </TransitionGroup>
+                </CardContent>
+            </Card>
 
-            <Button type="button" variant="contained" color="primary" onClick={addAddressComponent}>
-                Agregar Dirección
-            </Button>
+            <Box display="flex" gap={2} justifyContent="end">
+                {addresses.length > 1 && <Button type="button" variant="contained" color="primary" onClick={removeAddressComponent}>
+                    Remover Dirección
+                </Button>}
+                <Button type="button" variant="contained" color="primary" onClick={addAddressComponent}>
+                    Agregar Dirección
+                </Button>
+                <Button type="submit" variant="contained" color="primary">
+                    Crear
+                </Button>
+            </Box>
 
-            <Button type="submit" variant="contained" color="primary">
-                Crear
-            </Button>
         </form>
     );
 };
