@@ -24,7 +24,7 @@ const CountrySelector: FC<CountrySelectorProps> = ({ value, onChange, sx }) => {
 
     const dispatch = useDispatch<AppDispatch>();
     const { data, loading, error } = useSelector(
-        (state: RootState) => state.geo
+        (state: RootState) => state.country
     );
 
     useEffect(() => {

@@ -1,113 +1,73 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { fetchCities, fetchCountries, fetchRegions } from './geoThunks';
 import { CityType, CountryType, RegionType } from '../../types/geo/geoTypes';
+import produce from 'immer';
 
-interface CountryState {
-  data: CountryType[] | null;
+interface DataState<T> {
+  data: T[] | null;
   loading: boolean;
   error: string | null;
 }
 
-interface RegionState {
-  data: RegionType[] | null;
-  loading: boolean;
-  error: string | null;
-}
+const createDataSlice = <T>(
+  name: string,
+  initialState: DataState<T>,
+  fetchThunk: any
+) => {
+  return createSlice({
+    name,
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+      builder
+        .addCase(fetchThunk.pending, (state) => {
+          state.loading = true;
+          state.error = null;
+        })
+        .addCase(fetchThunk.fulfilled, (state, action) => {
+          state.loading = false;
+          state.data = action.payload;
+        })
+        .addCase(fetchThunk.rejected, (state, action) => {
+          state.loading = false;
+          state.error = action.error.message || 'An error occurred';
+        });
+    },
+  });
+};
 
-interface CityState {
-  data: CityType[] | null;
-  loading: boolean;
-  error: string | null;
-}
-
-const initialState: CountryState = {
+const initialState: DataState<CountryType> = {
   data: null,
   loading: false,
   error: null,
 };
 
-const regionsInitialState: RegionState = {
+const regionsInitialState: DataState<RegionType> = {
   data: null,
   loading: false,
   error: null,
 };
 
-const citiesInitialState: CityState = {
+const citiesInitialState: DataState<CityType> = {
   data: null,
   loading: false,
   error: null,
 };
 
-const coutriesSlice = createSlice({
-  name: 'countries',
+export const countriesSlice = createDataSlice(
+  'countries',
   initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchCountries.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(
-        fetchCountries.fulfilled,
-        (state, action: PayloadAction<CountryType[]>) => {
-          state.loading = false;
-          state.data = action.payload;
-        }
-      )
-      .addCase(fetchCountries.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || 'An error occurred';
-      });
-  },
-});
+  fetchCountries
+);
 
-export const regionsSlice = createSlice({
-  name: 'regions',
-  initialState: regionsInitialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchRegions.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(
-        fetchRegions.fulfilled,
-        (state, action: PayloadAction<RegionType[]>) => {
-          state.loading = false;
-          state.data = action.payload;
-        }
-      )
-      .addCase(fetchRegions.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || 'An error occurred';
-      });
-  },
-});
+export const regionsSlice = createDataSlice(
+  'regions',
+  regionsInitialState,
+  fetchRegions
+);
 
-export const citiesSlice = createSlice({
-  name: 'cities',
-  initialState: citiesInitialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchCities.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(
-        fetchCities.fulfilled,
-        (state, action: PayloadAction<CityType[]>) => {
-          state.loading = false;
-          state.data = action.payload;
-        }
-      )
-      .addCase(fetchCities.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || 'An error occurred';
-      });
-  },
-});
-
-export default coutriesSlice.reducer;
+export const citiesSlice = createDataSlice(
+  'cities',
+  citiesInitialState,
+  fetchCities
+);
