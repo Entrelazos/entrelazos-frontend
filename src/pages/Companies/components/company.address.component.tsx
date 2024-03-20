@@ -1,7 +1,7 @@
 import { Box, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
 import { FC, useEffect, useMemo, useState } from "react";
 import CountrySelector from "../../../components/CountrySelect";
-import { fetchRegions } from "../../../store/geo/geoThunks";
+import { fetchRegions, fetchCities } from "../../../store/geo/geoThunks"; // Assuming fetchCities function exists
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store/store";
 
@@ -18,20 +18,25 @@ interface CompanyAddressComponentProps {
 }
 
 const CompanyAddressComponent: FC<CompanyAddressComponentProps> = ({ address, onChange }) => {
-    const [selectedRegion, setSelectedRegion] = useState<string>(address.region || '');
+    const [selectedLocation, setSelectedLocation] = useState({ region: address.region || '', city: address.city || '' });
 
-    const handleChange = (event: SelectChangeEvent<string>) => {
+    const handleRegionChange = (event: SelectChangeEvent<string>) => {
         const region = event.target.value;
-        setSelectedRegion(region);
+        setSelectedLocation({ ...selectedLocation, region });
         if (onChange) {
-            onChange({ ...address, region: region });
+            onChange({ ...address, region });
+        }
+    };
+
+    const handleCityChange = (event: SelectChangeEvent<string>) => {
+        const city = event.target.value;
+        setSelectedLocation({ ...selectedLocation, city });
+        if (onChange) {
+            onChange({ ...address, city });
         }
     };
 
     const dispatch = useDispatch<AppDispatch>();
-    const { data, loading, error } = useSelector(
-        (state: RootState) => state.regions
-    );
 
     useEffect(() => {
         if (address.country) {
@@ -39,15 +44,39 @@ const CompanyAddressComponent: FC<CompanyAddressComponentProps> = ({ address, on
         }
     }, [address.country]);
 
+    useEffect(() => {
+        if (selectedLocation.region) {
+            dispatch(fetchCities(parseInt(selectedLocation.region)));
+        }
+    }, [selectedLocation.region]);
+
+    const { data: regionData, loading: regionLoading, error: regionError } = useSelector(
+        (state: RootState) => state.regions
+    );
+
+    const { data: cityData, loading: cityLoading, error: cityError } = useSelector(
+        (state: RootState) => state.cities
+    );
+
     const regionOptions = useMemo(() => {
-        return data?.map((region) => (
-            <MenuItem key={region.id} value={region.code} sx={{ display: "flex" }}>
+        return regionData?.map((region) => (
+            <MenuItem key={region.id} value={region.id} sx={{ display: "flex" }}>
                 <Box display="flex" alignItems="center">
                     <Typography fontSize={13}>{region.name}</Typography>
                 </Box>
             </MenuItem>
         ));
-    }, [data]);
+    }, [regionData]);
+
+    const cityOptions = useMemo(() => {
+        return cityData?.map((city) => (
+            <MenuItem key={city.id} value={city.id} sx={{ display: "flex" }}>
+                <Box display="flex" alignItems="center">
+                    <Typography fontSize={13}>{city.name}</Typography>
+                </Box>
+            </MenuItem>
+        ));
+    }, [cityData]);
 
     return (
         <>
@@ -70,39 +99,51 @@ const CompanyAddressComponent: FC<CompanyAddressComponentProps> = ({ address, on
             <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
                     <InputLabel
-                        id="country-select-label"
+                        id="region-select-label"
                         sx={{ color: 'text.primary', fontWeight: 'bold' }}
                     >
                         Region
                     </InputLabel>
                     <Select
-                        labelId="country-select-label"
-                        id="country-select"
+                        labelId="region-select-label"
+                        id="region-select"
                         name='region'
-                        value={selectedRegion}
+                        value={selectedLocation.region}
                         label="Region"
-                        onChange={handleChange}
+                        onChange={handleRegionChange}
                         fullWidth
                     >
-                        {loading && <MenuItem disabled>Loading...</MenuItem>}
-                        {error && <MenuItem disabled>Error: {error}</MenuItem>}
+                        {regionLoading && <MenuItem disabled>Loading...</MenuItem>}
+                        {regionError && <MenuItem disabled>Error: {regionError}</MenuItem>}
                         {regionOptions}
                     </Select>
                 </FormControl>
             </Grid>
             <Grid item xs={12} sm={6}>
-                <TextField
-                    name='city'
-                    label="Ciudad"
-                    variant="outlined"
-                    fullWidth
-                    value={address.city}
-                    onChange={e => onChange({ ...address, city: e.target.value })}
-                />
+                <FormControl fullWidth>
+                    <InputLabel
+                        id="city-select-label"
+                        sx={{ color: 'text.primary', fontWeight: 'bold' }}
+                    >
+                        City
+                    </InputLabel>
+                    <Select
+                        labelId="city-select-label"
+                        id="city-select"
+                        name='city'
+                        value={selectedLocation.city}
+                        label="City"
+                        onChange={handleCityChange}
+                        fullWidth
+                    >
+                        {cityLoading && <MenuItem disabled>Loading...</MenuItem>}
+                        {cityError && <MenuItem disabled>Error: {cityError}</MenuItem>}
+                        {cityOptions}
+                    </Select>
+                </FormControl>
             </Grid>
         </>
     );
 }
 
 export default CompanyAddressComponent;
-

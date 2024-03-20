@@ -17,14 +17,14 @@ export const fetchRegions = createAsyncThunk(
   'geo/fetchRegions',
   async (countryId: number): Promise<RegionType[]> => {
     const response: RegionType[] = await getRegionsByCountry(countryId);
-    return response;
+    return response.filter((region) => region.code === '05');
   }
 );
 
 export const fetchCities = createAsyncThunk(
-  'geo/fetchRegions',
-  async (): Promise<CityType[]> => {
-    const response: CityType[] = await getCitiesByRegion();
+  'geo/fetchCities',
+  async (regionId: number): Promise<CityType[]> => {
+    const response: CityType[] = await getCitiesByRegion(regionId);
     return response;
   }
 );

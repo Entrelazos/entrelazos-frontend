@@ -34,7 +34,8 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
 
     const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        handleSubmit({ name: companyInfo.name, type: companyInfo.type, nit: companyInfo.nit, addresses });
+        const { name, type, nit } = companyInfo
+        handleSubmit({ name, type, nit, addresses });
     };
 
     const addAddressComponent = () => {

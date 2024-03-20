@@ -7,7 +7,7 @@ import categoriesService from '../services/categories/categoriesService';
 import productsSlice from './products/productsSlice';
 import productService from '../services/products/productsService';
 import { setupInterceptors } from '../utils/common';
-import geoSlice, { regionsSlice } from './geo/geoSlice';
+import geoSlice, { citiesSlice, regionsSlice } from './geo/geoSlice';
 import geoService from '../services/geo/geoService';
 
 export const store = configureStore({
@@ -18,6 +18,7 @@ export const store = configureStore({
     products: productsSlice,
     geo: geoSlice,
     regions: regionsSlice.reducer,
+    cities: citiesSlice.reducer
   },
 });
 

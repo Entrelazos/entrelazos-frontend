@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { fetchCountries, fetchRegions } from './geoThunks';
-import { CountryType, RegionType } from '../../types/geo/geoTypes';
+import { fetchCities, fetchCountries, fetchRegions } from './geoThunks';
+import { CityType, CountryType, RegionType } from '../../types/geo/geoTypes';
 
 interface CountryState {
   data: CountryType[] | null;
@@ -14,6 +14,12 @@ interface RegionState {
   error: string | null;
 }
 
+interface CityState {
+  data: CityType[] | null;
+  loading: boolean;
+  error: string | null;
+}
+
 const initialState: CountryState = {
   data: null,
   loading: false,
@@ -21,6 +27,12 @@ const initialState: CountryState = {
 };
 
 const regionsInitialState: RegionState = {
+  data: null,
+  loading: false,
+  error: null,
+};
+
+const citiesInitialState: CityState = {
   data: null,
   loading: false,
   error: null,
@@ -68,6 +80,30 @@ export const regionsSlice = createSlice({
         }
       )
       .addCase(fetchRegions.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'An error occurred';
+      });
+  },
+});
+
+export const citiesSlice = createSlice({
+  name: 'cities',
+  initialState: citiesInitialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchCities.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        fetchCities.fulfilled,
+        (state, action: PayloadAction<CityType[]>) => {
+          state.loading = false;
+          state.data = action.payload;
+        }
+      )
+      .addCase(fetchCities.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'An error occurred';
       });

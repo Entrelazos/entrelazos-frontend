@@ -26,9 +26,13 @@ export const getRegionsByCountry = async (
   } catch (error) {}
 };
 
-export const getCitiesByRegion = async (): Promise<CityType[]> => {
+export const getCitiesByRegion = async (
+  regionId: number
+): Promise<CityType[]> => {
   try {
-    const response: AxiosResponse<CityType[]> = await geoService.get('/cities');
+    const response: AxiosResponse<CityType[]> = await geoService.get(
+      `/${regionId}/cities`
+    );
     return response.data;
   } catch (error) {}
 };
