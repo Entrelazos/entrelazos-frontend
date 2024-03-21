@@ -152,12 +152,24 @@ const MiniDrawer: FC<DrawerProperties<any>> = ({ items, link }) => {
             Entrelazos
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <ProfileMenuComponent anchorEl={anchorEl} handleMenuClose={handleMenuClose} handleMobileMenuOpen={handleMobileMenuOpen}
-            handleProfileMenuOpen={handleProfileMenuOpen} isMenuOpen={isMenuOpen} menuId={menuId} mobileMenuId={mobileMenuId} />
+          <ProfileMenuComponent
+            anchorEl={anchorEl}
+            handleMenuClose={handleMenuClose}
+            handleMobileMenuOpen={handleMobileMenuOpen}
+            handleProfileMenuOpen={handleProfileMenuOpen}
+            isMenuOpen={isMenuOpen}
+            menuId={menuId}
+            mobileMenuId={mobileMenuId}
+          />
         </Toolbar>
       </AppBar>
-      <MobileMenuComponent anchorEl={mobileMoreAnchorEl} handleMobileMenuClose={handleMobileMenuClose}
-        handleProfileMenuOpen={handleProfileMenuOpen} isMobileMenuOpen={isMobileMenuOpen} mobileMenuId={mobileMenuId} />
+      <MobileMenuComponent
+        anchorEl={mobileMoreAnchorEl}
+        handleMobileMenuClose={handleMobileMenuClose}
+        handleProfileMenuOpen={handleProfileMenuOpen}
+        isMobileMenuOpen={isMobileMenuOpen}
+        mobileMenuId={mobileMenuId}
+      />
       <Drawer variant='permanent' open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>

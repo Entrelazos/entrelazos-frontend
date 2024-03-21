@@ -22,7 +22,6 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import ReactCountryFlag from 'react-country-flag';
 import { Link } from 'react-router-dom';
 
-
 const columns: GridColDef[] = [
   { field: 'name', headerName: 'Nombre', width: 70, flex: 1 },
   { field: 'description', headerName: 'Descripcion', flex: 1 },
@@ -89,8 +88,13 @@ const Dashboard: FC = () => {
 
   return (
     <Box>
-      <Box display="flex" justifyContent="right" marginBottom={4}>
-        <Button variant="contained" startIcon={<Add />} component={Link} to="/empresas/agregar">
+      <Box display='flex' justifyContent='right' marginBottom={4}>
+        <Button
+          variant='contained'
+          startIcon={<Add />}
+          component={Link}
+          to='/empresas/agregar'
+        >
           Añadir una empresa
         </Button>
       </Box>

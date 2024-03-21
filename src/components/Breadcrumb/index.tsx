@@ -8,9 +8,9 @@ const Breadcrumb = () => {
   const pathnames = location.pathname.split('/').filter((x) => x);
 
   return (
-    <Breadcrumbs aria-label="breadcrumb">
+    <Breadcrumbs aria-label='breadcrumb'>
       {pathnames.length > 0 ? (
-        <Link component={RouterLink} color="inherit" to="/dashboard">
+        <Link component={RouterLink} color='inherit' to='/dashboard'>
           Home
         </Link>
       ) : (
@@ -21,9 +21,11 @@ const Breadcrumb = () => {
         const isLast = index === pathnames.length - 1;
         name = name.charAt(0).toUpperCase() + name.slice(1);
         return isLast ? (
-          <Typography key={name} color='text.primary'>{name}</Typography>
+          <Typography key={name} color='text.primary'>
+            {name}
+          </Typography>
         ) : (
-          <Link key={name} component={RouterLink} color="inherit" to={routeTo}>
+          <Link key={name} component={RouterLink} color='inherit' to={routeTo}>
             {name}
           </Link>
         );

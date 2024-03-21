@@ -18,7 +18,7 @@ export const store = configureStore({
     products: productsSlice,
     country: countriesSlice.reducer,
     regions: regionsSlice.reducer,
-    cities: citiesSlice.reducer
+    cities: citiesSlice.reducer,
   },
 });
 
