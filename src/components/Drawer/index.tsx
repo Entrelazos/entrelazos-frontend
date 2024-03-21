@@ -11,17 +11,12 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
-import { ExpandLess, ExpandMore, Home, Inbox, Mail } from '@mui/icons-material';
-import { Collapse, ListSubheader } from '@mui/material';
+import { Box, ListSubheader } from '@mui/material';
 import { FC } from 'react';
-import DrawerItem from './components/DrawerItem';
+import DrawerItem from './components/drawer.item.component';
 import { DRAWER_ITEMS } from '../../constants/constants';
+import { ProfileMenuComponent } from './components/profile.menu.component';
+import MobileMenuComponent from './components/mobile.menu.component';
 
 const drawerWidth = 240;
 
@@ -100,6 +95,26 @@ interface DrawerProperties<T> {
 }
 
 const MiniDrawer: FC<DrawerProperties<any>> = ({ items, link }) => {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
+    React.useState<null | HTMLElement>(null);
+  const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setMobileMoreAnchorEl(event.currentTarget);
+  };
+  const handleMobileMenuClose = () => {
+    setMobileMoreAnchorEl(null);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+  const menuId = 'primary-search-account-menu';
+  const mobileMenuId = 'primary-search-account-menu-mobile';
+
+  const isMenuOpen = Boolean(anchorEl);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const [openItem, setOpenItem] = React.useState(false);
@@ -136,8 +151,13 @@ const MiniDrawer: FC<DrawerProperties<any>> = ({ items, link }) => {
           <Typography variant='h6' noWrap component='div'>
             Entrelazos
           </Typography>
+          <Box sx={{ flexGrow: 1 }} />
+          <ProfileMenuComponent anchorEl={anchorEl} handleMenuClose={handleMenuClose} handleMobileMenuOpen={handleMobileMenuOpen}
+            handleProfileMenuOpen={handleProfileMenuOpen} isMenuOpen={isMenuOpen} menuId={menuId} mobileMenuId={mobileMenuId} />
         </Toolbar>
       </AppBar>
+      <MobileMenuComponent anchorEl={mobileMoreAnchorEl} handleMobileMenuClose={handleMobileMenuClose}
+        handleProfileMenuOpen={handleProfileMenuOpen} isMobileMenuOpen={isMobileMenuOpen} mobileMenuId={mobileMenuId} />
       <Drawer variant='permanent' open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
