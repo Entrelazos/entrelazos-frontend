@@ -1,4 +1,12 @@
-import { Home, LocalMall, Business } from '@mui/icons-material';
+import {
+  Home,
+  LocalMall,
+  Business,
+  Badge,
+  Collections,
+  Favorite,
+  PeopleAlt,
+} from '@mui/icons-material';
 
 export const CATEGORIES = [
   { name: 'Otros', image: 'otros.png' },
@@ -31,4 +39,27 @@ export const DRAWER_ITEMS = [
     icon: LocalMall,
   },
   { name: 'Empresas', link: '/empresas', icon: Business },
+];
+
+export const PROFILE_TABS = [
+  {
+    id: 1,
+    label: 'Profile',
+    icon: Badge,
+  },
+  {
+    id: 2,
+    label: 'Favoritos',
+    icon: Favorite,
+  },
+  {
+    id: 3,
+    label: 'Contactos',
+    icon: PeopleAlt,
+  },
+  {
+    id: 4,
+    label: 'Galeria',
+    icon: Collections,
+  },
 ];

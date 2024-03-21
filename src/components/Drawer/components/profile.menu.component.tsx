@@ -14,6 +14,7 @@ import {
   PopoverVirtualElement,
 } from '@mui/material';
 import { FC, MouseEventHandler } from 'react';
+import { Link } from 'react-router-dom';
 
 interface ProfileMenuComponent {
   anchorEl:
@@ -54,7 +55,9 @@ export const ProfileMenuComponent: FC<ProfileMenuComponent> = ({
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem component={Link} to='/profile' onClick={handleMenuClose}>
+        Profile
+      </MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
     </Menu>
   );

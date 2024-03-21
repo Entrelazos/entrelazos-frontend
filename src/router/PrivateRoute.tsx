@@ -8,6 +8,7 @@ import MiniDrawer, { DrawerHeader } from '../components/Drawer';
 import Dashboard from '../pages/Dashboard';
 import Breadcrumb from '../components/Breadcrumb';
 import AddCompanies from '../pages/Companies/add/companies.add';
+import ProfilePage from '../pages/Profile/profile.page';
 
 export const PrivateRoute: React.FC = () => {
   return (
@@ -28,6 +29,7 @@ export const PrivateRoute: React.FC = () => {
             />
             <Route path='/empresas' element={<CompaniesPage />} />
             <Route path='/empresas/agregar' element={<AddCompanies />} />
+            <Route path='/profile' element={<ProfilePage />} />
             <Route path='/*' element={<Navigate to='/dashboard' />} />
           </Routes>
         </Box>
