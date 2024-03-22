@@ -112,9 +112,9 @@ const ProfilePage: FC = () => {
           ))}
         </StyledTabs>
       </Paper>
-      {PROFILE_TABS.map(({ label }, index) => (
+      {PROFILE_TABS.map(({ component: ProfileComponent }, index) => (
         <CustomTabPanelComponent index={index} value={value} key={index}>
-          {label}
+          <ProfileComponent />
         </CustomTabPanelComponent>
       ))}
     </Box>

@@ -13,7 +13,7 @@ import {
 import ReactApexChart from 'react-apexcharts';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCompaniesData } from '../../store/companies/companiesThunks';
-import { AppDispatch } from '../../store/store';
+import { AppDispatch, RootState } from '../../store/store';
 import {
   CompanyApiResponse,
   CompanyItem,
@@ -43,14 +43,6 @@ const columns: GridColDef[] = [
   },
   { field: 'type', headerName: 'Tipo', flex: 1 },
 ];
-
-interface RootState {
-  companies: {
-    data: CompanyApiResponse | null;
-    loading: boolean;
-    error: string | null;
-  };
-}
 
 const Dashboard: FC = () => {
   const theme = useTheme();

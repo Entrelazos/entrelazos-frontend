@@ -7,6 +7,7 @@ import {
   Favorite,
   PeopleAlt,
 } from '@mui/icons-material';
+import ProfileComponent from '../pages/Profile/components/profile.component';
 
 export const CATEGORIES = [
   { name: 'Otros', image: 'otros.png' },
@@ -46,20 +47,24 @@ export const PROFILE_TABS = [
     id: 1,
     label: 'Profile',
     icon: Badge,
+    component: ProfileComponent,
   },
   {
     id: 2,
     label: 'Favoritos',
     icon: Favorite,
+    component: ProfileComponent,
   },
   {
     id: 3,
     label: 'Contactos',
     icon: PeopleAlt,
+    component: ProfileComponent,
   },
   {
     id: 4,
     label: 'Galeria',
     icon: Collections,
+    component: ProfileComponent,
   },
 ];
