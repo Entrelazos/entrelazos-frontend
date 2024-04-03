@@ -1,12 +1,11 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { fetchCategories } from '../../../store/categories/categoriesThunks';
 import { AppDispatch, RootState } from '../../../store/store';
 import { fetchProductsByCategoryId } from '../../../store/products/productsThunks';
 import { ProductItem } from '../../../types/products/ProductsTypes';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import ReactCountryFlag from 'react-country-flag';
+import { Card, CardContent } from '@mui/material';
 
 const columns: GridColDef[] = [
   { field: 'name', headerName: 'Nombre', width: 70, flex: 1 },
@@ -52,20 +51,24 @@ const ProductsByCategory: FC = () => {
     return (
       <>
         <h2>{items[0].category_name}</h2>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                page: meta.currentPage,
-                pageSize: meta.itemsPerPage,
-              },
-            },
-          }}
-          pageSizeOptions={[5, 10]}
-          checkboxSelection
-        />
+        <Card raised sx={{ borderRadius: '12px' }}>
+          <CardContent>
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    page: meta.currentPage,
+                    pageSize: meta.itemsPerPage,
+                  },
+                },
+              }}
+              pageSizeOptions={[5, 10]}
+              checkboxSelection
+            />
+          </CardContent>
+        </Card>
       </>
     );
   }
