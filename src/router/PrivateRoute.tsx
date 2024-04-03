@@ -9,6 +9,8 @@ import Dashboard from '../pages/Dashboard';
 import Breadcrumb from '../components/Breadcrumb';
 import AddCompanies from '../pages/Companies/add/companies.add';
 import ProfilePage from '../pages/Profile/profile.page';
+import ProductsByCategory from '../pages/ProductosServicios/ProductsByCategory/ProductsByCategory';
+import { ROUTES_INFO } from '../constants/constants';
 
 export const PrivateRoute: React.FC = () => {
   return (
@@ -21,15 +23,9 @@ export const PrivateRoute: React.FC = () => {
             <Breadcrumb />
           </Box>
           <Routes>
-            <Route path='/dashboard' element={<Dashboard />} />
-            <Route path='/ofertas' element={<Ofertas />} />
-            <Route
-              path='/productos-servicios'
-              element={<ProductosServicios />}
-            />
-            <Route path='/empresas' element={<CompaniesPage />} />
-            <Route path='/empresas/agregar' element={<AddCompanies />} />
-            <Route path='/profile' element={<ProfilePage />} />
+            {ROUTES_INFO.map(({ path, component: Component }) => (
+              <Route path={path} element={<Component />} key={path}></Route>
+            ))}
             <Route path='/*' element={<Navigate to='/dashboard' />} />
           </Routes>
         </Box>

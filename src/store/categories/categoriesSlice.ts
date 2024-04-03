@@ -1,9 +1,13 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { CategoryApiResponse } from '../../types/categories/CategoryTypes';
+import {
+  CategoryApiResponse,
+  CategoryItem,
+} from '../../types/categories/CategoryTypes';
 import { fetchCategories } from './categoriesThunks';
+import { CATEGORIES } from '../../constants/constants';
 
 interface CategoryState {
-  data: CategoryApiResponse | null;
+  data: CategoryItem[] | null;
   loading: boolean;
   error: string | null;
 }
@@ -26,9 +30,19 @@ const categoriesSlice = createSlice({
       })
       .addCase(
         fetchCategories.fulfilled,
-        (state, action: PayloadAction<CategoryApiResponse>) => {
+        (state, action: PayloadAction<CategoryItem[]>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.data = action.payload.map((categoryItem) => {
+            const category = CATEGORIES.find(
+              (cat) =>
+                cat.name.toLowerCase() ===
+                categoryItem.category_name.toLowerCase()
+            );
+            return {
+              ...categoryItem,
+              image: category ? category.image : '',
+            };
+          });
         }
       )
       .addCase(fetchCategories.rejected, (state, action) => {

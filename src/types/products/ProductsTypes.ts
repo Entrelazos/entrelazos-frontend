@@ -1,9 +1,12 @@
+import { CategoryItem } from '../categories/CategoryTypes';
+
 export interface ProductItem {
   id: number;
-  name: string;
-  type: string;
-  nit: string;
-  description: string;
+  product_name: string;
+  price: number;
+  is_public: boolean;
+  is_service: boolean;
+  is_approved: boolean;
 }
 
 export interface ProductMeta {
@@ -15,6 +18,6 @@ export interface ProductMeta {
 }
 
 export interface ProductApiResponse {
-  items: ProductItem[];
+  items: CategoryItem[];
   meta: ProductMeta;
 }

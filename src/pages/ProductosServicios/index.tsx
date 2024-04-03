@@ -7,20 +7,11 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
-import { CATEGORIES } from '../../constants/constants';
-import { CategoryApiResponse } from '../../types/categories/CategoryTypes';
-import { AppDispatch } from '../../store/store';
+import { AppDispatch, RootState } from '../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { FC, useEffect } from 'react';
 import { fetchCategories } from '../../store/categories/categoriesThunks';
-
-interface RootState {
-  categories: {
-    data: CategoryApiResponse | null;
-    loading: boolean;
-    error: string | null;
-  };
-}
+import { Link } from 'react-router-dom';
 
 const ProductosServicios: FC = () => {
   const isExtraSmallScreen = useMediaQuery('(max-width:400px)');
@@ -64,26 +55,28 @@ const ProductosServicios: FC = () => {
       return (
         <Box>
           <ImageList cols={cols} gap={20}>
-            {CATEGORIES.map((item) => (
-              <ImageListItem key={item.image}>
-                <img
-                  srcSet={`/categories-icons/${item.image}`}
-                  src={`/categories-icons/${item.image}`}
-                  alt={item.name}
-                  loading='lazy'
-                />
-                <ImageListItemBar
-                  title={item.name}
-                  actionIcon={
-                    <IconButton
-                      sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
-                      aria-label={`info about ${item.name}`}
-                    >
-                      <InfoIcon />
-                    </IconButton>
-                  }
-                />
-              </ImageListItem>
+            {data.map((item) => (
+              <Link to={`/productos-servicios/${item.id}`} key={item.id}>
+                <ImageListItem>
+                  <img
+                    srcSet={`/categories-icons/${item.image}`}
+                    src={`/categories-icons/${item.image}`}
+                    alt={item.category_name}
+                    loading='lazy'
+                  />
+                  <ImageListItemBar
+                    title={item.category_name}
+                    actionIcon={
+                      <IconButton
+                        sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
+                        aria-label={`info about ${item.category_name}`}
+                      >
+                        <InfoIcon />
+                      </IconButton>
+                    }
+                  />
+                </ImageListItem>
+              </Link>
             ))}
           </ImageList>
         </Box>

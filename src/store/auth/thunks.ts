@@ -66,7 +66,6 @@ export const startLoginWithEmailPassword = ({
         email,
         password,
       });
-      console.log(is_active);
 
       dispatch(
         login({
