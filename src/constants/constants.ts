@@ -8,6 +8,12 @@ import {
   PeopleAlt,
 } from '@mui/icons-material';
 import ProfileComponent from '../pages/Profile/components/profile.component';
+import Dashboard from '../pages/Dashboard';
+import ProductosServicios from '../pages/ProductosServicios';
+import ProductsByCategory from '../pages/ProductosServicios/ProductsByCategory/ProductsByCategory';
+import CompaniesPage from '../pages/Companies';
+import AddCompanies from '../pages/Companies/add/companies.add';
+import ProfilePage from '../pages/Profile/profile.page';
 
 export const CATEGORIES = [
   { name: 'Otros', image: 'otros.png' },
@@ -66,5 +72,44 @@ export const PROFILE_TABS = [
     label: 'Galeria',
     icon: Collections,
     component: ProfileComponent,
+  },
+];
+
+export const ROUTES_INFO = [
+  {
+    breadcrumbId: 'dashboard',
+    name: 'Home',
+    path: '/dashboard',
+    component: Dashboard,
+  },
+  {
+    breadcrumbId: 'productos-servicios',
+    name: 'Productos y Servicios',
+    path: '/productos-servicios',
+    component: ProductosServicios,
+  },
+  {
+    breadcrumbId: ':productId',
+    name: '',
+    path: '/productos-servicios/:productId',
+    component: ProductsByCategory,
+  },
+  {
+    breadcrumbId: 'empresas',
+    name: 'Empresas',
+    path: '/empresas',
+    component: CompaniesPage,
+  },
+  {
+    breadcrumbId: 'agregar',
+    name: 'Agregar',
+    path: '/empresas/agregar',
+    component: AddCompanies,
+  },
+  {
+    breadcrumbId: 'profile',
+    name: 'Perfil',
+    path: '/profile',
+    component: ProfilePage,
   },
 ];
