@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import CardComponent from '../../components/Card';
 import Grid from '@mui/material/Unstable_Grid2';
-import { Container } from '@mui/material';
 import { fetchCompaniesData } from '../../store/companies/companiesThunks';
 
 const CompaniesPage: FC = () => {
@@ -13,7 +12,7 @@ const CompaniesPage: FC = () => {
   );
 
   useEffect(() => {
-    dispatch(fetchCompaniesData());
+    dispatch(fetchCompaniesData({ page: 1, limit: 10 }));
   }, [dispatch]);
 
   const renderContent = () => {
@@ -27,19 +26,17 @@ const CompaniesPage: FC = () => {
 
     if (data) {
       return (
-        <Container maxWidth='xl'>
-          <Grid container spacing={2} padding={2}>
-            {data?.items.map((item) => (
-              <Grid key={item.id} xs={12} md={6} lg={4}>
-                <CardComponent
-                  title={item.name}
-                  content={item.description}
-                  image='https://placehold.co/600x400'
-                ></CardComponent>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
+        <Grid container spacing={2} padding={2}>
+          {data?.items.map((item) => (
+            <Grid key={item.id} xs={12} md={6} lg={4}>
+              <CardComponent
+                title={item.name}
+                content={item.description}
+                image='https://placehold.co/600x400'
+              ></CardComponent>
+            </Grid>
+          ))}
+        </Grid>
       );
     }
 

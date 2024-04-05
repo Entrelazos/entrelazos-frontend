@@ -1,4 +1,5 @@
 import { CategoryItem } from '../categories/CategoryTypes';
+import { CompanyItem } from '../companies/CompaniesTypes';
 
 export interface ProductItem {
   id: number;
@@ -7,6 +8,7 @@ export interface ProductItem {
   is_public: boolean;
   is_service: boolean;
   is_approved: boolean;
+  company: CompanyItem;
 }
 
 export interface ProductMeta {

@@ -171,6 +171,12 @@ const Dashboard: FC = () => {
                 onPaginationModelChange={handlePaginationModelChange}
                 paginationModel={paginationModel}
                 pageSizeOptions={[5, 10]}
+                sx={{
+                  '& .MuiDataGrid-columnHeaders': {
+                    backgroundColor: 'black',
+                    opacity: 0.5,
+                  },
+                }}
               />
             </Box>
           </Card>

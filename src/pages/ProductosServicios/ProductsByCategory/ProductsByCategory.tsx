@@ -13,6 +13,7 @@ const columns: GridColDef[] = [
   { field: 'isApproved', headerName: 'Aprobado', flex: 1 },
   { field: 'isPublic', headerName: 'Publico', flex: 1 },
   { field: 'isService', headerName: 'Servicio', flex: 1 },
+  { field: 'company', headerName: 'Empresa', flex: 1 },
 ];
 
 const ProductsByCategory: FC = () => {
@@ -46,6 +47,7 @@ const ProductsByCategory: FC = () => {
         isApproved: product.is_approved,
         isPublic: product.is_public,
         isService: product.is_service,
+        company: product.company.name,
       })
     );
     return (
@@ -65,7 +67,12 @@ const ProductsByCategory: FC = () => {
                 },
               }}
               pageSizeOptions={[5, 10]}
-              checkboxSelection
+              sx={{
+                '& .MuiDataGrid-columnHeaders': {
+                  backgroundColor: 'black',
+                  opacity: 0.5,
+                },
+              }}
             />
           </CardContent>
         </Card>
