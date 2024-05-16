@@ -21,10 +21,11 @@ const initialState: ProductState = {
   error: null,
 };
 
-export const fetchProductsData = createAsyncThunk(
-  'products/fetchProductsData',
-  async (): Promise<ProductApiResponse> => {
-    const response: AxiosResponse<any> = await getProductsByCompanyId();
+export const fetchProductsByCompanyId = createAsyncThunk(
+  'products/fetchProductsByCompanyId',
+  async (companyId: number): Promise<ProductApiResponse> => {
+    const response: AxiosResponse<any> =
+      await getProductsByCompanyId(companyId);
     return response.data;
   }
 );
@@ -41,21 +42,27 @@ export const fetchProductsByCategoryId = createAsyncThunk(
 const productsSlice = createSlice({
   name: 'products',
   initialState,
-  reducers: {},
+  reducers: {
+    clearProductsData: (state) => {
+      state.data = null;
+      state.loading = false;
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchProductsData.pending, (state) => {
+      .addCase(fetchProductsByCompanyId.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        fetchProductsData.fulfilled,
+        fetchProductsByCompanyId.fulfilled,
         (state, action: PayloadAction<ProductApiResponse>) => {
           state.loading = false;
           state.data = action.payload;
         }
       )
-      .addCase(fetchProductsData.rejected, (state, action) => {
+      .addCase(fetchProductsByCompanyId.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'An error occurred';
       })
@@ -76,5 +83,7 @@ const productsSlice = createSlice({
       });
   },
 });
+
+export const { clearProductsData } = productsSlice.actions;
 
 export default productsSlice.reducer;

@@ -5,6 +5,7 @@ export interface CategoryItem {
   category_name: string;
   image: string;
   products?: ProductItem[];
+  name?: string;
 }
 
 export interface CategoryApiResponse {

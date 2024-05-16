@@ -10,10 +10,12 @@ const productService = axios.create({
     : 'https://pear-clear-sockeye.cyclic.app/products',
 });
 
-export const getProductsByCompanyId = async (): Promise<any> => {
+export const getProductsByCompanyId = async (
+  companyId: number
+): Promise<any> => {
   try {
     const response: AxiosResponse<ProductApiResponse> =
-      await productService.get('');
+      await productService.get(`/byCompany/${companyId}`);
     return response.data;
   } catch (error) {}
 };

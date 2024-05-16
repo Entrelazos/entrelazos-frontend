@@ -10,10 +10,11 @@ import {
 import ProfileComponent from '../pages/Profile/components/profile.component';
 import Dashboard from '../pages/Dashboard';
 import ProductosServicios from '../pages/ProductosServicios';
-import ProductsByCategory from '../pages/ProductosServicios/ProductsByCategory/ProductsByCategory';
+import ProductsByCategory from '../pages/ProductosServicios/ProductsByCategory';
 import CompaniesPage from '../pages/Companies';
 import AddCompanies from '../pages/Companies/add/companies.add';
 import ProfilePage from '../pages/Profile/profile.page';
+import ProductsByCompany from '../pages/ProductosServicios/ProductsByCompany';
 
 export const CATEGORIES = [
   { name: 'Otros', image: 'otros.png' },
@@ -77,36 +78,49 @@ export const PROFILE_TABS = [
 
 export const ROUTES_INFO = [
   {
+    id: 1,
     breadcrumbId: 'dashboard',
     name: 'Home',
     path: '/dashboard',
     component: Dashboard,
   },
   {
+    id: 2,
     breadcrumbId: 'productos-servicios',
     name: 'Productos y Servicios',
     path: '/productos-servicios',
     component: ProductosServicios,
   },
   {
-    breadcrumbId: ':productId',
+    id: 3,
+    breadcrumbId: ':categoryId',
     name: '',
-    path: '/productos-servicios/:productId',
+    path: '/productos-servicios/:categoryId',
     component: ProductsByCategory,
   },
   {
+    id: 4,
     breadcrumbId: 'empresas',
     name: 'Empresas',
     path: '/empresas',
     component: CompaniesPage,
   },
   {
+    id: 5,
+    breadcrumbId: ':companyId',
+    name: '',
+    path: '/empresas/productos-servicios/:companyId',
+    component: ProductsByCompany,
+  },
+  {
+    id: 6,
     breadcrumbId: 'agregar',
     name: 'Agregar',
     path: '/empresas/agregar',
     component: AddCompanies,
   },
   {
+    id: 7,
     breadcrumbId: 'profile',
     name: 'Perfil',
     path: '/profile',

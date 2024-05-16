@@ -1,11 +1,12 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { AppDispatch, RootState } from '../../../store/store';
-import { fetchProductsByCategoryId } from '../../../store/products/productsThunks';
-import { ProductItem } from '../../../types/products/ProductsTypes';
+import { AppDispatch, RootState } from '../../store/store';
+import { fetchProductsByCompanyId } from '../../store/products/productsThunks';
+import { ProductItem } from '../../types/products/ProductsTypes';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Card, CardContent } from '@mui/material';
+import { clearProductsData } from '../../store/products/productsSlice';
 
 const columns: GridColDef[] = [
   { field: 'name', headerName: 'Nombre', width: 70, flex: 1 },
@@ -16,15 +17,18 @@ const columns: GridColDef[] = [
   { field: 'company', headerName: 'Empresa', flex: 1 },
 ];
 
-const ProductsByCategory: FC = () => {
-  const { productId } = useParams();
+const ProductsByCompany: FC = () => {
+  const { companyId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const { data, loading, error } = useSelector(
     (state: RootState) => state.products
   );
 
   useEffect(() => {
-    dispatch(fetchProductsByCategoryId(parseInt(productId)));
+    dispatch(fetchProductsByCompanyId(parseInt(companyId)));
+    return () => {
+      dispatch(clearProductsData());
+    };
   }, [dispatch]);
   if (loading) {
     return <p>Loading...</p>;
@@ -47,12 +51,12 @@ const ProductsByCategory: FC = () => {
         isApproved: product.is_approved,
         isPublic: product.is_public,
         isService: product.is_service,
-        company: product.company.name,
+        company: items[0].name,
       })
     );
     return (
       <>
-        <h2>{items[0].category_name}</h2>
+        <h2>{items[0].name}</h2>
         <Card raised sx={{ borderRadius: '12px' }}>
           <CardContent>
             <DataGrid
@@ -80,4 +84,4 @@ const ProductsByCategory: FC = () => {
     );
   }
 };
-export default ProductsByCategory;
+export default ProductsByCompany;

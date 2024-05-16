@@ -5,10 +5,11 @@ import {
 } from '../../services/products/productsService';
 import { CompanyApiResponse } from '../../types/companies/CompaniesTypes';
 
-export const fetchProductsByCompanyIdData = createAsyncThunk(
-  'products/fetchProductsByCompanyIdData',
-  async (): Promise<CompanyApiResponse> => {
-    const response: CompanyApiResponse = await getProductsByCompanyId();
+export const fetchProductsByCompanyId = createAsyncThunk(
+  'products/fetchProductsByCompanyId',
+  async (companyId: number): Promise<CompanyApiResponse> => {
+    const response: CompanyApiResponse =
+      await getProductsByCompanyId(companyId);
     return response;
   }
 );

@@ -9,7 +9,7 @@ import Dashboard from '../pages/Dashboard';
 import Breadcrumb from '../components/Breadcrumb';
 import AddCompanies from '../pages/Companies/add/companies.add';
 import ProfilePage from '../pages/Profile/profile.page';
-import ProductsByCategory from '../pages/ProductosServicios/ProductsByCategory/ProductsByCategory';
+import ProductsByCategory from '../pages/ProductosServicios/ProductsByCategory';
 import { ROUTES_INFO } from '../constants/constants';
 
 export const PrivateRoute: React.FC = () => {
@@ -23,8 +23,8 @@ export const PrivateRoute: React.FC = () => {
             <Breadcrumb />
           </Box>
           <Routes>
-            {ROUTES_INFO.map(({ path, component: Component }) => (
-              <Route path={path} element={<Component />} key={path}></Route>
+            {ROUTES_INFO.map(({ id, path, component: Component }) => (
+              <Route path={path} element={<Component />} key={id}></Route>
             ))}
             <Route path='/*' element={<Navigate to='/dashboard' />} />
           </Routes>

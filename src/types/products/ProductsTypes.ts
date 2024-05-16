@@ -20,6 +20,6 @@ export interface ProductMeta {
 }
 
 export interface ProductApiResponse {
-  items: CategoryItem[];
+  items: CategoryItem[] | CompanyItem[];
   meta: ProductMeta;
 }

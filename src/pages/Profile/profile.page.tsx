@@ -35,7 +35,7 @@ const ProfilePage: FC = () => {
     setValue(newValue);
   };
   return (
-    <Box>
+    <Box display='flex' flexDirection='column' gap={3}>
       <Paper
         square={false}
         elevation={0}
@@ -112,9 +112,9 @@ const ProfilePage: FC = () => {
           ))}
         </StyledTabs>
       </Paper>
-      {PROFILE_TABS.map(({ component: ProfileComponent }, index) => (
+      {PROFILE_TABS.map(({ component: Component }, index) => (
         <CustomTabPanelComponent index={index} value={value} key={index}>
-          <ProfileComponent />
+          <Component />
         </CustomTabPanelComponent>
       ))}
     </Box>
