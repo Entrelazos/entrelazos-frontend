@@ -19,6 +19,7 @@ import { useFormValidation } from '../../hooks/useFormValidation';
 import * as yup from 'yup';
 import './Signup.scss';
 import { AppDispatch } from '../../store/store';
+import { AuthState } from '../../types/auth/AuthTypes';
 
 function Copyright(props: any) {
   return (
@@ -308,8 +309,8 @@ export function Signup({ registerUserSucces }) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  registerUserSucces: state.auth.registerUserSucces,
+const mapStateToProps = (state: AuthState) => ({
+  registerUserSucces: state.registerUserSuccess,
 });
 
 export default connect(mapStateToProps)(Signup);

@@ -6,7 +6,7 @@ import { AuthRoutes } from './PublicRoute';
 import { RootState } from '../store/store';
 
 const AppRouter: React.FC = () => {
-  const { auth } = useSelector((state: RootState) => state.auth);
+  const { auth } = useSelector((state: RootState) => state);
 
   return (
     <Routes>

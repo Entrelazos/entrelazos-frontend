@@ -16,6 +16,7 @@ import entreLazosLogoImage from '../../assets/entreLazosLogoVertical.png';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import * as yup from 'yup';
 import { AppDispatch } from '../../store/store';
+import { AuthState } from '../../types/auth/AuthTypes';
 
 function Copyright(props: any) {
   return (
@@ -160,8 +161,8 @@ export function Login({ authError }) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  authError: state.auth.authError,
+const mapStateToProps = (state: AuthState) => ({
+  authError: state.authError,
 });
 
 export default connect(mapStateToProps)(Login);

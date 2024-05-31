@@ -55,7 +55,11 @@ export const ProfileMenuComponent: FC<ProfileMenuComponent> = ({
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem component={Link} to='/profile' onClick={handleMenuClose}>
+      <MenuItem
+        component={Link}
+        to='/company-profile/1'
+        onClick={handleMenuClose}
+      >
         Profile
       </MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
