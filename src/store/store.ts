@@ -2,7 +2,7 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 import { authSlice } from './auth';
-import companiesSlice from './companies/companiesSlice';
+import { companiesSlice, companySlice } from './companies/companiesSlice';
 import companyService from '../services/companies/companyService';
 import categoriesSlice from './categories/categoriesSlice';
 import categoriesService from '../services/categories/categoriesService';
@@ -12,10 +12,15 @@ import { setupInterceptors } from '../utils/common';
 import { citiesSlice, regionsSlice, countriesSlice } from './geo/geoSlice';
 import geoService from '../services/geo/geoService';
 
-// Combine reducers
 const rootReducer = combineReducers({
   auth: authSlice.reducer,
-  // Add other reducers here if you have them
+  company: companySlice.reducer,
+  companies: companiesSlice.reducer,
+  categories: categoriesSlice,
+  products: productsSlice,
+  country: countriesSlice.reducer,
+  regions: regionsSlice.reducer,
+  cities: citiesSlice.reducer,
 });
 
 // Configure persist options
@@ -30,15 +35,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 // Configure store with persisted reducers
 export const store = configureStore({
-  reducer: {
-    auth: persistedReducer,
-    companies: companiesSlice,
-    categories: categoriesSlice,
-    products: productsSlice,
-    country: countriesSlice.reducer,
-    regions: regionsSlice.reducer,
-    cities: citiesSlice.reducer,
-  },
+  reducer: persistedReducer,
 });
 
 export const persistor = persistStore(store);
