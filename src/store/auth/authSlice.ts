@@ -1,5 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AuthState } from '../../types/auth/AuthTypes';
+import {
+  startLoginWithEmailPassword,
+  startRegister,
+  startGetNewAccessToken,
+  startClearAuthState,
+  startLogout,
+} from './thunks';
 
 interface LoginPayload {
   payload: AuthState;
@@ -23,9 +30,10 @@ const initialState: AuthState = {
   email: null,
   displayName: null,
   photoURL: null,
+  companies: [],
   errorMessage: null,
   authError: null,
-  registerUserSucces: null,
+  registerUserSuccess: null,
   accessToken: null,
   refreshToken: null,
 };
@@ -33,75 +41,56 @@ const initialState: AuthState = {
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {
-    login: (state, { payload }: PayloadAction<LoginPayload['payload']>) => {
-      return {
-        ...state,
-        ...payload,
-        status: 'authenticated',
-        errorMessage: null,
-        authError: false,
-        registerUserSucces: null,
-      };
-    },
-    logout: (state, { payload }: PayloadAction<LogoutPayload['payload']>) => {
-      return {
-        ...state,
-        status: 'not-authenticated',
-        errorMessage: payload?.errorMessage,
-        authError: false,
-        registerUserSucces: null,
-        accessToken: null,
-        refreshToken: null,
-      };
-    },
-    setNewAccessToken: (
-      state,
-      { payload }: PayloadAction<SetNewAccessTokenPayload['payload']>
-    ) => ({
-      ...state,
-      accessToken: payload.accessToken,
-    }),
-    checkingCredentials: (state) => {
-      state.status = 'checking';
-    },
-    authError: (state: AuthState) => {
-      state.authError = true;
-    },
-    registerUserSuccess: (state) => {
-      state.registerUserSucces = true;
-    },
-    registerUserError: (
-      state,
-      { payload }: PayloadAction<RegisterUserErrorPayload['payload']>
-    ) => {
-      state.registerUserSucces = false;
-      state.errorMessage = payload?.errorMessage;
-    },
-    clearAuthStateReducer: (state) => {
-      return {
-        ...state,
-        status: 'checking',
-        errorMessage: null,
-        authError: null,
-        registerUserSucces: null,
-        accessToken: null,
-        refreshToken: null,
-      };
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(startLoginWithEmailPassword.fulfilled, (state, action) => {
+        state.status = 'authenticated';
+        state.uid = action.payload.uid;
+        state.displayName = action.payload.displayName;
+        state.email = action.payload.email;
+        state.companies = action.payload.companies;
+        state.accessToken = action.payload.accessToken;
+        state.refreshToken = action.payload.refreshToken;
+        state.errorMessage = null;
+        state.authError = false;
+        state.registerUserSuccess = null;
+      })
+      .addCase(startLoginWithEmailPassword.rejected, (state) => {
+        state.status = 'not-authenticated';
+        state.errorMessage = 'Login failed';
+      })
+      .addCase(startRegister.fulfilled, (state) => {
+        state.registerUserSuccess = true;
+      })
+      .addCase(startRegister.rejected, (state, action) => {
+        state.registerUserSuccess = false;
+        state.errorMessage = action.error.message;
+      })
+      .addCase(startGetNewAccessToken.fulfilled, (state, action) => {
+        state.accessToken = action.payload.accessToken;
+      })
+      .addCase(startClearAuthState.fulfilled, (state) => {
+        state.status = 'checking';
+        state.errorMessage = null;
+        state.authError = null;
+        state.registerUserSuccess = null;
+        state.accessToken = null;
+        state.refreshToken = null;
+      })
+      .addCase(startLogout.fulfilled, (state) => {
+        state.status = 'not-authenticated';
+        state.uid = null;
+        state.email = null;
+        state.displayName = null;
+        state.companies = [];
+        state.accessToken = null;
+        state.refreshToken = null;
+        state.errorMessage = null;
+        state.authError = null;
+        state.registerUserSuccess = null;
+      });
   },
 });
-
-// Action creators are generated for each case reducer function
-export const {
-  login,
-  logout,
-  setNewAccessToken,
-  checkingCredentials,
-  authError,
-  registerUserSuccess,
-  registerUserError,
-  clearAuthStateReducer,
-} = authSlice.actions;
 
 export default authSlice.reducer;
