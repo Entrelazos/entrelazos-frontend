@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 import { MuiTelInput } from 'mui-tel-input';
-import { startRegister, clearAuthState } from '../../store/auth';
+import { startRegister, startClearAuthState } from '../../store/auth';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -104,7 +104,7 @@ export function Signup({ registerUserSucces }) {
   );
 
   const handleGoToLogin = () => {
-    dispatch(clearAuthState());
+    dispatch(startClearAuthState());
     navigate('/', { replace: true });
   };
 

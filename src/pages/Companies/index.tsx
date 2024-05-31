@@ -17,8 +17,8 @@ const CompaniesPage: FC = () => {
     dispatch(fetchCompaniesData({ page: 1, limit: 10 }));
   }, [dispatch]);
 
-  const handleCardClick = (categoryId: number) => {
-    navigate(`productos-servicios/${categoryId}`);
+  const handleCardClick = (companyId: number) => {
+    navigate(`productos-servicios/${companyId}`);
   };
 
   const renderContent = () => {

@@ -1,17 +1,17 @@
 import { InternalAxiosRequestConfig } from 'axios';
 import { store } from '../../store/store';
 import { decodeJwt, isTokenExpired } from '../../utils/jsonUtils';
-import { getNewAccessToken } from '../../store/auth';
+import { startGetNewAccessToken } from '../../store/auth';
 const requestInterceptor = async (config: InternalAxiosRequestConfig) => {
-  const authInfo = store.getState().auth;
+  const authInfo = store.getState().auth.auth;
   const { accessToken, refreshToken } = authInfo;
   if (accessToken) {
     let newAccessToken = accessToken;
     const jwtData = decodeJwt(accessToken);
     const { exp } = jwtData;
     if (isTokenExpired(exp)) {
-      await store.dispatch(getNewAccessToken(refreshToken));
-      newAccessToken = store.getState().auth.accessToken;
+      await store.dispatch(startGetNewAccessToken(refreshToken));
+      newAccessToken = store.getState().auth.auth.accessToken;
     }
     config.headers.Authorization = `Bearer ${newAccessToken}`;
   }

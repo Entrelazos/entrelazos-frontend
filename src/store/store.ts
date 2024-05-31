@@ -1,7 +1,6 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
-import logger from 'redux-logger';
 import { authSlice } from './auth';
 import companiesSlice from './companies/companiesSlice';
 import companyService from '../services/companies/companyService';

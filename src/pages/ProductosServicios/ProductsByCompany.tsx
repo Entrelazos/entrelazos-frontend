@@ -37,7 +37,7 @@ const ProductsByCompany: FC = () => {
   if (error) {
     return <p>{error}</p>;
   }
-  if (data) {
+  if (data && data.items[0]?.products?.length) {
     const { items, meta } = data || {
       items: [],
       meta: { currentPage: 1, itemsPerPage: 10 },
