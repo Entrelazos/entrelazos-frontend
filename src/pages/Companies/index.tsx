@@ -17,8 +17,8 @@ const CompaniesPage: FC = () => {
     dispatch(fetchCompaniesData({ page: 1, limit: 10 }));
   }, [dispatch]);
 
-  const handleCardClick = (companyId: number) => {
-    navigate(`productos-servicios/${companyId}`);
+  const handleCardClick = (companyName: string) => {
+    navigate(`perfil-compania/${companyName}`);
   };
 
   const renderContent = () => {
@@ -39,7 +39,7 @@ const CompaniesPage: FC = () => {
                 title={item.name}
                 content={item.description}
                 image='https://placehold.co/600x400'
-                onClick={() => handleCardClick(item.id)}
+                onClick={() => handleCardClick(item.name)}
               ></CardComponent>
             </Grid>
           ))}

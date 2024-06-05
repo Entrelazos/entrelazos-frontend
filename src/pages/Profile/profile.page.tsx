@@ -41,9 +41,6 @@ const ProfilePage: FC<ProfilePageProperties> = ({ isCompany }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [value, setValue] = useState(0);
 
-  const { email, displayName, photoURL, companies } = useSelector(
-    (state: RootState) => state.auth
-  );
   const { data, loading, error } = useSelector(
     (state: RootState) => state.company
   );
@@ -51,9 +48,11 @@ const ProfilePage: FC<ProfilePageProperties> = ({ isCompany }) => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-  useEffect(() => {
-    dispatch(fetchCompanyByName(companyName));
-  }, [dispatch]);
+  if (isCompany) {
+    useEffect(() => {
+      dispatch(fetchCompanyByName(companyName));
+    }, [dispatch]);
+  }
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -102,13 +101,15 @@ const ProfilePage: FC<ProfilePageProperties> = ({ isCompany }) => {
               />
               <ListItemText>
                 <Typography fontSize='1.5rem'>{data.name}</Typography>
-                <Typography
-                  fontSize='0.825rem'
-                  sx={{ opacity: 0.48 }}
-                  marginTop={0.5}
-                >
-                  Company CEO
-                </Typography>
+                {!isCompany && (
+                  <Typography
+                    fontSize='0.825rem'
+                    sx={{ opacity: 0.48 }}
+                    marginTop={0.5}
+                  >
+                    Company CEO
+                  </Typography>
+                )}
               </ListItemText>
             </Stack>
           </Box>
@@ -142,13 +143,9 @@ const ProfilePage: FC<ProfilePageProperties> = ({ isCompany }) => {
         </Paper>
         {PROFILE_TABS.map(({ component: Component }, index) => (
           <CustomTabPanelComponent index={index} value={value} key={index}>
-            <Component />
+            <Component {...data} />
           </CustomTabPanelComponent>
         ))}
-        {companies?.length &&
-          companies.map((userCompany) => (
-            <h1 key={userCompany.id}>{userCompany.company.name}</h1>
-          ))}
       </Box>
     );
   }

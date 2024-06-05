@@ -8,7 +8,7 @@ import { ROUTES_INFO } from '../constants/constants';
 export const PrivateRoute: React.FC = () => {
   const getComponentWithProps = (breadcrumbId, Component) => {
     switch (breadcrumbId) {
-      case 'company-profile':
+      case 'perfil-compania':
         return <Component isCompany={true} />;
       // Add more cases as needed for other breadcrumbIds
       default:

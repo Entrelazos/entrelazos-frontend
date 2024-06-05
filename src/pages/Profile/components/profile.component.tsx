@@ -2,9 +2,7 @@ import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { FC } from 'react';
 import {
   Box,
-  Button,
   Card,
-  CardActions,
   CardContent,
   CardHeader,
   Link,
@@ -19,9 +17,57 @@ import {
   Instagram,
   LinkedIn,
   Twitter,
+  WhatsApp,
 } from '@mui/icons-material';
+import { CompanyItem } from '../../../types/companies/CompaniesTypes';
 
-const ProfileComponent: FC = () => {
+const ProfileComponent: FC<CompanyItem> = ({
+  id,
+  name,
+  type,
+  nit,
+  description,
+  addresses,
+  products,
+  category_name,
+  social,
+}) => {
+  const renderSocial = (key: string, value: string) => {
+    console.log('====================================');
+    console.log(key);
+    console.log('====================================');
+
+    let IconComponent;
+
+    switch (key) {
+      case 'facebook':
+        IconComponent = Facebook;
+        break;
+      case 'instagram':
+        IconComponent = Instagram;
+        break;
+      case 'linkedin':
+        IconComponent = LinkedIn;
+        break;
+      case 'x':
+        IconComponent = Twitter;
+        break;
+      default:
+        return null;
+    }
+
+    return (
+      <Stack direction='row' spacing={1.5} alignItems='center' key={key}>
+        <IconComponent />
+        <Typography variant='subtitle2'>
+          <Link href={`//${value}`} target='_blank'>
+            {value}
+          </Link>
+        </Typography>
+      </Stack>
+    );
+  };
+
   return (
     <Grid2 container>
       <Grid2 xs={12} md={4}>
@@ -37,16 +83,42 @@ const ProfileComponent: FC = () => {
             <CardContent>
               <Box display='flex' flexDirection='column' gap={2}>
                 <Stack direction='row' spacing={1.5}>
-                  <Place></Place>
-                  <Typography>Medellin, Colombia</Typography>
+                  <Typography>{description}</Typography>
                 </Stack>
+                {addresses.map(
+                  (
+                    {
+                      nomenclature,
+                      city: {
+                        name,
+                        region: {
+                          name: regionName,
+                          country: { name: countryName },
+                        },
+                      },
+                    },
+                    index
+                  ) => (
+                    <Stack direction='row' spacing={1.5} key={index}>
+                      <Place />
+                      <Typography>
+                        {nomenclature}, {name}, {regionName}, {countryName}
+                      </Typography>
+                    </Stack>
+                  )
+                )}
+
                 <Stack direction='row' spacing={1.5}>
                   <Email></Email>
-                  <Typography>felipe@gmail.com</Typography>
+                  <Typography>{social.email}</Typography>
                 </Stack>
                 <Stack direction='row' spacing={1.5}>
                   <Smartphone></Smartphone>
-                  <Typography>+573012547896</Typography>
+                  <Typography>{social.phone_number}</Typography>
+                </Stack>
+                <Stack direction='row' spacing={1.5}>
+                  <WhatsApp></WhatsApp>
+                  <Typography>{social.whatsapp}</Typography>
                 </Stack>
               </Box>
             </CardContent>
@@ -61,34 +133,9 @@ const ProfileComponent: FC = () => {
             />
             <CardContent>
               <Box display='flex' flexDirection='column' gap={2}>
-                <Stack direction='row' spacing={1.5} alignItems='center'>
-                  <Facebook />
-                  <Typography variant='subtitle2'>
-                    <Link href=''>https://www.facebook.com/entrelazos</Link>
-                  </Typography>
-                </Stack>
-                <Stack direction='row' spacing={1.5} alignItems='center'>
-                  <Instagram />
-                  <Typography variant='subtitle2'>
-                    <Link href=''>
-                      https://www.instagram.com/caitlyn.kerluke
-                    </Link>
-                  </Typography>
-                </Stack>
-                <Stack direction='row' spacing={1.5} alignItems='center'>
-                  <LinkedIn />
-                  <Typography variant='subtitle2'>
-                    <Link href=''>
-                      https://www.linkedin.com/in/caitlyn.kerluke
-                    </Link>
-                  </Typography>
-                </Stack>
-                <Stack direction='row' spacing={1.5} alignItems='center'>
-                  <Twitter />
-                  <Typography variant='subtitle2'>
-                    <Link href=''>https://www.twitter.com/caitlyn.kerluke</Link>
-                  </Typography>
-                </Stack>
+                {Object.entries(social).map(([key, socialN]) =>
+                  renderSocial(key, socialN)
+                )}
               </Box>
             </CardContent>
           </Card>

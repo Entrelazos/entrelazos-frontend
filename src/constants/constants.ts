@@ -121,9 +121,16 @@ export const ROUTES_INFO = [
   },
   {
     id: 7,
-    breadcrumbId: 'company-profile',
+    breadcrumbId: 'perfil-compania',
     name: 'Perfil de Compañia',
-    path: '/company-profile/:companyName',
+    path: '/empresas/perfil-compania/:companyName',
+    component: ProfilePage,
+  },
+  {
+    id: 8,
+    breadcrumbId: 'perfil-usuario',
+    name: 'Perfil de Usuario',
+    path: '/empresas/perfil-usuario/:userId',
     component: ProfilePage,
   },
 ];

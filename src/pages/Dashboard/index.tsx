@@ -66,7 +66,7 @@ const Dashboard: FC = () => {
     name: company.name,
     description: company.description,
     type: company.type,
-    country: company?.address[0]?.city?.region?.country?.alpha_code || '',
+    country: company?.addresses[0]?.city?.region?.country?.alpha_code || '',
   }));
 
   const [rowCountState, setRowCountState] = useState(meta?.totalItems || 0);

@@ -1,5 +1,6 @@
 import { Address } from '../address/AddressTypes';
 import { ProductItem } from '../products/ProductsTypes';
+import { SocialType } from '../social/SocialTypes';
 
 export interface CompanyItem {
   id: number;
@@ -7,9 +8,10 @@ export interface CompanyItem {
   type: string;
   nit: string;
   description: string;
-  address: Address;
+  addresses: Address[];
   products?: ProductItem[];
   category_name?: string;
+  social: SocialType;
 }
 
 export interface CompanyMeta {

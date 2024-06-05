@@ -85,8 +85,6 @@ export function Signup({ registerUserSucces }) {
     },
     validationSchema,
     (values) => {
-      console.log('Form submitted:', values);
-
       const { cellphone, email, password, identification, name } = values;
 
       dispatch(
