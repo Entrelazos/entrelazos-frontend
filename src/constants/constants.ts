@@ -6,6 +6,13 @@ import {
   Collections,
   Favorite,
   PeopleAlt,
+  Facebook,
+  Instagram,
+  LinkedIn,
+  Phone,
+  WhatsApp,
+  Email,
+  Twitter,
 } from '@mui/icons-material';
 import ProfileComponent from '../pages/Profile/components/profile.component';
 import Dashboard from '../pages/Dashboard';
@@ -132,5 +139,50 @@ export const ROUTES_INFO = [
     name: 'Perfil de Usuario',
     path: '/empresas/perfil-usuario/:userId',
     component: ProfilePage,
+  },
+];
+
+export const SOCIAL_NETWORK_DATA = [
+  {
+    name: 'email',
+    label: 'Email',
+    icon: Email,
+    fieldType: 'email',
+  },
+  {
+    name: 'facebook',
+    label: 'Facebook',
+    icon: Facebook,
+    fieldType: 'text',
+  },
+  {
+    name: 'instagram',
+    label: 'Instagram',
+    icon: Instagram,
+    fieldType: 'text',
+  },
+  {
+    name: 'linkedin',
+    label: 'LinkedIn',
+    icon: LinkedIn,
+    fieldType: 'text',
+  },
+  {
+    name: 'phone_number',
+    label: 'Telefono',
+    icon: Phone,
+    fieldType: 'phone',
+  },
+  {
+    name: 'whatsapp',
+    label: 'WhatsApp',
+    icon: WhatsApp,
+    fieldType: 'text',
+  },
+  {
+    name: 'x',
+    label: 'X',
+    icon: Twitter,
+    fieldType: 'text',
   },
 ];
