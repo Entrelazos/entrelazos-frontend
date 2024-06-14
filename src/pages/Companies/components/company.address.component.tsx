@@ -14,13 +14,7 @@ import CountrySelector from '../../../components/CountrySelect';
 import { fetchRegions, fetchCities } from '../../../store/geo/geoThunks'; // Assuming fetchCities function exists
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../store/store';
-
-export interface AddressData {
-  nomenclature: string;
-  region: string;
-  city: string;
-  country: string;
-}
+import { AddressData } from '../../../types/address/AddressTypes';
 
 interface CompanyAddressComponentProps {
   address: AddressData;

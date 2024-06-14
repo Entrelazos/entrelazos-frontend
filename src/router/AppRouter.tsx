@@ -6,11 +6,11 @@ import { AuthRoutes } from './PublicRoute';
 import { RootState } from '../store/store';
 
 const AppRouter: React.FC = () => {
-  const { auth } = useSelector((state: RootState) => state);
+  const { status } = useSelector((state: RootState) => state.auth);
 
   return (
     <Routes>
-      {auth.status === 'authenticated' ? (
+      {status === 'authenticated' ? (
         <Route path='/*' element={<PrivateRoute />} />
       ) : (
         <Route path='/*' element={<AuthRoutes />} />

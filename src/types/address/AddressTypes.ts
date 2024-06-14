@@ -24,3 +24,10 @@ export interface Address {
   id: number;
   nomenclature: string;
 }
+
+export interface AddressData {
+  nomenclature: string;
+  region: string;
+  city: string;
+  country: string;
+}
