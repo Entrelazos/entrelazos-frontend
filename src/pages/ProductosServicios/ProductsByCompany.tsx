@@ -5,8 +5,13 @@ import { AppDispatch, RootState } from '../../store/store';
 import { fetchProductsByCompanyId } from '../../store/products/productsThunks';
 import { ProductItem } from '../../types/products/ProductsTypes';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { Card, CardContent } from '@mui/material';
+import { Card, CardContent, CardHeader } from '@mui/material';
 import { clearProductsData } from '../../store/products/productsSlice';
+
+interface ProductsByCompanyProps {
+  companyIdParam?: string;
+  isEmbedded?: boolean;
+}
 
 const columns: GridColDef[] = [
   { field: 'name', headerName: 'Nombre', width: 70, flex: 1 },
@@ -17,15 +22,20 @@ const columns: GridColDef[] = [
   { field: 'company', headerName: 'Empresa', flex: 1 },
 ];
 
-const ProductsByCompany: FC = () => {
+const ProductsByCompany: FC<ProductsByCompanyProps> = ({
+  companyIdParam,
+  isEmbedded,
+}) => {
   const { companyId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const { data, loading, error } = useSelector(
     (state: RootState) => state.products
   );
 
+  let selectedCompanyId = companyIdParam ?? companyId;
+
   useEffect(() => {
-    dispatch(fetchProductsByCompanyId(parseInt(companyId)));
+    dispatch(fetchProductsByCompanyId(parseInt(selectedCompanyId)));
     return () => {
       dispatch(clearProductsData());
     };
@@ -56,8 +66,17 @@ const ProductsByCompany: FC = () => {
     );
     return (
       <>
-        <h2>{items[0].name}</h2>
+        {!isEmbedded && <h2>{items[0].name}</h2>}
         <Card raised sx={{ borderRadius: '12px' }}>
+          {isEmbedded && (
+            <CardHeader
+              title='Productos'
+              titleTypographyProps={{
+                fontSize: '1.125rem',
+                fontWeight: '700',
+              }}
+            />
+          )}
           <CardContent>
             <DataGrid
               rows={rows}

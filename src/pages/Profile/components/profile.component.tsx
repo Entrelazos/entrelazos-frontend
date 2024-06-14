@@ -20,6 +20,7 @@ import {
   WhatsApp,
 } from '@mui/icons-material';
 import { CompanyItem } from '../../../types/companies/CompaniesTypes';
+import ProductsByCompany from '../../ProductosServicios/ProductsByCompany';
 
 const ProfileComponent: FC<CompanyItem> = ({
   id,
@@ -33,10 +34,6 @@ const ProfileComponent: FC<CompanyItem> = ({
   social,
 }) => {
   const renderSocial = (key: string, value: string) => {
-    console.log('====================================');
-    console.log(key);
-    console.log('====================================');
-
     let IconComponent;
 
     switch (key) {
@@ -69,8 +66,8 @@ const ProfileComponent: FC<CompanyItem> = ({
   };
 
   return (
-    <Grid2 container>
-      <Grid2 xs={12} md={4}>
+    <Grid2 container spacing={2}>
+      <Grid2 xs={12} md={6}>
         <Stack direction='column' spacing={3}>
           <Card raised sx={{ borderRadius: '12px' }}>
             <CardHeader
@@ -140,6 +137,9 @@ const ProfileComponent: FC<CompanyItem> = ({
             </CardContent>
           </Card>
         </Stack>
+      </Grid2>
+      <Grid2 xs={12} md={6}>
+        <ProductsByCompany isEmbedded companyIdParam={id.toString()} />
       </Grid2>
     </Grid2>
   );
