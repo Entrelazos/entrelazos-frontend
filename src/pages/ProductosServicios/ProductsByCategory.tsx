@@ -5,8 +5,17 @@ import { AppDispatch, RootState } from '../../store/store';
 import { fetchProductsByCategoryId } from '../../store/products/productsThunks';
 import { ProductItem } from '../../types/products/ProductsTypes';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { Card, CardContent } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  IconButton,
+  ImageList,
+  ImageListItem,
+  ImageListItemBar,
+  ListSubheader,
+} from '@mui/material';
 import { clearProductsData } from '../../store/products/productsSlice';
+import { Info } from '@mui/icons-material';
 
 const columns: GridColDef[] = [
   { field: 'name', headerName: 'Nombre', width: 70, flex: 1 },
@@ -43,44 +52,31 @@ const ProductsByCategory: FC = () => {
       meta: { currentPage: 1, itemsPerPage: 10 },
     };
 
-    const rows = items[0].products.map(
-      (product: ProductItem, index: number) => ({
-        id: index + 1,
-        name: product.product_name,
-        price: product.price,
-        isApproved: product.is_approved,
-        isPublic: product.is_public,
-        isService: product.is_service,
-        company: product.company.name,
-      })
-    );
     return (
-      <>
-        <h2>{items[0].category_name}</h2>
-        <Card raised sx={{ borderRadius: '12px' }}>
-          <CardContent>
-            <DataGrid
-              rows={rows ?? []}
-              columns={columns}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    page: meta.currentPage,
-                    pageSize: meta.itemsPerPage,
-                  },
-                },
-              }}
-              pageSizeOptions={[5, 10]}
-              sx={{
-                '& .MuiDataGrid-columnHeaders': {
-                  backgroundColor: 'black',
-                  opacity: 0.5,
-                },
-              }}
+      <ImageList cols={8}>
+        {items[0]?.products?.map((item) => (
+          <ImageListItem key={item.id}>
+            <img
+              srcSet={`https://picsum.photos/id/${item.id + 1}/200/300`}
+              src={`https://picsum.photos/id/${item.id + 1}/200/300`}
+              alt={item.product_name}
+              loading='lazy'
             />
-          </CardContent>
-        </Card>
-      </>
+            <ImageListItemBar
+              title={item.product_name}
+              subtitle={item.company.name}
+              actionIcon={
+                <IconButton
+                  sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
+                  aria-label={`info about ${item.product_name}`}
+                >
+                  <Info />
+                </IconButton>
+              }
+            />
+          </ImageListItem>
+        ))}
+      </ImageList>
     );
   }
 };
