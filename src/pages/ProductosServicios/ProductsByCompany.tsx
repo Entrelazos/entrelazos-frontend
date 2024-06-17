@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { AppDispatch, RootState } from '../../store/store';
@@ -32,75 +32,91 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
     (state: RootState) => state.products
   );
 
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 5,
+  });
+
   let selectedCompanyId = companyIdParam ?? companyId;
 
+  const { items, meta } = data || {
+    items: [],
+    meta: { currentPage: 1, itemsPerPage: 10 },
+  };
+
+  const rows = items[0]?.products?.map(
+    (product: ProductItem, index: number) => ({
+      id: index + 1,
+      name: product.product_name,
+      price: product.price,
+      isApproved: product.is_approved,
+      isPublic: product.is_public,
+      isService: product.is_service,
+      company: items[0].name,
+    })
+  );
+
+  const [rowCountState, setRowCountState] = useState(meta?.totalItems || 0);
   useEffect(() => {
-    dispatch(fetchProductsByCompanyId(parseInt(selectedCompanyId)));
+    setRowCountState((prevRowCountState) =>
+      meta?.totalItems !== undefined ? meta?.totalItems - 1 : prevRowCountState
+    );
+  }, [meta?.totalItems, setRowCountState]);
+
+  useEffect(() => {
+    dispatch(
+      fetchProductsByCompanyId({
+        companyId: parseInt(selectedCompanyId),
+        options: {
+          page: paginationModel.page === 0 ? 1 : paginationModel.page + 1,
+          limit: paginationModel.pageSize,
+        },
+      })
+    );
     return () => {
       dispatch(clearProductsData());
     };
-  }, [dispatch]);
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>{error}</p>;
-  }
-  if (data && data.items[0]?.products?.length) {
-    const { items, meta } = data || {
-      items: [],
-      meta: { currentPage: 1, itemsPerPage: 10 },
-    };
-
-    const rows = items[0].products.map(
-      (product: ProductItem, index: number) => ({
-        id: index + 1,
-        name: product.product_name,
-        price: product.price,
-        isApproved: product.is_approved,
-        isPublic: product.is_public,
-        isService: product.is_service,
-        company: items[0].name,
-      })
-    );
-    return (
-      <>
-        {!isEmbedded && <h2>{items[0].name}</h2>}
-        <Card raised sx={{ borderRadius: '12px' }}>
-          {isEmbedded && (
-            <CardHeader
-              title='Productos'
-              titleTypographyProps={{
-                fontSize: '1.125rem',
-                fontWeight: '700',
-              }}
-            />
-          )}
-          <CardContent>
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    page: meta.currentPage,
-                    pageSize: meta.itemsPerPage,
-                  },
-                },
-              }}
-              pageSizeOptions={[5, 10]}
-              sx={{
-                '& .MuiDataGrid-columnHeaders': {
-                  backgroundColor: 'black',
-                  opacity: 0.5,
-                },
-              }}
-            />
-          </CardContent>
-        </Card>
-      </>
-    );
-  }
+  }, [paginationModel]);
+  const handlePaginationModelChange = (newPaginationModel: {
+    page: number;
+    pageSize: number;
+  }) => {
+    setPaginationModel(newPaginationModel);
+  };
+  return (
+    <>
+      {!isEmbedded && <h2>{items[0]?.name}</h2>}
+      <Card raised sx={{ borderRadius: '12px' }}>
+        {isEmbedded && (
+          <CardHeader
+            title='Productos'
+            titleTypographyProps={{
+              fontSize: '1.125rem',
+              fontWeight: '700',
+            }}
+          />
+        )}
+        <CardContent>
+          <DataGrid
+            rows={rows ?? []}
+            columns={columns}
+            rowCount={rowCountState}
+            loading={loading}
+            paginationMode='server'
+            onPaginationModelChange={handlePaginationModelChange}
+            paginationModel={paginationModel}
+            pageSizeOptions={[5, 10]}
+            sx={{
+              '& .MuiDataGrid-columnHeaders': {
+                backgroundColor: 'black',
+                opacity: 0.5,
+              },
+            }}
+          />
+        </CardContent>
+      </Card>
+    </>
+  );
+  // }
 };
 export default ProductsByCompany;

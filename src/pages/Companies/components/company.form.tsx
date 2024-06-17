@@ -153,7 +153,7 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
             <CardContent>
               <Stack direction='column' spacing={3}>
                 {SOCIAL_NETWORK_DATA.map(
-                  ({ name, label, icon: Icon, fieldType }) =>
+                  ({ name, label, icon: Icon, fieldType, isRequired }) =>
                     name === 'phone_number' || name === 'whatsapp' ? (
                       <MuiTelInput
                         defaultCountry='CO'
@@ -163,6 +163,7 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                         label={label}
                         name={name}
                         autoComplete={name}
+                        required={isRequired}
                         value={social[name] ?? ''}
                         onChange={(value) => {
                           setSocial({
@@ -177,6 +178,7 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                         label={label}
                         type={fieldType}
                         key={name}
+                        required={isRequired}
                         onChange={handleSocialChange}
                         InputProps={{
                           startAdornment: (

@@ -11,7 +11,10 @@ const companyService = axios.create({
     : 'https://pear-clear-sockeye.cyclic.app/companies',
 });
 
-export const getAllCompanies = async (page, pageSize): Promise<any> => {
+export const getAllCompanies = async (
+  page: number,
+  pageSize: number
+): Promise<any> => {
   try {
     const response: AxiosResponse<CompanyApiResponse> =
       await companyService.get('', { params: { page, limit: pageSize } });

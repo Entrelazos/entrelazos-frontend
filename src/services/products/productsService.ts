@@ -11,11 +11,14 @@ const productService = axios.create({
 });
 
 export const getProductsByCompanyId = async (
-  companyId: number
+  companyId: number,
+  options: { page: number; limit: number }
 ): Promise<any> => {
   try {
     const response: AxiosResponse<ProductApiResponse> =
-      await productService.get(`/byCompany/${companyId}`);
+      await productService.get(`/byCompany/${companyId}`, {
+        params: options,
+      });
     return response.data;
   } catch (error) {}
 };

@@ -148,6 +148,7 @@ export const SOCIAL_NETWORK_DATA = [
     label: 'Email',
     icon: Email,
     fieldType: 'email',
+    isRequired: true,
   },
   {
     name: 'facebook',
@@ -172,6 +173,7 @@ export const SOCIAL_NETWORK_DATA = [
     label: 'Telefono',
     icon: Phone,
     fieldType: 'phone',
+    isRequired: true,
   },
   {
     name: 'whatsapp',

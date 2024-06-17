@@ -7,9 +7,17 @@ import { CompanyApiResponse } from '../../types/companies/CompaniesTypes';
 
 export const fetchProductsByCompanyId = createAsyncThunk(
   'products/fetchProductsByCompanyId',
-  async (companyId: number): Promise<CompanyApiResponse> => {
-    const response: CompanyApiResponse =
-      await getProductsByCompanyId(companyId);
+  async ({
+    companyId,
+    options,
+  }: {
+    companyId: number;
+    options: { page: number; limit: number };
+  }): Promise<CompanyApiResponse> => {
+    const response: CompanyApiResponse = await getProductsByCompanyId(
+      companyId,
+      options
+    );
     return response;
   }
 );

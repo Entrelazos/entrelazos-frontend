@@ -23,9 +23,17 @@ const initialState: ProductState = {
 
 export const fetchProductsByCompanyId = createAsyncThunk(
   'products/fetchProductsByCompanyId',
-  async (companyId: number): Promise<ProductApiResponse> => {
-    const response: AxiosResponse<any> =
-      await getProductsByCompanyId(companyId);
+  async ({
+    companyId,
+    options,
+  }: {
+    companyId: number;
+    options: { page: number; limit: number };
+  }): Promise<ProductApiResponse> => {
+    const response: AxiosResponse<any> = await getProductsByCompanyId(
+      companyId,
+      options
+    );
     return response.data;
   }
 );

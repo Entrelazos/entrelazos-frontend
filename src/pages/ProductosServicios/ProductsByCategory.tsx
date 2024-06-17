@@ -60,7 +60,7 @@ const ProductsByCategory: FC = () => {
         <Card raised sx={{ borderRadius: '12px' }}>
           <CardContent>
             <DataGrid
-              rows={rows}
+              rows={rows ?? []}
               columns={columns}
               initialState={{
                 pagination: {
