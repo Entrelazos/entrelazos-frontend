@@ -12,8 +12,8 @@ import {
   Phone,
   WhatsApp,
   Email,
-  Twitter,
 } from '@mui/icons-material';
+import XIcon from '@mui/icons-material/X';
 import ProfileComponent from '../pages/Profile/components/profile.component';
 import Dashboard from '../pages/Dashboard';
 import ProductosServicios from '../pages/ProductosServicios';
@@ -163,6 +163,12 @@ export const SOCIAL_NETWORK_DATA = [
     fieldType: 'text',
   },
   {
+    name: 'x',
+    label: 'X',
+    icon: XIcon,
+    fieldType: 'text',
+  },
+  {
     name: 'linkedin',
     label: 'LinkedIn',
     icon: LinkedIn,
@@ -179,12 +185,6 @@ export const SOCIAL_NETWORK_DATA = [
     name: 'whatsapp',
     label: 'WhatsApp',
     icon: WhatsApp,
-    fieldType: 'text',
-  },
-  {
-    name: 'x',
-    label: 'X',
-    icon: Twitter,
     fieldType: 'text',
   },
 ];

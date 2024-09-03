@@ -16,9 +16,9 @@ import {
   Facebook,
   Instagram,
   LinkedIn,
-  Twitter,
   WhatsApp,
 } from '@mui/icons-material';
+import XIcon from '@mui/icons-material/X';
 import { CompanyItem } from '../../../types/companies/CompaniesTypes';
 import ProductsByCompany from '../../ProductosServicios/ProductsByCompany';
 
@@ -47,7 +47,7 @@ const ProfileComponent: FC<CompanyItem> = ({
         IconComponent = LinkedIn;
         break;
       case 'x':
-        IconComponent = Twitter;
+        IconComponent = XIcon;
         break;
       default:
         return null;
