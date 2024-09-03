@@ -1,10 +1,3 @@
-<h1 align="center">
-  Entrelazos
-</h1>
+## Deployment process
 
-<p align="center">
-  <a href="#-project">Project</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-technologies">Technologies</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-how-to-use">How to Use</a>
-</p>
-
+1. Merge dev branch into origin main to trigger prod deployment
