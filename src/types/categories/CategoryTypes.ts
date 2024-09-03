@@ -1,6 +1,11 @@
+import { ProductItem } from '../products/ProductsTypes';
+
 export interface CategoryItem {
   id: number;
-  name: string;
+  category_name: string;
+  image: string;
+  products?: ProductItem[];
+  name?: string;
 }
 
 export interface CategoryApiResponse {

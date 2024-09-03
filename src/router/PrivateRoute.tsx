@@ -1,23 +1,42 @@
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { Home } from '../pages/Home';
-import { Header } from '../components/Header/index';
-import { Ofertas } from '../pages/Ofertas';
-import ProductosServicios from '../pages/ProductosServicios';
-import CompaniesPage from '../pages/Companies';
+import { Box } from '@mui/material';
+import MiniDrawer, { DrawerHeader } from '../components/Drawer';
+import Breadcrumb from '../components/Breadcrumb';
+import { ROUTES_INFO } from '../constants/constants';
 
 export const PrivateRoute: React.FC = () => {
-  return (
-    <div>
-      <Header />
-      <Routes>
-        <Route path='/' element={<Home />} />
+  const getComponentWithProps = (breadcrumbId, Component) => {
+    switch (breadcrumbId) {
+      case 'perfil-compania':
+        return <Component isCompany={true} />;
+      // Add more cases as needed for other breadcrumbIds
+      default:
+        return <Component />;
+    }
+  };
 
-        <Route path='/ofertas' element={<Ofertas />} />
-        <Route path='/productos-servicios' element={<ProductosServicios />} />
-        <Route path='/empresas' element={<CompaniesPage />} />
-        <Route path='/*' element={<Navigate to='/' />} />
-      </Routes>
-    </div>
+  return (
+    <Box sx={{ display: 'flex' }}>
+      <MiniDrawer />
+      <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
+        <DrawerHeader />
+        <Box marginBottom={3}>
+          <Breadcrumb />
+        </Box>
+        <Routes>
+          {ROUTES_INFO.map(
+            ({ id, path, breadcrumbId, component: Component }) => (
+              <Route
+                path={path}
+                element={getComponentWithProps(breadcrumbId, Component)}
+                key={id}
+              />
+            )
+          )}
+          <Route path='/*' element={<Navigate to='/dashboard' />} />
+        </Routes>
+      </Box>
+    </Box>
   );
 };

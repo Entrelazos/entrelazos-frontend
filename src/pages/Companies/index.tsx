@@ -1,29 +1,25 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '../../store/store';
-import { CompanyApiResponse } from '../../types/companies/CompaniesTypes';
+import { AppDispatch, RootState } from '../../store/store';
 import CardComponent from '../../components/Card';
 import Grid from '@mui/material/Unstable_Grid2';
-import { Container } from '@mui/material';
 import { fetchCompaniesData } from '../../store/companies/companiesThunks';
-
-interface RootState {
-  companies: {
-    data: CompanyApiResponse | null;
-    loading: boolean;
-    error: string | null;
-  };
-}
+import { useNavigate } from 'react-router-dom';
 
 const CompaniesPage: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const { data, loading, error } = useSelector(
     (state: RootState) => state.companies
   );
 
   useEffect(() => {
-    dispatch(fetchCompaniesData());
+    dispatch(fetchCompaniesData({ page: 1, limit: 10 }));
   }, [dispatch]);
+
+  const handleCardClick = (companyName: string) => {
+    navigate(`perfil-compania/${companyName}`);
+  };
 
   const renderContent = () => {
     if (loading) {
@@ -36,19 +32,18 @@ const CompaniesPage: FC = () => {
 
     if (data) {
       return (
-        <Container maxWidth='xl'>
-          <Grid container spacing={2} padding={2}>
-            {data?.items.map((item) => (
-              <Grid key={item.id} xs={12} md={6} lg={4}>
-                <CardComponent
-                  title={item.name}
-                  content={item.description}
-                  image='https://placehold.co/600x400'
-                ></CardComponent>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
+        <Grid container spacing={2} padding={2}>
+          {data?.items.map((item) => (
+            <Grid key={item.id} xs={12} md={6} lg={4}>
+              <CardComponent
+                title={item.name}
+                content={item.description}
+                image='https://placehold.co/600x400'
+                onClick={() => handleCardClick(item.name)}
+              ></CardComponent>
+            </Grid>
+          ))}
+        </Grid>
       );
     }
 

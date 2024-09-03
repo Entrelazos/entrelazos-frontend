@@ -38,6 +38,7 @@ interface CardComponentProps {
   image?: string;
   content?: string;
   expandedContent?: string;
+  onClick?: () => void;
 }
 
 const CardComponent: React.FC<CardComponentProps> = ({
@@ -48,6 +49,7 @@ const CardComponent: React.FC<CardComponentProps> = ({
   image,
   content,
   expandedContent,
+  onClick,
 }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -71,7 +73,13 @@ const CardComponent: React.FC<CardComponentProps> = ({
         title={title}
         subheader={subheader}
       />
-      <CardMedia component='img' height='194' image={image} alt={title} />
+      <CardMedia
+        component='img'
+        height='194'
+        image={image}
+        alt={title}
+        onClick={onClick}
+      />
       <CardContent>
         <Typography variant='body2' color='text.secondary'>
           {content}

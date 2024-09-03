@@ -1,9 +1,17 @@
+import { Address } from '../address/AddressTypes';
+import { ProductItem } from '../products/ProductsTypes';
+import { SocialType } from '../social/SocialTypes';
+
 export interface CompanyItem {
   id: number;
   name: string;
   type: string;
   nit: string;
   description: string;
+  addresses: Address[];
+  products?: ProductItem[];
+  category_name?: string;
+  social: SocialType;
 }
 
 export interface CompanyMeta {

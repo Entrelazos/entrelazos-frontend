@@ -1,139 +1,72 @@
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
-  checkingCredentials,
-  logout,
-  login,
-  setNewAccessToken,
-  authError,
-  registerUserSuccess,
-  registerUserError,
-  clearAuthStateReducer,
-} from '.';
-import {
-  getNewAccessToken as getNewAccessTokenService,
   login as loginService,
   register,
+  getNewAccessToken as getNewAccessTokenService,
 } from '../../services/auth/authService';
 import { Credentials, RegisterData } from '../../types/auth/AuthTypes';
-import { Dispatch } from 'redux';
 
-export const checkingAuthentication = () => {
-  return async (dispatch: Dispatch) => {
-    dispatch(checkingCredentials());
-  };
-};
-
-// export const startGoogleSignIn = () => {
-//   return async (dispatch: Dispatch) => {
-//     dispatch(checkingCredentials());
-
-//     // const result = await singInWithGoogle();
-//     // if ( !result.ok ) return dispatch( logout( result.errorMessage ) );
-
-//     // dispatch(login(result));
-//   };
-// };
-
-// export const startCreatingUserWithEmailPassword = ({
-//   email,
-//   password,
-//   displayName,
-// }: StartCreatingUserWithEmailPasswordParams) => {
-//   return async (dispatch: Dispatch) => {
-//     dispatch(checkingCredentials());
-
-//     // const result = await registerUserWithEmailPassword({ email, password, displayName });
-//     // if ( !result.ok ) return dispatch( logout( result.errorMessage ) );
-
-//     // dispatch(login(result));
-//   };
-// };
-
-export const startLoginWithEmailPassword = ({
-  email,
-  password,
-}: Credentials) => {
-  return async (dispatch: Dispatch) => {
-    dispatch(checkingCredentials());
+export const startLoginWithEmailPassword = createAsyncThunk(
+  'auth/loginWithEmailPassword',
+  async (credentials: Credentials) => {
     try {
       const {
         name,
         email: userEmail,
         id,
+        companies,
         is_active,
         accessToken,
         refreshToken,
-      } = await loginService({
-        email,
-        password,
-      });
-      console.log(is_active);
+      } = await loginService(credentials);
 
-      dispatch(
-        login({
-          uid: id,
-          displayName: name,
-          email: userEmail,
-          accessToken,
-          refreshToken,
-        })
-      );
+      return {
+        uid: id,
+        displayName: name,
+        email: userEmail,
+        companies,
+        accessToken,
+        refreshToken,
+      };
     } catch (error) {
       console.log(error);
-      dispatch(authError());
+      throw error;
     }
-  };
-};
+  }
+);
 
-export const startRegister = ({
-  cellphone,
-  email,
-  password,
-  identification,
-  is_active,
-  name,
-  role_id,
-  city_id,
-}: RegisterData) => {
-  return async (dispatch: Dispatch) => {
-    dispatch(checkingCredentials());
+export const startRegister = createAsyncThunk(
+  'auth/register',
+  async (registerData: RegisterData) => {
     try {
-      await register({
-        cellphone,
-        email,
-        password,
-        identification,
-        is_active,
-        name,
-        role_id,
-        city_id,
-      });
-      dispatch(registerUserSuccess());
+      await register(registerData);
     } catch (error) {
       console.log(error.response.data.message);
-      dispatch(registerUserError(error.message));
+      throw error;
     }
-  };
-};
+  }
+);
 
-export const getNewAccessToken = (refreshToken: string) => {
-  return async (dispatch: Dispatch, getState: () => any) => {
+export const startGetNewAccessToken = createAsyncThunk(
+  'auth/getNewAccessToken',
+  async (refreshToken: string) => {
     try {
       const { accessToken } = await getNewAccessTokenService(refreshToken);
-      dispatch(setNewAccessToken({ accessToken }));
+      return { accessToken };
     } catch (error) {
       console.log(error);
+      throw error;
     }
-  };
-};
+  }
+);
 
-export const clearAuthState = () => {
-  return async (dispatch: Dispatch) => {
-    dispatch(clearAuthStateReducer());
-  };
-};
+export const startClearAuthState = createAsyncThunk(
+  'auth/clearAuthState',
+  async () => {
+    return {};
+  }
+);
 
-export const startLogout = () => {
-  return async (dispatch: Dispatch) => {
-    dispatch(logout());
-  };
-};
+export const startLogout = createAsyncThunk('auth/logout', async () => {
+  return {};
+});

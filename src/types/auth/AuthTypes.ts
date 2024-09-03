@@ -1,3 +1,6 @@
+import { CompanyItem } from '../companies/CompaniesTypes';
+import { UserCompany } from '../user/UserTypes';
+
 export interface Credentials {
   email: string;
   password: string;
@@ -19,6 +22,7 @@ export interface AuthResponse {
   email: string;
   id: string;
   is_active: boolean;
+  companies: UserCompany[];
   accessToken: string;
   refreshToken: string;
 }
@@ -29,9 +33,10 @@ export interface AuthState {
   email: string | null;
   displayName: string | null;
   photoURL?: string | null;
+  companies?: UserCompany[];
   errorMessage?: string | null;
   authError?: boolean | null;
-  registerUserSucces?: boolean | null;
+  registerUserSuccess?: boolean | null;
   accessToken?: string | null;
   refreshToken?: string | null;
 }

@@ -1,5 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
-import { ProductApiResponse } from '../../types/products/ProductsTypes';
+import {
+  ProductApiResponse,
+  ProductItem,
+} from '../../types/products/ProductsTypes';
 
 const productService = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL
@@ -7,10 +10,25 @@ const productService = axios.create({
     : 'https://pear-clear-sockeye.cyclic.app/products',
 });
 
-export const getProductsByCompanyId = async (): Promise<any> => {
+export const getProductsByCompanyId = async (
+  companyId: number,
+  options: { page: number; limit: number }
+): Promise<any> => {
   try {
     const response: AxiosResponse<ProductApiResponse> =
-      await productService.get('');
+      await productService.get(`/byCompany/${companyId}`, {
+        params: options,
+      });
+    return response.data;
+  } catch (error) {}
+};
+
+export const getProductsByCategoryId = async (
+  categoryId: number
+): Promise<any> => {
+  try {
+    const response: AxiosResponse<ProductApiResponse> =
+      await productService.get(`/byCategory/${categoryId}`);
     return response.data;
   } catch (error) {}
 };

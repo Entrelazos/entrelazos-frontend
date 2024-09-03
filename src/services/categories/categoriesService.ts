@@ -1,5 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
-import { CategoryApiResponse } from '../../types/categories/CategoryTypes';
+import {
+  CategoryApiResponse,
+  CategoryItem,
+} from '../../types/categories/CategoryTypes';
 
 const categoriesService = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL
@@ -9,11 +12,10 @@ const categoriesService = axios.create({
 
 export const getCategories = async (): Promise<any> => {
   try {
-    const response: AxiosResponse<CategoryApiResponse> =
+    const response: AxiosResponse<CategoryItem[]> =
       await categoriesService.get('');
     return response.data;
   } catch (error) {}
 };
 
 export default categoriesService;
-

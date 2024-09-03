@@ -1,23 +1,28 @@
-import { ImageListItem, ImageListItemBar, IconButton, Grid } from '@mui/material';
-import { Hero } from './components/Hero';
-import { HomeContainer } from './styles';
+import {
+  ImageListItem,
+  ImageListItemBar,
+  IconButton,
+  ImageList,
+  Box,
+  useMediaQuery,
+} from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
-import { CATEGORIES } from '../../constants/constants';
-import { CategoryApiResponse } from '../../types/categories/CategoryTypes';
-import { AppDispatch } from '../../store/store';
+import { AppDispatch, RootState } from '../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { FC, useEffect } from 'react';
 import { fetchCategories } from '../../store/categories/categoriesThunks';
-
-interface RootState {
-  categories: {
-    data: CategoryApiResponse | null;
-    loading: boolean;
-    error: string | null;
-  };
-}
+import { Link } from 'react-router-dom';
 
 const ProductosServicios: FC = () => {
+  const isExtraSmallScreen = useMediaQuery('(max-width:400px)');
+  const isSmallScreen = useMediaQuery(
+    '(min-width:401px) and (max-width:600px)'
+  );
+  const isMediumScreen = useMediaQuery(
+    '(min-width:601px) and (max-width:960px)'
+  );
+  const isLargeScreen = useMediaQuery('(min-width:961px)');
+
   const dispatch = useDispatch<AppDispatch>();
   const { data, loading, error } = useSelector(
     (state: RootState) => state.categories
@@ -28,7 +33,17 @@ const ProductosServicios: FC = () => {
   }, [dispatch]);
 
   const renderContent = () => {
+    let cols = 5; // Default number of columns
 
+    if (isExtraSmallScreen) {
+      cols = 1;
+    } else if (isSmallScreen) {
+      cols = 2;
+    } else if (isMediumScreen) {
+      cols = 3;
+    } else if (isLargeScreen) {
+      cols = 5;
+    }
     if (loading) {
       return <p>Loading...</p>;
     }
@@ -38,36 +53,33 @@ const ProductosServicios: FC = () => {
     }
     if (data) {
       return (
-        <HomeContainer>
-          <Hero />
-          <Grid container spacing={2} padding={2} gap={4} width='100%' margin={0} justifyContent='center'>
-            {CATEGORIES.map((item) => (
-              <Grid key={item.image} xs={4} sm={3} md={2} lg={1} item>
-                <ImageListItem
-                  key={item.image}
-                >
+        <Box>
+          <ImageList cols={cols} gap={20}>
+            {data.map((item) => (
+              <Link to={`/productos-servicios/${item.id}`} key={item.id}>
+                <ImageListItem>
                   <img
                     srcSet={`/categories-icons/${item.image}`}
                     src={`/categories-icons/${item.image}`}
-                    alt={item.name}
-                    loading="lazy"
+                    alt={item.category_name}
+                    loading='lazy'
                   />
                   <ImageListItemBar
-                    title={item.name}
+                    title={item.category_name}
                     actionIcon={
                       <IconButton
                         sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
-                        aria-label={`info about ${item.name}`}
+                        aria-label={`info about ${item.category_name}`}
                       >
                         <InfoIcon />
                       </IconButton>
                     }
                   />
                 </ImageListItem>
-              </Grid>
+              </Link>
             ))}
-          </Grid>
-        </HomeContainer>
+          </ImageList>
+        </Box>
       );
     }
     return null;

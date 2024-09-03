@@ -1,7 +1,13 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { ProductApiResponse } from '../../types/products/ProductsTypes';
+import {
+  ProductApiResponse,
+  ProductItem,
+} from '../../types/products/ProductsTypes';
 import { AxiosResponse } from 'axios';
-import { getProductsByCompanyId } from '../../services/products/productsService';
+import {
+  getProductsByCategoryId,
+  getProductsByCompanyId,
+} from '../../services/products/productsService';
 
 interface ProductState {
   data: ProductApiResponse | null;
@@ -15,10 +21,28 @@ const initialState: ProductState = {
   error: null,
 };
 
-export const fetchProductsData = createAsyncThunk(
-  'products/fetchProductsData',
-  async (): Promise<ProductApiResponse> => {
-    const response: AxiosResponse<any> = await getProductsByCompanyId();
+export const fetchProductsByCompanyId = createAsyncThunk(
+  'products/fetchProductsByCompanyId',
+  async ({
+    companyId,
+    options,
+  }: {
+    companyId: number;
+    options: { page: number; limit: number };
+  }): Promise<ProductApiResponse> => {
+    const response: AxiosResponse<any> = await getProductsByCompanyId(
+      companyId,
+      options
+    );
+    return response.data;
+  }
+);
+
+export const fetchProductsByCategoryId = createAsyncThunk(
+  'products/fetchProductsByCategoryId',
+  async (categoryId: number): Promise<ProductApiResponse> => {
+    const response: AxiosResponse<any> =
+      await getProductsByCategoryId(categoryId);
     return response.data;
   }
 );
@@ -26,25 +50,48 @@ export const fetchProductsData = createAsyncThunk(
 const productsSlice = createSlice({
   name: 'products',
   initialState,
-  reducers: {},
+  reducers: {
+    clearProductsData: (state) => {
+      state.data = null;
+      state.loading = false;
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchProductsData.pending, (state) => {
+      .addCase(fetchProductsByCompanyId.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        fetchProductsData.fulfilled,
+        fetchProductsByCompanyId.fulfilled,
         (state, action: PayloadAction<ProductApiResponse>) => {
           state.loading = false;
           state.data = action.payload;
         }
       )
-      .addCase(fetchProductsData.rejected, (state, action) => {
+      .addCase(fetchProductsByCompanyId.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'An error occurred';
+      })
+      .addCase(fetchProductsByCategoryId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        fetchProductsByCategoryId.fulfilled,
+        (state, action: PayloadAction<ProductApiResponse>) => {
+          state.loading = false;
+          state.data = action.payload;
+        }
+      )
+      .addCase(fetchProductsByCategoryId.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'An error occurred';
       });
   },
 });
+
+export const { clearProductsData } = productsSlice.actions;
 
 export default productsSlice.reducer;

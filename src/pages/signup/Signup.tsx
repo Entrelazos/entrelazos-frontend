@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 import { MuiTelInput } from 'mui-tel-input';
-import { startRegister, clearAuthState } from '../../store/auth';
+import { startRegister, startClearAuthState } from '../../store/auth';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -19,6 +19,7 @@ import { useFormValidation } from '../../hooks/useFormValidation';
 import * as yup from 'yup';
 import './Signup.scss';
 import { AppDispatch } from '../../store/store';
+import { AuthState } from '../../types/auth/AuthTypes';
 
 function Copyright(props: any) {
   return (
@@ -84,8 +85,6 @@ export function Signup({ registerUserSucces }) {
     },
     validationSchema,
     (values) => {
-      console.log('Form submitted:', values);
-
       const { cellphone, email, password, identification, name } = values;
 
       dispatch(
@@ -104,7 +103,7 @@ export function Signup({ registerUserSucces }) {
   );
 
   const handleGoToLogin = () => {
-    dispatch(clearAuthState());
+    dispatch(startClearAuthState());
     navigate('/', { replace: true });
   };
 
@@ -308,8 +307,8 @@ export function Signup({ registerUserSucces }) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  registerUserSucces: state.auth.registerUserSucces,
+const mapStateToProps = (state: AuthState) => ({
+  registerUserSucces: state.registerUserSuccess,
 });
 
 export default connect(mapStateToProps)(Signup);
