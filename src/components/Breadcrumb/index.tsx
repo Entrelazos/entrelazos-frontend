@@ -31,7 +31,7 @@ const Breadcrumb = () => {
     pathnames.forEach((pathname, index) => {
       if (pathname === 'productos-servicios' && pathnames[index + 1]) {
         const productId = pathnames[index + 1];
-        const category = data?.items.find(
+        const category = data?.items?.find(
           (item) => item.id === parseInt(productId)
         );
         if (category) {
