@@ -15,6 +15,7 @@ export const startLoginWithEmailPassword = createAsyncThunk(
         email: userEmail,
         id,
         companies,
+        roles,
         is_active,
         accessToken,
         refreshToken,
@@ -25,6 +26,7 @@ export const startLoginWithEmailPassword = createAsyncThunk(
         displayName: name,
         email: userEmail,
         companies,
+        roles,
         accessToken,
         refreshToken,
       };
