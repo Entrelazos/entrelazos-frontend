@@ -16,7 +16,7 @@ interface DrawerItemProperties {
   link?: string;
   key?: string;
   children?: Array<ReactElement>;
-  drawerOpen?: Boolean;
+  drawerOpen?: boolean;
 }
 
 const DrawerItem: FC<DrawerItemProperties> = ({
