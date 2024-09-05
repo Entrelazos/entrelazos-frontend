@@ -1,20 +1,28 @@
 import {
-  Mail,
-  Notifications,
-  AccountCircle,
-  More,
+  MailOutline,
+  NotificationsOutlined,
+  AccountCircleOutlined,
   MoreVert,
+  SettingsOutlined,
+  AdminPanelSettingsOutlined,
 } from '@mui/icons-material';
 import {
   Badge,
   Box,
+  Divider,
   IconButton,
+  ListItemIcon,
+  ListItemText,
   Menu,
   MenuItem,
+  MenuList,
   PopoverVirtualElement,
+  Typography,
 } from '@mui/material';
 import { FC, MouseEventHandler } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { hasRole } from '../../../store/auth';
 
 interface ProfileMenuComponent {
   anchorEl:
@@ -39,6 +47,7 @@ export const ProfileMenuComponent: FC<ProfileMenuComponent> = ({
   handleProfileMenuOpen,
   mobileMenuId,
 }) => {
+  const isAdmin = useSelector(hasRole('admin'));
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -54,15 +63,37 @@ export const ProfileMenuComponent: FC<ProfileMenuComponent> = ({
       }}
       open={isMenuOpen}
       onClose={handleMenuClose}
+      style={{ zIndex: 2000 }}
     >
-      <MenuItem
-        component={Link}
-        to='/company-profile/1'
-        onClick={handleMenuClose}
-      >
-        Profile
-      </MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuList>
+        <MenuItem>
+          <ListItemIcon>
+            <AccountCircleOutlined fontSize='small' />
+          </ListItemIcon>
+          <ListItemText>Mi cuenta</ListItemText>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+            ⌘C
+          </Typography>
+        </MenuItem>
+        <MenuItem>
+          <ListItemIcon>
+            <AccountCircleOutlined fontSize='small' />
+          </ListItemIcon>
+          <ListItemText>Perfil</ListItemText>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+            ⌘V
+          </Typography>
+        </MenuItem>
+        <Divider />
+        {isAdmin && (
+          <MenuItem component={Link} to='/admin' onClick={handleMenuClose}>
+            <ListItemIcon>
+              <AdminPanelSettingsOutlined fontSize='small' />
+            </ListItemIcon>
+            <ListItemText>Configuracion</ListItemText>
+          </MenuItem>
+        )}
+      </MenuList>
     </Menu>
   );
 
@@ -71,7 +102,7 @@ export const ProfileMenuComponent: FC<ProfileMenuComponent> = ({
       <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
         <IconButton size='large' aria-label='show 4 new mails' color='inherit'>
           <Badge badgeContent={4} color='error'>
-            <Mail />
+            <MailOutline />
           </Badge>
         </IconButton>
         <IconButton
@@ -80,7 +111,7 @@ export const ProfileMenuComponent: FC<ProfileMenuComponent> = ({
           color='inherit'
         >
           <Badge badgeContent={17} color='error'>
-            <Notifications />
+            <NotificationsOutlined />
           </Badge>
         </IconButton>
         <IconButton
@@ -92,7 +123,7 @@ export const ProfileMenuComponent: FC<ProfileMenuComponent> = ({
           onClick={handleProfileMenuOpen}
           color='inherit'
         >
-          <AccountCircle />
+          <SettingsOutlined />
         </IconButton>
       </Box>
       <Box sx={{ display: { xs: 'flex', md: 'none' } }}>

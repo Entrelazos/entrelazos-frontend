@@ -11,14 +11,22 @@ const AdminPage: FC = () => {
   return (
     isAdmin && (
       <Box>
-        <Box display='flex' marginBottom={4}>
+        <Box display='flex' marginBottom={4} gap={2}>
           <Button
             variant='contained'
             startIcon={<Add />}
             component={Link}
             to='/admin/agregar'
           >
-            Añadir una empresa
+            Inscribir una empresa
+          </Button>
+          <Button
+            variant='contained'
+            startIcon={<Add />}
+            component={Link}
+            to='/admin/agregar'
+          >
+            Crear usuario admin
           </Button>
         </Box>
       </Box>
