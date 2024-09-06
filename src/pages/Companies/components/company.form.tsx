@@ -9,6 +9,12 @@ import {
   Box,
   Stack,
   InputAdornment,
+  Chip,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
 } from '@mui/material';
 import CompanyAddressComponent from './company.address.component';
 import { AddressData } from '../../../types/address/AddressTypes';
@@ -18,6 +24,9 @@ import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { SocialType } from '../../../types/social/SocialTypes';
 import { SOCIAL_NETWORK_DATA } from '../../../constants/constants';
 import { MuiTelInput } from 'mui-tel-input';
+import { CategoryItem } from '../../../types/categories/CategoryTypes';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../store/store';
 
 export interface FormData {
   name: string;
@@ -26,18 +35,35 @@ export interface FormData {
   description: string;
   addresses: AddressData[];
   social: SocialType;
+  categoryIds: number[];
 }
 
 interface CompanyFormProperties {
   handleSubmit: (formData: FormData) => void;
 }
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
+  const { data } = useSelector((state: RootState) => state.categories);
+  // Create a mapping of category IDs to category names
+  const categoryMap = new Map(
+    data.map((category) => [category.id, category.category_name])
+  );
   const [companyInfo, setCompanyInfo] = useState({
     name: '',
     type: '',
     nit: '',
     description: '',
+    categories: [],
   });
   const [addresses, setAddresses] = useState<AddressData[]>([]);
   const [social, setSocial] = useState<SocialType>({
@@ -70,9 +96,17 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const { name, type, nit, description } = companyInfo;
+    const { name, type, nit, description, categories } = companyInfo;
 
-    handleSubmit({ name, type, nit, description, addresses, social });
+    handleSubmit({
+      name,
+      type,
+      nit,
+      description,
+      addresses,
+      social,
+      categoryIds: categories,
+    });
   };
 
   const addAddressComponent = () => {
@@ -126,6 +160,36 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                   value={companyInfo.nit}
                   onChange={handleCompanyInfoChange}
                 />
+                <FormControl>
+                  <InputLabel id='demo-multiple-chip-label'>
+                    Categorias
+                  </InputLabel>
+                  <Select
+                    name='categories'
+                    labelId='demo-multiple-chip-label'
+                    id='demo-multiple-chip'
+                    multiple
+                    value={companyInfo.categories}
+                    onChange={handleCompanyInfoChange}
+                    input={
+                      <OutlinedInput id='select-multiple-chip' label='Chip' />
+                    }
+                    renderValue={(selected) => (
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {selected.map((id) => (
+                          <Chip key={id} label={categoryMap.get(id)} />
+                        ))}
+                      </Box>
+                    )}
+                    MenuProps={MenuProps}
+                  >
+                    {data.map((category) => (
+                      <MenuItem key={category.id} value={category.id}>
+                        {category.category_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Stack>
             </Grid2>
             <Grid2 xs={12} md={6}>

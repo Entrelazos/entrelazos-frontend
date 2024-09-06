@@ -13,10 +13,12 @@ export const fetchCompaniesData = createAsyncThunk(
   async (options: {
     page: number;
     limit: number;
+    categoryIds: number[];
   }): Promise<CompanyApiResponse> => {
     const response: CompanyApiResponse = await getAllCompanies(
       options.page,
-      options.limit
+      options.limit,
+      options.categoryIds
     );
     return response;
   }

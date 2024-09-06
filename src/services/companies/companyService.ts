@@ -13,11 +13,14 @@ const companyService = axios.create({
 
 export const getAllCompanies = async (
   page: number,
-  pageSize: number
+  pageSize: number,
+  categoryIds: number[]
 ): Promise<any> => {
   try {
     const response: AxiosResponse<CompanyApiResponse> =
-      await companyService.get('', { params: { page, limit: pageSize } });
+      await companyService.get('', {
+        params: { page, limit: pageSize, categoryIds },
+      });
     return response.data;
   } catch (error) {
     console.log(error);
