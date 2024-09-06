@@ -13,8 +13,7 @@ export interface RegisterData {
   identification: string;
   is_active: boolean;
   name: string;
-  role_id: number;
-  city_id: number;
+  roleIds: number[];
 }
 
 export interface AuthResponse {
@@ -23,7 +22,7 @@ export interface AuthResponse {
   id: string;
   is_active: boolean;
   companies: UserCompany[];
-  roles: [];
+  roles: number[];
   accessToken: string;
   refreshToken: string;
 }
@@ -35,7 +34,7 @@ export interface AuthState {
   displayName: string | null;
   photoURL?: string | null;
   companies?: UserCompany[];
-  roles?: [];
+  roles?: number[];
   errorMessage?: string | null;
   authError?: boolean | null;
   registerUserSuccess?: boolean | null;

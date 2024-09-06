@@ -89,14 +89,13 @@ export function Signup({ registerUserSucces }) {
 
       dispatch(
         startRegister({
+          name,
           cellphone,
           email,
           password,
           identification,
           is_active: true,
-          name,
-          role_id: 1,
-          city_id: 1,
+          roleIds: [2],
         })
       );
     }
