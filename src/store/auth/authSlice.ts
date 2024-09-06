@@ -7,6 +7,7 @@ import {
   startClearAuthState,
   startLogout,
 } from './thunks';
+import { RootState } from '../store';
 
 interface LoginPayload {
   payload: AuthState;
@@ -31,6 +32,7 @@ const initialState: AuthState = {
   displayName: null,
   photoURL: null,
   companies: [],
+  roles: [],
   errorMessage: null,
   authError: null,
   registerUserSuccess: null,
@@ -50,6 +52,7 @@ export const authSlice = createSlice({
         state.displayName = action.payload.displayName;
         state.email = action.payload.email;
         state.companies = action.payload.companies;
+        state.roles = action.payload.roles;
         state.accessToken = action.payload.accessToken;
         state.refreshToken = action.payload.refreshToken;
         state.errorMessage = null;
@@ -92,5 +95,8 @@ export const authSlice = createSlice({
       });
   },
 });
+
+export const hasRole = (role: any) => (state: RootState) =>
+  state.auth.roles.some((findRole: any) => findRole.role_name === role);
 
 export default authSlice.reducer;

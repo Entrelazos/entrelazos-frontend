@@ -22,6 +22,7 @@ import CompaniesPage from '../pages/Companies';
 import AddCompanies from '../pages/Companies/add/companies.add';
 import ProfilePage from '../pages/Profile/profile.page';
 import ProductsByCompany from '../pages/ProductosServicios/ProductsByCompany';
+import AdminPage from '../pages/Admin/admin.page';
 
 export const CATEGORIES = [
   { name: 'Otros', image: 'otros.png' },
@@ -120,13 +121,6 @@ export const ROUTES_INFO = [
     component: ProductsByCompany,
   },
   {
-    id: 6,
-    breadcrumbId: 'agregar',
-    name: 'Agregar',
-    path: '/empresas/agregar',
-    component: AddCompanies,
-  },
-  {
     id: 7,
     breadcrumbId: 'perfil-compania',
     name: 'Perfil de Compañia',
@@ -139,6 +133,23 @@ export const ROUTES_INFO = [
     name: 'Perfil de Usuario',
     path: '/empresas/perfil-usuario/:userId',
     component: ProfilePage,
+  },
+];
+
+export const ADMIN_ROUTES_INFO = [
+  {
+    id: 9,
+    breadcrumbId: 'admin',
+    name: 'Administracion',
+    path: '/',
+    component: AdminPage,
+  },
+  {
+    id: 6,
+    breadcrumbId: 'agregar',
+    name: 'Agregar',
+    path: '/agregar',
+    component: AddCompanies,
   },
 ];
 

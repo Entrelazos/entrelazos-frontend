@@ -91,7 +91,7 @@ const Drawer = styled(MuiDrawer, {
 
 interface DrawerProperties<T> {
   items?: Array<T>;
-  link?: String;
+  link?: string;
 }
 
 const MiniDrawer: FC<DrawerProperties<any>> = ({ items, link }) => {

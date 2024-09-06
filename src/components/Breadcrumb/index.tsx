@@ -15,7 +15,7 @@ const Breadcrumb = () => {
 
   useEffect(() => {
     const pathnames = location.pathname.split('/').filter((x) => x);
-    let updatedBreadcrumbs = [];
+    const updatedBreadcrumbs = [];
 
     if (pathnames.includes('login')) {
       setBreadcrumbs(updatedBreadcrumbs);

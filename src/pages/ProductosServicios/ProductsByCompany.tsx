@@ -37,7 +37,7 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
     pageSize: 5,
   });
 
-  let selectedCompanyId = companyIdParam ?? companyId;
+  const selectedCompanyId = companyIdParam ?? companyId;
 
   const { items, meta } = data || {
     items: [],

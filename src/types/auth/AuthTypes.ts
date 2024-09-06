@@ -23,6 +23,7 @@ export interface AuthResponse {
   id: string;
   is_active: boolean;
   companies: UserCompany[];
+  roles: [];
   accessToken: string;
   refreshToken: string;
 }
@@ -34,6 +35,7 @@ export interface AuthState {
   displayName: string | null;
   photoURL?: string | null;
   companies?: UserCompany[];
+  roles?: [];
   errorMessage?: string | null;
   authError?: boolean | null;
   registerUserSuccess?: boolean | null;
