@@ -4,21 +4,12 @@ import {
   CompanyItem,
 } from '../../types/companies/CompaniesTypes';
 import { FormData } from '../../pages/Companies/components/company.form';
-import {
-  requestInterceptor,
-  requestErrorInterceptor,
-} from '../interceptors/authInterceptors';
 
 const companyService = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL
     ? `${import.meta.env.VITE_BASE_URL}/companies`
     : 'https://pear-clear-sockeye.cyclic.app/companies',
 });
-
-companyService.interceptors.request.use(
-  requestInterceptor,
-  requestErrorInterceptor
-);
 
 export const getAllCompanies = async (
   page: number,

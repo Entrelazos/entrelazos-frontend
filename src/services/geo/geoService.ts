@@ -1,20 +1,11 @@
 import axios, { AxiosResponse } from 'axios';
 import { CityType, CountryType, RegionType } from '../../types/geo/geoTypes';
-import {
-  requestInterceptor,
-  requestErrorInterceptor,
-} from '../interceptors/authInterceptors';
 
 const geoService = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL
     ? `${import.meta.env.VITE_BASE_URL}/geo`
     : 'https://pear-clear-sockeye.cyclic.app/products',
 });
-
-geoService.interceptors.request.use(
-  requestInterceptor,
-  requestErrorInterceptor
-);
 
 export const getCountries = async (): Promise<CountryType[]> => {
   try {
