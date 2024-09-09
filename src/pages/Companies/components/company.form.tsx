@@ -15,6 +15,7 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
+  Typography,
 } from '@mui/material';
 import CompanyAddressComponent from './company.address.component';
 import { AddressData } from '../../../types/address/AddressTypes';
@@ -30,12 +31,12 @@ import { fetchCategories } from '../../../store/categories/categoriesThunks';
 
 export interface FormData {
   name: string;
-  type: string;
   nit: string;
   description: string;
   addresses: AddressData[];
   social: SocialType;
   categoryIds: number[];
+  userIds: number[];
 }
 
 interface CompanyFormProperties {
@@ -55,6 +56,7 @@ const MenuProps = {
 const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { data } = useSelector((state: RootState) => state.categories);
+  const { uid } = useSelector((state: RootState) => state.auth);
   useEffect(() => {
     if (!data) {
       dispatch(fetchCategories());
@@ -66,7 +68,6 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
     new Map(data.map((category) => [category.id, category.category_name]));
   const [companyInfo, setCompanyInfo] = useState({
     name: '',
-    type: '',
     nit: '',
     description: '',
     categories: [],
@@ -88,8 +89,14 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
     setCompanyInfo({ ...companyInfo, [event.target.name]: event.target.value });
   };
 
-  const handleSocialChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSocial({ ...social, [event.target.name]: event.target.value });
+  const handleSocialChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    basePath: string
+  ) => {
+    setSocial({
+      ...social,
+      [event.target.name]: `${basePath}${event.target.value}`,
+    });
   };
 
   const handleAddressChange = (index: number, newData: AddressData) => {
@@ -102,16 +109,16 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const { name, type, nit, description, categories } = companyInfo;
+    const { name, nit, description, categories } = companyInfo;
 
     handleSubmit({
       name,
-      type,
       nit,
       description,
       addresses,
       social,
       categoryIds: categories,
+      userIds: [parseInt(uid)],
     });
   };
 
@@ -148,14 +155,6 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                   variant='outlined'
                   fullWidth
                   value={companyInfo.name}
-                  onChange={handleCompanyInfoChange}
-                />
-                <TextField
-                  name='type'
-                  label='Tipo'
-                  variant='outlined'
-                  fullWidth
-                  value={companyInfo.type}
                   onChange={handleCompanyInfoChange}
                 />
                 <TextField
@@ -227,7 +226,14 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
             <CardContent>
               <Stack direction='column' spacing={3}>
                 {SOCIAL_NETWORK_DATA.map(
-                  ({ name, label, icon: Icon, fieldType, isRequired }) =>
+                  ({
+                    name,
+                    label,
+                    icon: Icon,
+                    fieldType,
+                    basePath,
+                    isRequired,
+                  }) =>
                     name === 'phone_number' || name === 'whatsapp' ? (
                       <MuiTelInput
                         defaultCountry='CO'
@@ -253,11 +259,20 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                         type={fieldType}
                         key={name}
                         required={isRequired}
-                        onChange={handleSocialChange}
+                        onChange={(event) =>
+                          handleSocialChange(event, basePath)
+                        }
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position='start'>
                               <Icon />
+                              <Typography
+                                variant='body2'
+                                color='textSecondary'
+                                style={{ marginLeft: 8 }} // Adjust spacing as needed
+                              >
+                                {basePath}
+                              </Typography>
                             </InputAdornment>
                           ),
                         }}
