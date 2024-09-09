@@ -81,6 +81,7 @@ const Dashboard: FC = () => {
       fetchCompaniesData({
         page: paginationModel.page === 0 ? 1 : paginationModel.page + 1,
         limit: paginationModel.pageSize,
+        categoryIds: [],
       })
     );
   }, [paginationModel]);

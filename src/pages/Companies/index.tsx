@@ -5,7 +5,9 @@ import CardComponent from '../../components/Card';
 import Grid from '@mui/material/Unstable_Grid2';
 import { fetchCompaniesData } from '../../store/companies/companiesThunks';
 import { useNavigate } from 'react-router-dom';
-import ChipsFilter from '../../components/ChipsFilter/chips-filter.component';
+import ChipsFilter, {
+  FilteredCategoryItem,
+} from '../../components/ChipsFilter/chips-filter.component';
 import { fetchCategories } from '../../store/categories/categoriesThunks';
 
 const CompaniesPage: FC = () => {
@@ -13,8 +15,18 @@ const CompaniesPage: FC = () => {
 
   const onFilter = (categoryId: number) => {
     if (!selectedCategories.includes(categoryId)) {
+      // Add categoryId to selectedCategories
       setSelectedCategories([...selectedCategories, categoryId]);
+    } else {
+      // Remove categoryId from selectedCategories
+      const updatedCategories = selectedCategories.filter(
+        (id) => id !== categoryId
+      );
+      setSelectedCategories(updatedCategories);
     }
+  };
+  const onClear = () => {
+    setSelectedCategories([]);
   };
 
   const dispatch = useDispatch<AppDispatch>();
@@ -23,13 +35,15 @@ const CompaniesPage: FC = () => {
     (state: RootState) => state.companies
   );
 
-  useEffect(() => {
-    dispatch(fetchCategories());
-  }, [dispatch]);
-
   const { data: categories } = useSelector(
     (state: RootState) => state.categories
   );
+
+  useEffect(() => {
+    if (!categories) {
+      dispatch(fetchCategories());
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(
@@ -46,18 +60,14 @@ const CompaniesPage: FC = () => {
   };
 
   const renderContent = () => {
-    if (loading) {
-      return <p>Loading...</p>;
-    }
-
-    if (error) {
-      return <p>{error}</p>;
-    }
-
-    if (data) {
+    if (data && categories) {
       return (
         <Grid container spacing={2} padding={2}>
-          <ChipsFilter categories={categories} onFilter={onFilter} />
+          <ChipsFilter
+            categories={categories as FilteredCategoryItem[]}
+            onFilter={onFilter}
+            onClear={onClear}
+          />
           {data?.items.map((item) => (
             <Grid key={item.id} xs={12} md={6} lg={4}>
               <CardComponent

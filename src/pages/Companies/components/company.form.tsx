@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import {
   Grid,
   TextField,
@@ -24,9 +24,9 @@ import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { SocialType } from '../../../types/social/SocialTypes';
 import { SOCIAL_NETWORK_DATA } from '../../../constants/constants';
 import { MuiTelInput } from 'mui-tel-input';
-import { CategoryItem } from '../../../types/categories/CategoryTypes';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../store/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../../store/store';
+import { fetchCategories } from '../../../store/categories/categoriesThunks';
 
 export interface FormData {
   name: string;
@@ -53,11 +53,17 @@ const MenuProps = {
 };
 
 const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
+  const dispatch = useDispatch<AppDispatch>();
   const { data } = useSelector((state: RootState) => state.categories);
+  useEffect(() => {
+    if (!data) {
+      dispatch(fetchCategories());
+    }
+  }, [dispatch]);
   // Create a mapping of category IDs to category names
-  const categoryMap = new Map(
-    data.map((category) => [category.id, category.category_name])
-  );
+  const categoryMap =
+    data &&
+    new Map(data.map((category) => [category.id, category.category_name]));
   const [companyInfo, setCompanyInfo] = useState({
     name: '',
     type: '',
@@ -160,36 +166,40 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                   value={companyInfo.nit}
                   onChange={handleCompanyInfoChange}
                 />
-                <FormControl>
-                  <InputLabel id='demo-multiple-chip-label'>
-                    Categorias
-                  </InputLabel>
-                  <Select
-                    name='categories'
-                    labelId='demo-multiple-chip-label'
-                    id='demo-multiple-chip'
-                    multiple
-                    value={companyInfo.categories}
-                    onChange={handleCompanyInfoChange}
-                    input={
-                      <OutlinedInput id='select-multiple-chip' label='Chip' />
-                    }
-                    renderValue={(selected) => (
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {selected.map((id) => (
-                          <Chip key={id} label={categoryMap.get(id)} />
-                        ))}
-                      </Box>
-                    )}
-                    MenuProps={MenuProps}
-                  >
-                    {data.map((category) => (
-                      <MenuItem key={category.id} value={category.id}>
-                        {category.category_name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                {data && (
+                  <FormControl>
+                    <InputLabel id='demo-multiple-chip-label'>
+                      Categorias
+                    </InputLabel>
+                    <Select
+                      name='categories'
+                      labelId='demo-multiple-chip-label'
+                      id='demo-multiple-chip'
+                      multiple
+                      value={companyInfo.categories}
+                      onChange={handleCompanyInfoChange}
+                      input={
+                        <OutlinedInput id='select-multiple-chip' label='Chip' />
+                      }
+                      renderValue={(selected) => (
+                        <Box
+                          sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}
+                        >
+                          {selected.map((id) => (
+                            <Chip key={id} label={categoryMap.get(id)} />
+                          ))}
+                        </Box>
+                      )}
+                      MenuProps={MenuProps}
+                    >
+                      {data.map((category) => (
+                        <MenuItem key={category.id} value={category.id}>
+                          {category.category_name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )}
               </Stack>
             </Grid2>
             <Grid2 xs={12} md={6}>
