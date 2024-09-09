@@ -3,12 +3,13 @@ import { store } from '../../store/store';
 import { decodeJwt, isTokenExpired } from '../../utils/jsonUtils';
 import { startGetNewAccessToken } from '../../store/auth';
 const requestInterceptor = async (config: InternalAxiosRequestConfig) => {
+  debugger;
   const authInfo = store.getState().auth;
   const { accessToken, refreshToken } = authInfo;
   if (accessToken) {
     let newAccessToken = accessToken;
     const jwtData = decodeJwt(accessToken);
-    const { exp } = jwtData;
+    const { exp } = jwtData.payload;
     if (isTokenExpired(exp)) {
       await store.dispatch(startGetNewAccessToken(refreshToken));
       newAccessToken = store.getState().auth.accessToken;
