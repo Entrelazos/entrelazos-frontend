@@ -107,7 +107,9 @@ const ProfileComponent: FC<CompanyItem> = ({
 
                 <Stack direction='row' spacing={1.5}>
                   <Email></Email>
-                  <Typography>{social.email}</Typography>
+                  <Link href={`mailto:${social.email}`} underline='none'>
+                    <Typography>{social.email}</Typography>
+                  </Link>
                 </Stack>
                 <Stack direction='row' spacing={1.5}>
                   <Smartphone></Smartphone>
