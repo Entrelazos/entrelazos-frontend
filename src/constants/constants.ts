@@ -15,7 +15,7 @@ import {
 } from '@mui/icons-material';
 import XIcon from '@mui/icons-material/X';
 import ProfileComponent from '../pages/Profile/components/profile.component';
-import Dashboard from '../pages/Dashboard';
+import Dashboard from '../pages/Dashboard/dashboard.page';
 import ProductosServicios from '../pages/ProductosServicios';
 import ProductsByCategory from '../pages/ProductosServicios/ProductsByCategory';
 import CompaniesPage from '../pages/Companies';
@@ -64,24 +64,24 @@ export const PROFILE_TABS = [
     icon: Badge,
     component: ProfileComponent,
   },
-  {
-    id: 2,
-    label: 'Favoritos',
-    icon: Favorite,
-    component: ProfileComponent,
-  },
-  {
-    id: 3,
-    label: 'Contactos',
-    icon: PeopleAlt,
-    component: ProfileComponent,
-  },
-  {
-    id: 4,
-    label: 'Galeria',
-    icon: Collections,
-    component: ProfileComponent,
-  },
+  // {
+  //   id: 2,
+  //   label: 'Favoritos',
+  //   icon: Favorite,
+  //   component: ProfileComponent,
+  // },
+  // {
+  //   id: 3,
+  //   label: 'Contactos',
+  //   icon: PeopleAlt,
+  //   component: ProfileComponent,
+  // },
+  // {
+  //   id: 4,
+  //   label: 'Galeria',
+  //   icon: Collections,
+  //   component: ProfileComponent,
+  // },
 ];
 
 export const ROUTES_INFO = [

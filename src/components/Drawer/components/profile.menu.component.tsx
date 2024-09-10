@@ -101,7 +101,7 @@ export const ProfileMenuComponent: FC<ProfileMenuComponent> = ({
     <>
       <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
         <IconButton size='large' aria-label='show 4 new mails' color='inherit'>
-          <Badge badgeContent={4} color='error'>
+          <Badge color='error'>
             <MailOutline />
           </Badge>
         </IconButton>
@@ -110,7 +110,7 @@ export const ProfileMenuComponent: FC<ProfileMenuComponent> = ({
           aria-label='show 17 new notifications'
           color='inherit'
         >
-          <Badge badgeContent={17} color='error'>
+          <Badge color='error'>
             <NotificationsOutlined />
           </Badge>
         </IconButton>

@@ -3,10 +3,15 @@ import {
   CompanyApiResponse,
   CompanyItem,
 } from '../../types/companies/CompaniesTypes';
-import { fetchCompaniesData, fetchCompanyByName } from './companiesThunks';
+import {
+  fetchCompaniesData,
+  fetchCompanyByName,
+  fetchUserCompanies,
+} from './companiesThunks';
 
 interface CompaniesState {
-  data: CompanyApiResponse | null;
+  companiesData: CompanyApiResponse | null;
+  userCompaniesData: CompanyApiResponse | null;
   loading: boolean;
   error: string | null;
 }
@@ -18,7 +23,8 @@ interface CompanyState {
 }
 
 const initialState: CompaniesState = {
-  data: null,
+  companiesData: null,
+  userCompaniesData: null,
   loading: false,
   error: null,
 };
@@ -43,10 +49,25 @@ export const companiesSlice = createSlice({
         fetchCompaniesData.fulfilled,
         (state, action: PayloadAction<CompanyApiResponse>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.companiesData = action.payload;
         }
       )
       .addCase(fetchCompaniesData.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'An error occurred';
+      })
+      .addCase(fetchUserCompanies.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        fetchUserCompanies.fulfilled,
+        (state, action: PayloadAction<CompanyApiResponse>) => {
+          state.loading = false;
+          state.userCompaniesData = action.payload;
+        }
+      )
+      .addCase(fetchUserCompanies.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'An error occurred';
       });

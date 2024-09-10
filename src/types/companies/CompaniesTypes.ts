@@ -1,4 +1,5 @@
 import { Address } from '../address/AddressTypes';
+import { CategoryItem } from '../categories/CategoryTypes';
 import { ProductItem } from '../products/ProductsTypes';
 import { SocialType } from '../social/SocialTypes';
 
@@ -10,7 +11,7 @@ export interface CompanyItem {
   description: string;
   addresses: Address[];
   products?: ProductItem[];
-  category_name?: string;
+  categories?: CategoryItem[];
   social: SocialType;
 }
 

@@ -31,7 +31,7 @@ const CompaniesPage: FC = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { data, loading, error } = useSelector(
+  const { companiesData, loading, error } = useSelector(
     (state: RootState) => state.companies
   );
 
@@ -60,7 +60,7 @@ const CompaniesPage: FC = () => {
   };
 
   const renderContent = () => {
-    if (data && categories) {
+    if (companiesData && categories) {
       return (
         <Grid container spacing={2} padding={2}>
           <ChipsFilter
@@ -68,7 +68,7 @@ const CompaniesPage: FC = () => {
             onFilter={onFilter}
             onClear={onClear}
           />
-          {data?.items.map((item) => (
+          {companiesData?.items.map((item) => (
             <Grid key={item.id} xs={12} md={6} lg={4}>
               <CardComponent
                 title={item.name}
