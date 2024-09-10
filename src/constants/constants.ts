@@ -18,7 +18,7 @@ import ProfileComponent from '../pages/Profile/components/profile.component';
 import Dashboard from '../pages/Dashboard/dashboard.page';
 import ProductosServicios from '../pages/ProductosServicios';
 import ProductsByCategory from '../pages/ProductosServicios/ProductsByCategory';
-import CompaniesPage from '../pages/Companies';
+import CompaniesPage from '../pages/Companies/companies.page';
 import AddCompanies from '../pages/Companies/add/companies.add';
 import ProfilePage from '../pages/Profile/profile.page';
 import ProductsByCompany from '../pages/ProductosServicios/ProductsByCompany';

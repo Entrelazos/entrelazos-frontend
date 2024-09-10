@@ -12,6 +12,7 @@ import { fetchCategories } from '../../store/categories/categoriesThunks';
 
 const CompaniesPage: FC = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const { uid } = useSelector((state: RootState) => state.auth);
 
   const onFilter = (categoryId: number) => {
     if (!selectedCategories.includes(categoryId)) {

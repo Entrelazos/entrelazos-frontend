@@ -17,6 +17,7 @@ import { AppDispatch, RootState } from '../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { fetchCompanyByName } from '../../store/companies/companiesThunks';
+import { isMyCompany } from '../../store/companies/companiesSlice';
 
 interface ProfilePageProperties {
   isCompany: boolean;
@@ -38,6 +39,10 @@ function a11yProps(index: number) {
 
 const ProfilePage: FC<ProfilePageProperties> = ({ isCompany }) => {
   const { companyName } = useParams();
+  const isMine = useSelector(isMyCompany());
+  console.log('====================================');
+  console.log(isMine);
+  console.log('====================================');
   const dispatch = useDispatch<AppDispatch>();
   const [value, setValue] = useState(0);
 

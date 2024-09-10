@@ -8,6 +8,7 @@ import {
   fetchCompanyByName,
   fetchUserCompanies,
 } from './companiesThunks';
+import { RootState } from '../store';
 
 interface CompaniesState {
   companiesData: CompanyApiResponse | null;
@@ -97,3 +98,8 @@ export const companySlice = createSlice({
       });
   },
 });
+
+export const isMyCompany = () => (state: RootState) =>
+  state.company?.data?.users?.some(
+    (userCompany) => userCompany.user.id === parseInt(state.auth.uid)
+  );
