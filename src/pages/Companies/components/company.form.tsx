@@ -153,6 +153,7 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                   name='name'
                   label='Nombre'
                   variant='outlined'
+                  required
                   fullWidth
                   value={companyInfo.name}
                   onChange={handleCompanyInfoChange}
@@ -161,6 +162,7 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                   name='nit'
                   label='NIT'
                   variant='outlined'
+                  required
                   fullWidth
                   value={companyInfo.nit}
                   onChange={handleCompanyInfoChange}
@@ -174,6 +176,7 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                       name='categories'
                       labelId='demo-multiple-chip-label'
                       id='demo-multiple-chip'
+                      required
                       multiple
                       value={companyInfo.categories}
                       onChange={handleCompanyInfoChange}
