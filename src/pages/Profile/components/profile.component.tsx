@@ -25,12 +25,10 @@ import ProductsByCompany from '../../ProductosServicios/ProductsByCompany';
 const ProfileComponent: FC<CompanyItem> = ({
   id,
   name,
-  type,
   nit,
   description,
   addresses,
   products,
-  category_name,
   social,
 }) => {
   const renderSocial = (key: string, value: string) => {

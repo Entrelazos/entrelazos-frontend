@@ -114,9 +114,9 @@ const Dashboard: FC = () => {
           variant='contained'
           startIcon={<Add />}
           component={Link}
-          to='/empresas/agregar'
+          to='/inscribir-empresas'
         >
-          Añadir una empresa
+          Inscribir una empresa
         </Button>
       </Box>
       <Grid2 container spacing={3}>

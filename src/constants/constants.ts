@@ -121,6 +121,13 @@ export const ROUTES_INFO = [
     component: ProductsByCompany,
   },
   {
+    id: 6,
+    breadcrumbId: 'inscribir-empresas',
+    name: 'Inscribir Empresas',
+    path: '/inscribir-empresas',
+    component: AddCompanies,
+  },
+  {
     id: 7,
     breadcrumbId: 'perfil-compania',
     name: 'Perfil de Compañia',
@@ -143,13 +150,6 @@ export const ADMIN_ROUTES_INFO = [
     name: 'Administracion',
     path: '/',
     component: AdminPage,
-  },
-  {
-    id: 6,
-    breadcrumbId: 'agregar',
-    name: 'Agregar',
-    path: '/agregar',
-    component: AddCompanies,
   },
 ];
 

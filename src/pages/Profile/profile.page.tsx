@@ -18,6 +18,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { fetchCompanyByName } from '../../store/companies/companiesThunks';
 import { isMyCompany } from '../../store/companies/companiesSlice';
+import ImageUpload from '../../components/ImageUpload/ImageUpload';
+import {
+  getFileByEntityIdAndType,
+  uploadFile,
+} from '../../services/upload/uploadService';
 
 interface ProfilePageProperties {
   isCompany: boolean;
@@ -39,12 +44,11 @@ function a11yProps(index: number) {
 
 const ProfilePage: FC<ProfilePageProperties> = ({ isCompany }) => {
   const { companyName } = useParams();
-  const isMine = useSelector(isMyCompany());
-  console.log('====================================');
-  console.log(isMine);
-  console.log('====================================');
+  const compayIsMine = useSelector(isMyCompany());
   const dispatch = useDispatch<AppDispatch>();
   const [value, setValue] = useState(0);
+  const [imageData, setImageData] = useState();
+  const userOrCompany = isCompany ? 'company' : 'user';
 
   const { data, loading, error } = useSelector(
     (state: RootState) => state.company
@@ -53,6 +57,29 @@ const ProfilePage: FC<ProfilePageProperties> = ({ isCompany }) => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  const handleImageUpload = async (file: File) => {
+    const imageAlt = isCompany
+      ? 'Imagen de perfil de compañia'
+      : 'Imagen de perfil de usuario';
+    return await uploadFile({
+      altText: imageAlt,
+      description: imageAlt,
+      file,
+      entityId: data.id,
+      entityType: isCompany ? 'company' : 'user',
+      imageType: isCompany ? 'company_profile' : 'user_profile',
+    });
+  };
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      const avatarImg = await getFileByEntityIdAndType(data?.id, userOrCompany);
+      setImageData(avatarImg);
+    };
+    fetchImage();
+  }, [data]);
+
   if (isCompany) {
     useEffect(() => {
       dispatch(fetchCompanyByName(companyName));
@@ -99,11 +126,20 @@ const ProfilePage: FC<ProfilePageProperties> = ({ isCompany }) => {
               alignItems='center'
               gap={4}
             >
-              <Avatar
-                alt='Felipe Marin'
-                src='/src/assets/avatar_25.jpg'
-                sx={{ width: '128px', height: '128px' }}
-              />
+              <Box>
+                {compayIsMine ? (
+                  <ImageUpload
+                    imageSrc='/src/assets/avatar_25.jpg'
+                    handleImageUpload={handleImageUpload}
+                  />
+                ) : (
+                  <Avatar
+                    alt='Felipe Marin'
+                    src='/src/assets/avatar_25.jpg'
+                    sx={{ width: '128px', height: '128px' }}
+                  />
+                )}
+              </Box>
               <ListItemText>
                 <Typography fontSize='1.5rem'>{data.name}</Typography>
                 {!isCompany && (
