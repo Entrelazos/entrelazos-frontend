@@ -1,8 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import {
-  CategoryApiResponse,
-  CategoryItem,
-} from '../../types/categories/CategoryTypes';
+import { CategoryItem } from '../../types/categories/CategoryTypes';
 
 const categoriesService = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL

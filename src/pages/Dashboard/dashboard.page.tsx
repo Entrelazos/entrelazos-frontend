@@ -12,12 +12,21 @@ import {
 } from '../../mock/chartData';
 import ReactApexChart from 'react-apexcharts';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCompaniesData } from '../../store/companies/companiesThunks';
+import {
+  fetchCompaniesData,
+  fetchUserCompanies,
+} from '../../store/companies/companiesThunks';
 import { AppDispatch, RootState } from '../../store/store';
 import { CompanyItem } from '../../types/companies/CompaniesTypes';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridCallbackDetails,
+  GridColDef,
+  GridRowParams,
+  MuiEvent,
+} from '@mui/x-data-grid';
 import ReactCountryFlag from 'react-country-flag';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const columns: GridColDef[] = [
   { field: 'name', headerName: 'Nombre', width: 70, flex: 1 },
@@ -42,21 +51,19 @@ const columns: GridColDef[] = [
 ];
 
 const Dashboard: FC = () => {
-  const theme = useTheme();
-  const radialBarOptions = radialBarData(theme);
-  const splineAreaOptions = splineAreaData(theme);
-
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const { data, loading, error } = useSelector(
+  const { userCompaniesData, loading, error } = useSelector(
     (state: RootState) => state.companies
   );
+  const { uid } = useSelector((state: RootState) => state.auth);
 
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 5,
   });
 
-  const { items, meta } = data || {
+  const { items, meta } = userCompaniesData || {
     items: [],
     meta: { currentPage: 1, itemsPerPage: 10 },
   };
@@ -65,22 +72,25 @@ const Dashboard: FC = () => {
     id: company.id,
     name: company.name,
     description: company.description,
-    type: company.type,
+    type: company?.categories[0]?.category_name || 'Otro',
     country: company?.addresses[0]?.city?.region?.country?.alpha_code || '',
   }));
 
   const [rowCountState, setRowCountState] = useState(meta?.totalItems || 0);
   useEffect(() => {
     setRowCountState((prevRowCountState) =>
-      meta?.totalItems !== undefined ? meta?.totalItems - 1 : prevRowCountState
+      meta?.totalItems !== undefined ? meta?.totalItems : prevRowCountState
     );
   }, [meta?.totalItems, setRowCountState]);
 
   useEffect(() => {
     dispatch(
-      fetchCompaniesData({
-        page: paginationModel.page === 0 ? 1 : paginationModel.page + 1,
-        limit: paginationModel.pageSize,
+      fetchUserCompanies({
+        userId: parseInt(uid),
+        options: {
+          page: paginationModel.page + 1,
+          limit: paginationModel.pageSize,
+        },
       })
     );
   }, [paginationModel]);
@@ -92,6 +102,11 @@ const Dashboard: FC = () => {
     setPaginationModel(newPaginationModel);
   };
 
+  function handleRowClick(params: GridRowParams<any>): void {
+    const { name } = params.row;
+    navigate(`/empresas/perfil-compania/${name}`);
+  }
+
   return (
     <Box>
       <Box display='flex' justifyContent='right' marginBottom={4}>
@@ -99,19 +114,19 @@ const Dashboard: FC = () => {
           variant='contained'
           startIcon={<Add />}
           component={Link}
-          to='/empresas/agregar'
+          to='/inscribir-empresas'
         >
-          Añadir una empresa
+          Inscribir una empresa
         </Button>
       </Box>
       <Grid2 container spacing={3}>
         <Grid2 xs={12} md={4}>
           <SimpleDataCard
             title='Numero de Empresas Registradas'
-            mainText={(meta.totalItems - 1)?.toString()}
+            mainText={meta.totalItems?.toString()}
           />
         </Grid2>
-        <Grid2 xs={12} md={4}>
+        {/* <Grid2 xs={12} md={4}>
           <SimpleDataCard
             title='Total Installed'
             mainText='1,000'
@@ -126,16 +141,16 @@ const Dashboard: FC = () => {
             subtitle='10%'
             Icon={Home}
           />
-        </Grid2>
-        <Grid2 xs={12} md={6} lg={4}>
+        </Grid2> */}
+        {/* <Grid2 xs={12} md={6} lg={4}>
           <ChartDataCard
             title='Sales'
             subtitle='Chart description'
             chartOptions={radialBarOptions}
             chartSeries={radialBarseries}
           />
-        </Grid2>
-        <Grid2 xs={12} md={6} lg={8}>
+        </Grid2> */}
+        {/* <Grid2 xs={12} md={6} lg={8}>
           <Card raised sx={{ borderRadius: '12px' }}>
             <CardHeader
               title='Grafica de Area'
@@ -151,11 +166,11 @@ const Dashboard: FC = () => {
               ></ReactApexChart>
             </Box>
           </Card>
-        </Grid2>
+        </Grid2> */}
         <Grid2 xs={12} md={6} lg={8}>
           <Card raised sx={{ borderRadius: '12px' }}>
             <CardHeader
-              title='Empresas'
+              title='Mis Empresas'
               titleTypographyProps={{
                 fontSize: '1.125rem',
                 fontWeight: '700',
@@ -171,6 +186,7 @@ const Dashboard: FC = () => {
                 onPaginationModelChange={handlePaginationModelChange}
                 paginationModel={paginationModel}
                 pageSizeOptions={[5, 10]}
+                onRowClick={handleRowClick}
                 sx={{
                   '& .MuiDataGrid-columnHeaders': {
                     backgroundColor: 'black',

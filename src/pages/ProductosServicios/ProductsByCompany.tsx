@@ -96,24 +96,26 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
             }}
           />
         )}
-        <CardContent>
-          <DataGrid
-            rows={rows ?? []}
-            columns={columns}
-            rowCount={rowCountState}
-            loading={loading}
-            paginationMode='server'
-            onPaginationModelChange={handlePaginationModelChange}
-            paginationModel={paginationModel}
-            pageSizeOptions={[5, 10]}
-            sx={{
-              '& .MuiDataGrid-columnHeaders': {
-                backgroundColor: 'black',
-                opacity: 0.5,
-              },
-            }}
-          />
-        </CardContent>
+        {(rows && Boolean(rows.length)) ?? (
+          <CardContent>
+            <DataGrid
+              rows={rows ?? []}
+              columns={columns}
+              rowCount={rowCountState}
+              loading={loading}
+              paginationMode='server'
+              onPaginationModelChange={handlePaginationModelChange}
+              paginationModel={paginationModel}
+              pageSizeOptions={[5, 10]}
+              sx={{
+                '& .MuiDataGrid-columnHeaders': {
+                  backgroundColor: 'black',
+                  opacity: 0.5,
+                },
+              }}
+            />
+          </CardContent>
+        )}
       </Card>
     </>
   );

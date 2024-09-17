@@ -1,8 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import {
-  ProductApiResponse,
-  ProductItem,
-} from '../../types/products/ProductsTypes';
+import { ProductApiResponse } from '../../types/products/ProductsTypes';
 
 const productService = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL

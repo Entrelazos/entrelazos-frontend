@@ -25,12 +25,10 @@ import ProductsByCompany from '../../ProductosServicios/ProductsByCompany';
 const ProfileComponent: FC<CompanyItem> = ({
   id,
   name,
-  type,
   nit,
   description,
   addresses,
   products,
-  category_name,
   social,
 }) => {
   const renderSocial = (key: string, value: string) => {
@@ -107,7 +105,9 @@ const ProfileComponent: FC<CompanyItem> = ({
 
                 <Stack direction='row' spacing={1.5}>
                   <Email></Email>
-                  <Typography>{social.email}</Typography>
+                  <Link href={`mailto:${social.email}`} underline='none'>
+                    <Typography>{social.email}</Typography>
+                  </Link>
                 </Stack>
                 <Stack direction='row' spacing={1.5}>
                   <Smartphone></Smartphone>

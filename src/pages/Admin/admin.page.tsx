@@ -16,7 +16,7 @@ const AdminPage: FC = () => {
             variant='contained'
             startIcon={<Add />}
             component={Link}
-            to='/admin/agregar'
+            to='/inscribir-empresas'
           >
             Inscribir una empresa
           </Button>
@@ -24,7 +24,7 @@ const AdminPage: FC = () => {
             variant='contained'
             startIcon={<Add />}
             component={Link}
-            to='/admin/agregar'
+            to='/inscribir-empresas'
           >
             Crear usuario admin
           </Button>

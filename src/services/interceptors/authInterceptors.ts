@@ -8,7 +8,7 @@ const requestInterceptor = async (config: InternalAxiosRequestConfig) => {
   if (accessToken) {
     let newAccessToken = accessToken;
     const jwtData = decodeJwt(accessToken);
-    const { exp } = jwtData;
+    const { exp } = jwtData.payload;
     if (isTokenExpired(exp)) {
       await store.dispatch(startGetNewAccessToken(refreshToken));
       newAccessToken = store.getState().auth.accessToken;

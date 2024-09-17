@@ -13,11 +13,14 @@ const companyService = axios.create({
 
 export const getAllCompanies = async (
   page: number,
-  pageSize: number
+  pageSize: number,
+  categoryIds: number[]
 ): Promise<any> => {
   try {
     const response: AxiosResponse<CompanyApiResponse> =
-      await companyService.get('', { params: { page, limit: pageSize } });
+      await companyService.get('', {
+        params: { page, limit: pageSize, categoryIds },
+      });
     return response.data;
   } catch (error) {
     console.log(error);
@@ -37,9 +40,13 @@ export const getCompanyByName = async (name: string): Promise<any> => {
 
 export const createCompany = async (payload: FormData): Promise<any> => {
   try {
-    await companyService.post('', payload);
+    const { data }: AxiosResponse<CompanyItem> = await companyService.post(
+      '',
+      payload
+    );
+    return data;
   } catch (error) {
-    console.log(error);
+    throw Error('Failed to create company');
   }
 };
 

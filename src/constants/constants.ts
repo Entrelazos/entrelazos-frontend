@@ -15,10 +15,10 @@ import {
 } from '@mui/icons-material';
 import XIcon from '@mui/icons-material/X';
 import ProfileComponent from '../pages/Profile/components/profile.component';
-import Dashboard from '../pages/Dashboard';
+import Dashboard from '../pages/Dashboard/dashboard.page';
 import ProductosServicios from '../pages/ProductosServicios';
 import ProductsByCategory from '../pages/ProductosServicios/ProductsByCategory';
-import CompaniesPage from '../pages/Companies';
+import CompaniesPage from '../pages/Companies/companies.page';
 import AddCompanies from '../pages/Companies/add/companies.add';
 import ProfilePage from '../pages/Profile/profile.page';
 import ProductsByCompany from '../pages/ProductosServicios/ProductsByCompany';
@@ -64,24 +64,24 @@ export const PROFILE_TABS = [
     icon: Badge,
     component: ProfileComponent,
   },
-  {
-    id: 2,
-    label: 'Favoritos',
-    icon: Favorite,
-    component: ProfileComponent,
-  },
-  {
-    id: 3,
-    label: 'Contactos',
-    icon: PeopleAlt,
-    component: ProfileComponent,
-  },
-  {
-    id: 4,
-    label: 'Galeria',
-    icon: Collections,
-    component: ProfileComponent,
-  },
+  // {
+  //   id: 2,
+  //   label: 'Favoritos',
+  //   icon: Favorite,
+  //   component: ProfileComponent,
+  // },
+  // {
+  //   id: 3,
+  //   label: 'Contactos',
+  //   icon: PeopleAlt,
+  //   component: ProfileComponent,
+  // },
+  // {
+  //   id: 4,
+  //   label: 'Galeria',
+  //   icon: Collections,
+  //   component: ProfileComponent,
+  // },
 ];
 
 export const ROUTES_INFO = [
@@ -121,6 +121,13 @@ export const ROUTES_INFO = [
     component: ProductsByCompany,
   },
   {
+    id: 6,
+    breadcrumbId: 'inscribir-empresas',
+    name: 'Inscribir Empresas',
+    path: '/inscribir-empresas',
+    component: AddCompanies,
+  },
+  {
     id: 7,
     breadcrumbId: 'perfil-compania',
     name: 'Perfil de Compañia',
@@ -144,13 +151,6 @@ export const ADMIN_ROUTES_INFO = [
     path: '/',
     component: AdminPage,
   },
-  {
-    id: 6,
-    breadcrumbId: 'agregar',
-    name: 'Agregar',
-    path: '/agregar',
-    component: AddCompanies,
-  },
 ];
 
 export const SOCIAL_NETWORK_DATA = [
@@ -160,30 +160,35 @@ export const SOCIAL_NETWORK_DATA = [
     icon: Email,
     fieldType: 'email',
     isRequired: true,
+    basePath: '',
   },
   {
     name: 'facebook',
     label: 'Facebook',
     icon: Facebook,
     fieldType: 'text',
+    basePath: 'facebook.com/',
   },
   {
     name: 'instagram',
     label: 'Instagram',
     icon: Instagram,
     fieldType: 'text',
+    basePath: 'instagram.com/',
   },
   {
     name: 'x',
     label: 'X',
     icon: XIcon,
     fieldType: 'text',
+    basePath: 'x.com/',
   },
   {
     name: 'linkedin',
     label: 'LinkedIn',
     icon: LinkedIn,
     fieldType: 'text',
+    basePath: 'linkedin.com/company/',
   },
   {
     name: 'phone_number',

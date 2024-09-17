@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import {
   Grid,
   TextField,
@@ -9,6 +9,13 @@ import {
   Box,
   Stack,
   InputAdornment,
+  Chip,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  Typography,
 } from '@mui/material';
 import CompanyAddressComponent from './company.address.component';
 import { AddressData } from '../../../types/address/AddressTypes';
@@ -18,26 +25,52 @@ import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { SocialType } from '../../../types/social/SocialTypes';
 import { SOCIAL_NETWORK_DATA } from '../../../constants/constants';
 import { MuiTelInput } from 'mui-tel-input';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../../store/store';
+import { fetchCategories } from '../../../store/categories/categoriesThunks';
 
 export interface FormData {
   name: string;
-  type: string;
   nit: string;
   description: string;
   addresses: AddressData[];
   social: SocialType;
+  categoryIds: number[];
+  userIds: number[];
 }
 
 interface CompanyFormProperties {
   handleSubmit: (formData: FormData) => void;
 }
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { data } = useSelector((state: RootState) => state.categories);
+  const { uid } = useSelector((state: RootState) => state.auth);
+  useEffect(() => {
+    if (!data) {
+      dispatch(fetchCategories());
+    }
+  }, [dispatch]);
+  // Create a mapping of category IDs to category names
+  const categoryMap =
+    data &&
+    new Map(data.map((category) => [category.id, category.category_name]));
   const [companyInfo, setCompanyInfo] = useState({
     name: '',
-    type: '',
     nit: '',
     description: '',
+    categories: [],
   });
   const [addresses, setAddresses] = useState<AddressData[]>([]);
   const [social, setSocial] = useState<SocialType>({
@@ -56,8 +89,14 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
     setCompanyInfo({ ...companyInfo, [event.target.name]: event.target.value });
   };
 
-  const handleSocialChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSocial({ ...social, [event.target.name]: event.target.value });
+  const handleSocialChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    basePath: string
+  ) => {
+    setSocial({
+      ...social,
+      [event.target.name]: `${basePath}${event.target.value}`,
+    });
   };
 
   const handleAddressChange = (index: number, newData: AddressData) => {
@@ -70,9 +109,17 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const { name, type, nit, description } = companyInfo;
+    const { name, nit, description, categories } = companyInfo;
 
-    handleSubmit({ name, type, nit, description, addresses, social });
+    handleSubmit({
+      name,
+      nit,
+      description,
+      addresses,
+      social,
+      categoryIds: categories,
+      userIds: [parseInt(uid)],
+    });
   };
 
   const addAddressComponent = () => {
@@ -106,26 +153,55 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                   name='name'
                   label='Nombre'
                   variant='outlined'
+                  required
                   fullWidth
                   value={companyInfo.name}
-                  onChange={handleCompanyInfoChange}
-                />
-                <TextField
-                  name='type'
-                  label='Tipo'
-                  variant='outlined'
-                  fullWidth
-                  value={companyInfo.type}
                   onChange={handleCompanyInfoChange}
                 />
                 <TextField
                   name='nit'
                   label='NIT'
                   variant='outlined'
+                  required
                   fullWidth
                   value={companyInfo.nit}
                   onChange={handleCompanyInfoChange}
                 />
+                {data && (
+                  <FormControl>
+                    <InputLabel id='demo-multiple-chip-label'>
+                      Categorias
+                    </InputLabel>
+                    <Select
+                      name='categories'
+                      labelId='demo-multiple-chip-label'
+                      id='demo-multiple-chip'
+                      required
+                      multiple
+                      value={companyInfo.categories}
+                      onChange={handleCompanyInfoChange}
+                      input={
+                        <OutlinedInput id='select-multiple-chip' label='Chip' />
+                      }
+                      renderValue={(selected) => (
+                        <Box
+                          sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}
+                        >
+                          {selected.map((id) => (
+                            <Chip key={id} label={categoryMap.get(id)} />
+                          ))}
+                        </Box>
+                      )}
+                      MenuProps={MenuProps}
+                    >
+                      {data.map((category) => (
+                        <MenuItem key={category.id} value={category.id}>
+                          {category.category_name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )}
               </Stack>
             </Grid2>
             <Grid2 xs={12} md={6}>
@@ -153,7 +229,14 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
             <CardContent>
               <Stack direction='column' spacing={3}>
                 {SOCIAL_NETWORK_DATA.map(
-                  ({ name, label, icon: Icon, fieldType, isRequired }) =>
+                  ({
+                    name,
+                    label,
+                    icon: Icon,
+                    fieldType,
+                    basePath,
+                    isRequired,
+                  }) =>
                     name === 'phone_number' || name === 'whatsapp' ? (
                       <MuiTelInput
                         defaultCountry='CO'
@@ -179,11 +262,20 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                         type={fieldType}
                         key={name}
                         required={isRequired}
-                        onChange={handleSocialChange}
+                        onChange={(event) =>
+                          handleSocialChange(event, basePath)
+                        }
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position='start'>
                               <Icon />
+                              <Typography
+                                variant='body2'
+                                color='textSecondary'
+                                style={{ marginLeft: 8 }} // Adjust spacing as needed
+                              >
+                                {basePath}
+                              </Typography>
                             </InputAdornment>
                           ),
                         }}
