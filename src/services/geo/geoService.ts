@@ -2,8 +2,8 @@ import axios, { AxiosResponse } from 'axios';
 import { CityType, CountryType, RegionType } from '../../types/geo/geoTypes';
 
 const geoService = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL
-    ? `${import.meta.env.VITE_BASE_URL}/geo`
+  baseURL: import.meta.env.VITE_BASE_URL_PORT
+    ? `${import.meta.env.VITE_BASE_URL_PORT}/geo`
     : 'https://pear-clear-sockeye.cyclic.app/products',
 });
 

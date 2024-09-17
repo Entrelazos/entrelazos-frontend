@@ -6,8 +6,8 @@ import {
 import { FormData } from '../../pages/Companies/components/company.form';
 
 const companyService = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL
-    ? `${import.meta.env.VITE_BASE_URL}/companies`
+  baseURL: import.meta.env.VITE_BASE_URL_PORT
+    ? `${import.meta.env.VITE_BASE_URL_PORT}/companies`
     : 'https://pear-clear-sockeye.cyclic.app/companies',
 });
 

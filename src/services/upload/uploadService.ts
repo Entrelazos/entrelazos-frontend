@@ -2,8 +2,8 @@ import axios, { AxiosResponse } from 'axios';
 import { FileResponseType, UploadType } from '../../types/uploads/uploadTypes';
 
 const uploadService = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL
-    ? `${import.meta.env.VITE_BASE_URL}/images`
+  baseURL: import.meta.env.VITE_BASE_URL_PORT
+    ? `${import.meta.env.VITE_BASE_URL_PORT}/images`
     : 'https://pear-clear-sockeye.cyclic.app/images',
 });
 
