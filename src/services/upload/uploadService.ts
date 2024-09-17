@@ -36,12 +36,13 @@ export const uploadFile = async (payload: UploadType): Promise<any> => {
 
 export const getFileByEntityIdAndType = async (
   entityId: number,
-  entityType: string
+  entityType: string,
+  imageType: string
 ): Promise<any> => {
   try {
     const response: AxiosResponse<FileResponseType> = await uploadService.get(
-      `/upload`,
-      { params: { entityId, entityType } }
+      `/one`,
+      { params: { entityId, entityType, imageType } }
     );
     return response.data;
   } catch (error) {

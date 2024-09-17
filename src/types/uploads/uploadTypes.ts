@@ -1,11 +1,13 @@
+export type imageType = 'user_profile' | 'company_profile' | 'company_banner';
+export type entityType = 'product' | 'user' | 'company';
 export interface UploadType {
   url?: string;
   file: File;
   altText: string;
   description: string;
   entityId: number;
-  entityType: string;
-  imageType: string;
+  entityType: entityType;
+  imageType: imageType;
 }
 
 export interface FileResponseType {

@@ -3,27 +3,26 @@ import { Box, Typography } from '@mui/material';
 import CameraEnhance from '@mui/icons-material/CameraEnhance';
 
 interface ImageUploadProperties {
-  imageSrc: string;
   handleImageUpload?: (file: File) => any;
+  children?: React.ReactNode;
+  inputId: string;
+  rounded?: boolean;
+  position?: 'absolute' | 'relative';
 }
 
-const ImageUpload: FC<ImageUploadProperties> = ({
-  imageSrc,
+const ImageUploadV2: FC<ImageUploadProperties> = ({
   handleImageUpload,
+  children,
+  inputId,
+  rounded,
+  position,
 }) => {
-  const [image, setImage] = useState(imageSrc);
-
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && handleImageUpload) {
-      const imageData = await handleImageUpload(file);
-      setImage(import.meta.env.VITE_BASE_FILES_URL + imageData.url);
+      await handleImageUpload(file);
     }
   };
-
-  useEffect(() => {
-    setImage(imageSrc);
-  }, [imageSrc]);
 
   return (
     <Box
@@ -33,28 +32,27 @@ const ImageUpload: FC<ImageUploadProperties> = ({
       gap={2}
       role='presentation'
       tabIndex={0}
-      sx={{ cursor: 'pointer' }}
+      position={position || 'initial'}
+      width='100%'
+      height='100%'
+      zIndex={1}
+      sx={{ cursor: 'pointer', zIndex: 1 }}
     >
       <input
         accept='image/*'
         type='file'
         onChange={handleFileChange}
         style={{ display: 'none' }}
-        id='upload-input'
+        id={inputId}
       />
-      <label htmlFor='upload-input'>
-        <Box display='flex' sx={{ position: 'relative' }}>
-          <img
-            src={image}
-            alt='avatar'
-            style={{
-              width: 150,
-              height: 150,
-              objectFit: 'cover',
-              borderRadius: '50%',
-              cursor: 'pointer',
-            }}
-          />
+      <label htmlFor={inputId} style={{ width: '100%', height: '100%' }}>
+        <Box
+          display='flex'
+          sx={{ position: 'relative' }}
+          width='100%'
+          height='100%'
+        >
+          {children}
           <Box
             display='flex'
             flexDirection='column'
@@ -69,7 +67,7 @@ const ImageUpload: FC<ImageUploadProperties> = ({
               justifyContent: 'center',
               alignItems: 'center',
               backgroundColor: 'rgba(0, 0, 0, 0.4)',
-              borderRadius: '50%',
+              borderRadius: rounded ? '50%' : 'initial',
               opacity: 0,
               transition: 'opacity 0.3s ease-in-out',
               '&:hover': {
@@ -86,4 +84,4 @@ const ImageUpload: FC<ImageUploadProperties> = ({
   );
 };
 
-export default ImageUpload;
+export default ImageUploadV2;

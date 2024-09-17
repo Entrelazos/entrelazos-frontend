@@ -18,14 +18,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { fetchCompanyByName } from '../../store/companies/companiesThunks';
 import { isMyCompany } from '../../store/companies/companiesSlice';
-import ImageUpload from '../../components/ImageUpload/ImageUpload';
 import {
   getFileByEntityIdAndType,
   uploadFile,
 } from '../../services/upload/uploadService';
+import { FileResponseType, imageType } from '../../types/uploads/uploadTypes';
+import ImageUploadV2 from '../../components/ImageUpload/ImageUploadV2';
 
 interface ProfilePageProperties {
   isCompany: boolean;
+}
+
+interface ImageUploadProperties {
+  file: File;
+  imageType: imageType;
 }
 
 const StyledTabs = styled(Tabs)(() => ({
@@ -47,38 +53,72 @@ const ProfilePage: FC<ProfilePageProperties> = ({ isCompany }) => {
   const compayIsMine = useSelector(isMyCompany());
   const dispatch = useDispatch<AppDispatch>();
   const [value, setValue] = useState(0);
-  const [imageData, setImageData] = useState();
+  const [profileImageData, setProfileImageData] = useState<
+    FileResponseType | undefined
+  >();
+  const [bannerImageData, setBannerImageData] = useState<
+    FileResponseType | undefined
+  >();
   const userOrCompany = isCompany ? 'company' : 'user';
 
   const { data, loading, error } = useSelector(
     (state: RootState) => state.company
   );
 
+  const { displayName } = useSelector((state: RootState) => state.auth);
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
-  const handleImageUpload = async (file: File) => {
-    const imageAlt = isCompany
-      ? 'Imagen de perfil de compañia'
-      : 'Imagen de perfil de usuario';
-    return await uploadFile({
-      altText: imageAlt,
-      description: imageAlt,
-      file,
-      entityId: data.id,
-      entityType: isCompany ? 'company' : 'user',
-      imageType: isCompany ? 'company_profile' : 'user_profile',
-    });
+  const handleImageUpload = async ({
+    file,
+    imageType,
+  }: ImageUploadProperties) => {
+    const entityType = isCompany ? 'company' : 'user';
+    const imageAlt = `Imagen de perfil de ${isCompany ? 'compañia' : 'usuario'}`;
+
+    try {
+      const savedImage = (await uploadFile({
+        altText: imageAlt,
+        description: imageAlt,
+        file,
+        entityId: data.id,
+        entityType,
+        imageType,
+      })) as FileResponseType;
+
+      const { image_type } = savedImage;
+
+      if (image_type === 'company_profile') {
+        setProfileImageData(savedImage);
+      } else if (image_type === 'company_banner') {
+        setBannerImageData(savedImage);
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    }
   };
 
   useEffect(() => {
-    const fetchImage = async () => {
-      const avatarImg = await getFileByEntityIdAndType(data?.id, userOrCompany);
-      setImageData(avatarImg);
+    const fetchImages = async () => {
+      if (!data?.id) return;
+
+      try {
+        const [profileImage, bannerImage] = await Promise.all([
+          getFileByEntityIdAndType(data.id, userOrCompany, 'company_profile'),
+          getFileByEntityIdAndType(data.id, userOrCompany, 'company_banner'),
+        ]);
+
+        setProfileImageData(profileImage);
+        setBannerImageData(bannerImage);
+      } catch (error) {
+        console.error('Error fetching images:', error);
+      }
     };
-    fetchImage();
-  }, [data]);
+
+    fetchImages();
+  }, [data, userOrCompany]);
 
   if (isCompany) {
     useEffect(() => {
@@ -105,15 +145,26 @@ const ProfilePage: FC<ProfilePageProperties> = ({ isCompany }) => {
             borderRadius: '16px',
           }}
         >
+          {compayIsMine && (
+            <ImageUploadV2
+              handleImageUpload={(file) =>
+                handleImageUpload({ file, imageType: 'company_banner' })
+              }
+              inputId='upload-banner'
+              position='absolute'
+            />
+          )}
+
           <Box
             borderRadius='1rem'
             position='relative'
             height='100%'
             color='rgb(255, 255, 255)'
             sx={{
-              background:
-                'linear-gradient(rgba(0, 75, 80, 0.8), rgba(0, 75, 80, 0.8)) center center / cover no-repeat, url("https://api-prod-minimal-v510.vercel.app/assets/images/cover/cover_4.jpg")',
+              background: `linear-gradient(rgba(0, 75, 80, 0.5), rgba(0, 75, 80, 0.5)), url('${import.meta.env.VITE_BASE_FILES_URL}${bannerImageData?.url}')`,
+              backgroundSize: 'cover',
               backgroundPosition: 'center center',
+              backgroundRepeat: 'no-repeat',
             }}
             overflow='hidden'
           >
@@ -128,23 +179,37 @@ const ProfilePage: FC<ProfilePageProperties> = ({ isCompany }) => {
             >
               <Box>
                 {compayIsMine ? (
-                  <ImageUpload
-                    imageSrc='/src/assets/avatar_25.jpg'
-                    handleImageUpload={handleImageUpload}
-                  />
+                  <ImageUploadV2
+                    inputId='upload-profile'
+                    handleImageUpload={(file) =>
+                      handleImageUpload({
+                        file,
+                        imageType: 'company_profile',
+                      })
+                    }
+                    rounded
+                  >
+                    <Avatar
+                      alt={displayName}
+                      src={`${import.meta.env.VITE_BASE_FILES_URL}${profileImageData?.url}`}
+                      sx={{ width: '128px', height: '128px' }}
+                    />
+                  </ImageUploadV2>
                 ) : (
                   <Avatar
-                    alt='Felipe Marin'
-                    src='/src/assets/avatar_25.jpg'
+                    alt={displayName}
+                    src={`${import.meta.env.VITE_BASE_FILES_URL}${profileImageData?.url}`}
                     sx={{ width: '128px', height: '128px' }}
                   />
                 )}
               </Box>
               <ListItemText>
-                <Typography fontSize='1.5rem'>{data.name}</Typography>
+                <Typography fontSize='1.5rem' fontWeight={700}>
+                  {data.name}
+                </Typography>
                 {!isCompany && (
                   <Typography
-                    fontSize='0.825rem'
+                    fontSize='1rem'
                     sx={{ opacity: 0.48 }}
                     marginTop={0.5}
                   >
