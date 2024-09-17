@@ -2,8 +2,8 @@ import axios, { AxiosResponse } from 'axios';
 import { ProductApiResponse } from '../../types/products/ProductsTypes';
 
 const productService = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL
-    ? `${import.meta.env.VITE_BASE_URL}/products`
+  baseURL: import.meta.env.VITE_BASE_URL_PORT
+    ? `${import.meta.env.VITE_BASE_URL_PORT}/products`
     : 'https://pear-clear-sockeye.cyclic.app/products',
 });
 

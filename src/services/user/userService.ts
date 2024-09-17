@@ -2,8 +2,8 @@ import axios, { AxiosResponse } from 'axios';
 import { CompanyApiResponse } from '../../types/companies/CompaniesTypes';
 
 const userService = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL
-    ? `${import.meta.env.VITE_BASE_URL}/user`
+  baseURL: import.meta.env.VITE_BASE_URL_PORT
+    ? `${import.meta.env.VITE_BASE_URL_PORT}/user`
     : 'https://pear-clear-sockeye.cyclic.app/user',
 });
 
