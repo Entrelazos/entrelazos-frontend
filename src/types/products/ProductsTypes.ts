@@ -11,6 +11,17 @@ export interface ProductItem {
   company: CompanyItem;
 }
 
+export interface CreateProductType {
+  product_name: string;
+  productDescription: string;
+  is_service: boolean;
+  is_public: boolean;
+  is_approved: boolean;
+  price: number;
+  category_ids: number[];
+  company_id: number;
+}
+
 export interface ProductMeta {
   totalItems: number;
   itemCount: number;

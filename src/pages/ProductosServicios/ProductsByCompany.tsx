@@ -2,11 +2,26 @@ import { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { AppDispatch, RootState } from '../../store/store';
-import { fetchProductsByCompanyId } from '../../store/products/productsThunks';
-import { ProductItem } from '../../types/products/ProductsTypes';
+import { fetchProductsByCompanyId } from '../../store/products/productsSlice';
+import {
+  CreateProductType,
+  ProductItem,
+} from '../../types/products/ProductsTypes';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { Card, CardContent, CardHeader } from '@mui/material';
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  IconButton,
+  Typography,
+} from '@mui/material';
 import { clearProductsData } from '../../store/products/productsSlice';
+import { AddOutlined, MoreVert } from '@mui/icons-material';
+import { isMyCompany } from '../../store/companies/companiesSlice';
+import Grid2 from '@mui/material/Unstable_Grid2';
+import AddProductModal from './components/AddProductModal';
+import { createProducts } from '../../services/products/productsService';
 
 interface ProductsByCompanyProps {
   companyIdParam?: string;
@@ -27,6 +42,8 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
   isEmbedded,
 }) => {
   const { companyId } = useParams();
+  const compayIsMine = useSelector(isMyCompany());
+
   const dispatch = useDispatch<AppDispatch>();
   const { data, loading, error } = useSelector(
     (state: RootState) => state.products
@@ -36,6 +53,12 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
     page: 0,
     pageSize: 5,
   });
+
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenCloseModal = (openState: boolean) => {
+    setOpenModal(openState);
+  };
 
   const selectedCompanyId = companyIdParam ?? companyId;
 
@@ -85,6 +108,16 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
   };
   return (
     <>
+      <pre>{data && JSON.stringify(data)}</pre>
+      <AddProductModal
+        open={openModal}
+        handleClose={() => {
+          handleOpenCloseModal(false);
+        }}
+        onSubmit={(data: CreateProductType[]) => {
+          createProducts(data);
+        }}
+      ></AddProductModal>
       {!isEmbedded && <h2>{items[0]?.name}</h2>}
       <Card raised sx={{ borderRadius: '12px' }}>
         {isEmbedded && (
@@ -94,6 +127,21 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
               fontSize: '1.125rem',
               fontWeight: '700',
             }}
+            action={
+              compayIsMine && (
+                <Grid2 display='flex' alignItems='center' padding={0}>
+                  <Button
+                    variant='outlined'
+                    startIcon={<AddOutlined />}
+                    onClick={() => {
+                      handleOpenCloseModal(true);
+                    }}
+                  >
+                    <Typography>Agregar Productos</Typography>
+                  </Button>
+                </Grid2>
+              )
+            }
           />
         )}
         {(rows && Boolean(rows.length)) ?? (

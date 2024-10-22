@@ -1,5 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
-import { ProductApiResponse } from '../../types/products/ProductsTypes';
+import {
+  CreateProductType,
+  ProductApiResponse,
+} from '../../types/products/ProductsTypes';
 
 const productService = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL_PORT
@@ -28,6 +31,20 @@ export const getProductsByCategoryId = async (
       await productService.get(`/byCategory/${categoryId}`);
     return response.data;
   } catch (error) {}
+};
+
+export const createProducts = async (
+  products: CreateProductType[]
+): Promise<ProductApiResponse> => {
+  try {
+    const response: AxiosResponse<ProductApiResponse> =
+      await productService.post(`/bulk`, products);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message || 'Failed to create products'
+    );
+  }
 };
 
 export default productService;
