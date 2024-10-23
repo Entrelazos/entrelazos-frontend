@@ -20,6 +20,7 @@ export interface CreateProductType {
   price: number;
   category_ids: number[];
   company_id: number;
+  files: File[];
 }
 
 export interface ProductMeta {

@@ -37,8 +37,51 @@ export const createProducts = async (
   products: CreateProductType[]
 ): Promise<ProductApiResponse> => {
   try {
+    const formData = new FormData();
+
+    // Loop through each product and append its data to FormData
+    products.forEach((product, index) => {
+      formData.append(`products[${index}][product_name]`, product.product_name);
+      formData.append(
+        `products[${index}][productDescription]`,
+        product.productDescription
+      );
+      formData.append(
+        `products[${index}][is_service]`,
+        String(product.is_service)
+      );
+      formData.append(
+        `products[${index}][is_public]`,
+        String(product.is_public)
+      );
+      formData.append(
+        `products[${index}][is_approved]`,
+        String(product.is_approved)
+      );
+      formData.append(`products[${index}][price]`, String(product.price));
+      formData.append(
+        `products[${index}][company_id]`,
+        String(product.company_id)
+      );
+
+      // Append category_ids array
+      product.category_ids.forEach((id) => {
+        formData.append(`products[${index}][category_ids][]`, String(id));
+      });
+
+      // Append files
+      product.files.forEach((file) => {
+        formData.append(`products[${index}][files][]`, file);
+      });
+    });
+
     const response: AxiosResponse<ProductApiResponse> =
-      await productService.post(`/bulk`, products);
+      await productService.post(`/bulk`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
     return response.data;
   } catch (error: any) {
     throw new Error(

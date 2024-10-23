@@ -24,8 +24,7 @@ import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategories } from '../../../store/categories/categoriesThunks';
 import { AppDispatch, RootState } from '../../../store/store';
-import { CategoryItem } from '../../../types/categories/CategoryTypes';
-
+import FileDropZone from '../../../components/FileDropZone/FileDropZone';
 // Validation schema
 const validationSchema = yup.object({
   product_name: yup.string().required('Product name is required'),
@@ -39,9 +38,33 @@ const validationSchema = yup.object({
     .min(0, 'Price must be a positive number'),
   category_ids: yup
     .array()
-    .of(yup.number().required().integer('Category ID must be an integer'))
+    .of(
+      yup
+        .number()
+        .required('Category is required')
+        .integer('Category ID must be an integer')
+    )
     .min(1, 'At least one category is required'),
   company_id: yup.number().required('Company is required').integer(),
+  files: yup
+    .array()
+    .of(
+      yup
+        .mixed()
+        .test('fileSize', 'File size is too large', (value: File) => {
+          // Validate file size (example: max 2MB per file)
+          return value && value.size <= 2000000;
+        })
+        .test('fileType', 'Unsupported file type', (value: File) => {
+          // Validate file type (example: only images)
+          return (
+            value &&
+            ['image/jpeg', 'image/png', 'image/gif'].includes(value.type)
+          );
+        })
+    )
+    .min(1, 'At least one file is required')
+    .required('File is required'),
 });
 
 const ITEM_HEIGHT = 48;
@@ -88,18 +111,17 @@ const AddProductModal = ({ open, handleClose, onSubmit }) => {
       price: '',
       category_ids: [],
       company_id: '',
+      files: [],
     },
   });
 
   const isServiceChecked = watch('is_service');
   const isPublicChecked = watch('is_public');
   const isApprovedChecked = watch('is_approved');
+  const existingFilesWatch = watch('files');
 
   // Handle form submission
   const handleAddOrEditProduct = (data) => {
-    console.log('====================================');
-    console.log(data);
-    console.log('====================================');
     if (editIndex !== null) {
       // If editing a product, update it in the list
       const updatedProducts = [...products];
@@ -108,9 +130,6 @@ const AddProductModal = ({ open, handleClose, onSubmit }) => {
       setEditIndex(null); // Reset edit state
     } else {
       // Add a new product to the list
-      console.log('====================================');
-      console.log(data);
-      console.log('====================================');
       setProducts([...products, data]);
     }
 
@@ -124,6 +143,7 @@ const AddProductModal = ({ open, handleClose, onSubmit }) => {
       price: '',
       category_ids: [],
       company_id: '',
+      files: [],
     });
   };
 
@@ -141,13 +161,14 @@ const AddProductModal = ({ open, handleClose, onSubmit }) => {
     setValue('price', productToEdit.price);
     setValue('category_ids', productToEdit.category_ids);
     setValue('company_id', productToEdit.company_id);
+    setValue('files', productToEdit.files);
   };
 
   // Submit all products at once
   const handleSubmitAllProducts = () => {
     onSubmit(products); // Send the products array to parent
-    setProducts([]); // Clear the products list
-    handleClose(); // Close the modal
+    // setProducts([]); // Clear the products list
+    // handleClose(); // Close the modal
   };
 
   return (
@@ -223,6 +244,25 @@ const AddProductModal = ({ open, handleClose, onSubmit }) => {
             helperText={errors.price ? errors.price.message?.toString() : ''}
             fullWidth
             margin='normal'
+          />
+          <Controller
+            name='files'
+            control={control}
+            render={({ field: { onChange } }) => (
+              <FileDropZone
+                onDrop={(acceptedFiles) => {
+                  onChange(acceptedFiles); // Set files in form state
+                  setValue('files', acceptedFiles); // Save to form state
+                }}
+                onRemoveImage={(file: File) => {
+                  setValue(
+                    'files',
+                    existingFilesWatch.filter((f) => f !== file)
+                  );
+                }}
+                existingFiles={existingFilesWatch}
+              />
+            )}
           />
           {data && (
             <Controller
