@@ -78,7 +78,7 @@ const MenuProps = {
   },
 };
 
-const AddProductModal = ({ open, handleClose, onSubmit }) => {
+const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { data } = useSelector((state: RootState) => state.categories);
   useEffect(() => {
@@ -110,7 +110,7 @@ const AddProductModal = ({ open, handleClose, onSubmit }) => {
       is_approved: false, // Reset boolean to default
       price: '',
       category_ids: [],
-      company_id: '',
+      company_id: companyId,
       files: [],
     },
   });
@@ -142,7 +142,7 @@ const AddProductModal = ({ open, handleClose, onSubmit }) => {
       is_approved: false, // Reset boolean to default
       price: '',
       category_ids: [],
-      company_id: '',
+      company_id: companyId,
       files: [],
     });
   };
@@ -167,7 +167,7 @@ const AddProductModal = ({ open, handleClose, onSubmit }) => {
   // Submit all products at once
   const handleSubmitAllProducts = () => {
     onSubmit(products); // Send the products array to parent
-    // setProducts([]); // Clear the products list
+    setProducts([]); // Clear the products list
     // handleClose(); // Close the modal
   };
 
@@ -304,17 +304,6 @@ const AddProductModal = ({ open, handleClose, onSubmit }) => {
               )}
             />
           )}
-          <TextField
-            label='Company ID'
-            type='number'
-            {...register('company_id')}
-            error={!!errors.company_id}
-            helperText={
-              errors.company_id ? errors.company_id.message?.toString() : ''
-            }
-            fullWidth
-            margin='normal'
-          />
           <Button type='submit' variant='contained' color='primary' fullWidth>
             {editIndex !== null ? 'Update Product' : 'Add Product to List'}
           </Button>
@@ -374,9 +363,6 @@ const AddProductModal = ({ open, handleClose, onSubmit }) => {
                         );
                       }
                     )}
-                  </Typography>
-                  <Typography variant='body1'>
-                    <strong>Empresa:</strong> {product.company_id}
                   </Typography>
                   <Button
                     variant='text'
