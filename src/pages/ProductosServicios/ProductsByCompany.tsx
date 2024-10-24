@@ -108,10 +108,14 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
   };
   return (
     <>
-      <pre>{data && JSON.stringify(data)}</pre>
       <AddProductModal
+        companyId={parseInt(selectedCompanyId)}
         open={openModal}
-        handleClose={() => {
+        handleClose={(event: MouseEvent, reason: string) => {
+          if (reason === 'backdropClick') {
+            event.stopPropagation();
+            return;
+          }
           handleOpenCloseModal(false);
         }}
         onSubmit={(data: CreateProductType[]) => {
