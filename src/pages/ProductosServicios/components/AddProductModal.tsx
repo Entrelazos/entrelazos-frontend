@@ -16,6 +16,7 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
+  FormHelperText,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm, Controller } from 'react-hook-form';
@@ -25,6 +26,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategories } from '../../../store/categories/categoriesThunks';
 import { AppDispatch, RootState } from '../../../store/store';
 import FileDropZone from '../../../components/FileDropZone/FileDropZone';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import '../styles/quillDark.scss';
 // Validation schema
 const validationSchema = yup.object({
   product_name: yup.string().required('Product name is required'),
@@ -46,25 +50,20 @@ const validationSchema = yup.object({
     )
     .min(1, 'At least one category is required'),
   company_id: yup.number().required('Company is required').integer(),
-  files: yup
-    .array()
-    .of(
-      yup
-        .mixed()
-        .test('fileSize', 'File size is too large', (value: File) => {
-          // Validate file size (example: max 2MB per file)
-          return value && value.size <= 2000000;
-        })
-        .test('fileType', 'Unsupported file type', (value: File) => {
-          // Validate file type (example: only images)
-          return (
-            value &&
-            ['image/jpeg', 'image/png', 'image/gif'].includes(value.type)
-          );
-        })
-    )
-    .min(1, 'At least one file is required')
-    .required('File is required'),
+  files: yup.array().of(
+    yup
+      .mixed()
+      .test('fileSize', 'File size is too large', (value: File) => {
+        // Validate file size (example: max 2MB per file)
+        return value && value.size <= 2000000;
+      })
+      .test('fileType', 'Unsupported file type', (value: File) => {
+        // Validate file type (example: only images)
+        return (
+          value && ['image/jpeg', 'image/png', 'image/gif'].includes(value.type)
+        );
+      })
+  ),
 });
 
 const ITEM_HEIGHT = 48;
@@ -164,6 +163,24 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
     setValue('files', productToEdit.files);
   };
 
+  const handleDeleteProduct = (index) => {
+    // Confirm deletion if necessary
+    const confirmDelete = window.confirm('¿Quieres eliminar el producto?');
+    if (confirmDelete) {
+      // Remove the product from the products array
+      const updatedProducts = products.filter((_, idx) => idx !== index);
+
+      // Update the state with the new products array
+      setProducts(updatedProducts);
+
+      // Optionally reset the form if you have an active edit
+      if (editIndex === index) {
+        setEditIndex(null);
+        reset(); // Reset the form to its initial state
+      }
+    }
+  };
+
   // Submit all products at once
   const handleSubmitAllProducts = () => {
     onSubmit(products); // Send the products array to parent
@@ -179,11 +196,20 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 500,
-          height: '80%', // Set a max height for the modal
+          width: {
+            xs: '90%', // 90% width on extra-small screens
+            sm: '80%', // 80% width on small screens
+            md: 700, // 700px width on medium screens
+            lg: 800, // 800px width on large screens
+          },
+          height: '90%',
           bgcolor: 'background.paper',
           boxShadow: 24,
-          p: 4,
+          p: {
+            xs: 2, // Smaller padding on extra-small screens
+            sm: 3, // Slightly more padding on small screens
+            md: 4, // Default padding on medium and larger screens
+          },
           borderRadius: 2,
           overflow: 'auto', // Enable scrolling if content overflows
         }}
@@ -209,17 +235,37 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
             fullWidth
             margin='normal'
           />
-          <TextField
-            label='Product Description'
-            {...register('productDescription')}
-            error={!!errors.productDescription}
-            helperText={
-              errors.productDescription
-                ? errors.productDescription.message?.toString()
-                : ''
-            }
-            fullWidth
-            margin='normal'
+          <Controller
+            name='productDescription'
+            control={control}
+            rules={{ required: 'Product description is required' }}
+            render={({ field }) => (
+              <div>
+                <ReactQuill
+                  theme='snow'
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder='Enter product description here...'
+                  modules={{
+                    toolbar: [
+                      [{ header: '1' }, { header: '2' }, { font: [] }],
+                      [{ list: 'ordered' }, { list: 'bullet' }],
+                      ['bold', 'italic', 'underline', 'code-block'],
+                      ['link', 'image'],
+                      [{ align: [] }],
+                      [{ color: [] }, { background: [] }],
+                      ['clean'],
+                    ],
+                  }}
+                  className='quill-dark'
+                />
+                {errors.productDescription && (
+                  <FormHelperText error>
+                    {errors.productDescription.message}
+                  </FormHelperText>
+                )}
+              </div>
+            )}
           />
           <FormControlLabel
             control={<Checkbox {...register('is_service')} />}
@@ -369,7 +415,14 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
                     color='primary'
                     onClick={() => handleEditProduct(index)}
                   >
-                    Edit
+                    Editar
+                  </Button>
+                  <Button
+                    variant='text'
+                    color='primary'
+                    onClick={() => handleDeleteProduct(index)}
+                  >
+                    Eliminar
                   </Button>
                 </CardContent>
               </Card>
