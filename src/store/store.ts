@@ -7,17 +7,19 @@ import companyService from '../services/companies/companyService';
 import categoriesSlice from './categories/categoriesSlice';
 import categoriesService from '../services/categories/categoriesService';
 import productsSlice from './products/productsSlice';
+import productsSliceFinal from './products/productsSliceFinal';
+
 import productService from '../services/products/productsService';
-import { setupInterceptors } from '../utils/common';
 import { citiesSlice, regionsSlice, countriesSlice } from './geo/geoSlice';
 import geoService from '../services/geo/geoService';
+import { setupInterceptors } from '../utils/common';
 
 const rootReducer = combineReducers({
   auth: authSlice.reducer,
   company: companySlice.reducer,
   companies: companiesSlice.reducer,
   categories: categoriesSlice,
-  products: productsSlice,
+  products: productsSliceFinal,
   country: countriesSlice.reducer,
   regions: regionsSlice.reducer,
   cities: citiesSlice.reducer,
@@ -45,10 +47,12 @@ persistor.subscribe(() => {
   console.log('Rehydrated state:', store.getState());
 });
 
-setupInterceptors(companyService);
-setupInterceptors(categoriesService);
-setupInterceptors(productService);
-setupInterceptors(geoService);
+setTimeout(() => {
+  setupInterceptors(companyService);
+  setupInterceptors(categoriesService);
+  setupInterceptors(productService);
+  setupInterceptors(geoService);
+}, 300);
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;

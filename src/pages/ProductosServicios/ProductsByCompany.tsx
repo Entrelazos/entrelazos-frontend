@@ -1,23 +1,23 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState, MouseEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { AppDispatch, RootState } from '../../store/store';
-import { fetchProductsByCompanyId } from '../../store/products/productsSlice';
+import { fetchProductsByCompanyId } from '../../store/products/productsThunks';
 import {
   CreateProductType,
   ProductItem,
 } from '../../types/products/ProductsTypes';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridOverlay } from '@mui/x-data-grid';
 import {
+  Box,
   Button,
   Card,
   CardContent,
   CardHeader,
-  IconButton,
   Typography,
 } from '@mui/material';
 import { clearProductsData } from '../../store/products/productsSlice';
-import { AddOutlined, MoreVert } from '@mui/icons-material';
+import { AddOutlined } from '@mui/icons-material';
 import { isMyCompany } from '../../store/companies/companiesSlice';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import AddProductModal from './components/AddProductModal';
@@ -28,102 +28,100 @@ interface ProductsByCompanyProps {
   isEmbedded?: boolean;
 }
 
-const columns: GridColDef[] = [
-  { field: 'name', headerName: 'Nombre', width: 70, flex: 1 },
-  { field: 'price', headerName: 'Precio', flex: 1 },
-  { field: 'isApproved', headerName: 'Aprobado', flex: 1 },
-  { field: 'isPublic', headerName: 'Publico', flex: 1 },
-  { field: 'isService', headerName: 'Servicio', flex: 1 },
-  { field: 'company', headerName: 'Empresa', flex: 1 },
-];
+const NoRowsOverlay = () => (
+  <GridOverlay sx={{ height: 200 }}>
+    <Typography variant='subtitle1'>No items to display</Typography>
+  </GridOverlay>
+);
 
 const ProductsByCompany: FC<ProductsByCompanyProps> = ({
   companyIdParam,
   isEmbedded,
 }) => {
   const { companyId } = useParams();
-  const compayIsMine = useSelector(isMyCompany());
-
   const dispatch = useDispatch<AppDispatch>();
-  const { data, loading, error } = useSelector(
+  const compayIsMine = useSelector(isMyCompany());
+  const { byCompany, loading } = useSelector(
     (state: RootState) => state.products
+  );
+  const { data: companyData } = useSelector(
+    (state: RootState) => state.company
   );
 
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 5,
   });
-
   const [openModal, setOpenModal] = useState(false);
 
-  const handleOpenCloseModal = (openState: boolean) => {
-    setOpenModal(openState);
-  };
-
   const selectedCompanyId = companyIdParam ?? companyId;
+  const items = byCompany?.items || [];
+  const totalItems = byCompany?.meta?.totalItems || 0;
 
-  const { items, meta } = data || {
-    items: [],
-    meta: { currentPage: 1, itemsPerPage: 10 },
-  };
+  const columns: GridColDef[] = [
+    { field: 'id', headerName: 'Id', width: 100 },
+    { field: 'name', headerName: 'Nombre', width: 150 },
+    { field: 'price', headerName: 'Precio', width: 150 },
+    { field: 'isApproved', headerName: 'Aprobado', width: 150 },
+    { field: 'isPublic', headerName: 'Publico', width: 150 },
+    { field: 'isService', headerName: 'Servicio', width: 150 },
+    ...(isEmbedded
+      ? []
+      : [{ field: 'company', headerName: 'Empresa', flex: 1 }]), // Conditionally include company column
+  ];
 
-  const rows = items[0]?.products?.map(
-    (product: ProductItem, index: number) => ({
-      id: index + 1,
-      name: product.product_name,
-      price: product.price,
-      isApproved: product.is_approved,
-      isPublic: product.is_public,
-      isService: product.is_service,
-      company: items[0].name,
-    })
-  );
-
-  const [rowCountState, setRowCountState] = useState(meta?.totalItems || 0);
-  useEffect(() => {
-    setRowCountState((prevRowCountState) =>
-      meta?.totalItems !== undefined ? meta?.totalItems - 1 : prevRowCountState
-    );
-  }, [meta?.totalItems, setRowCountState]);
+  const rows = items.map((product: ProductItem, index: number) => ({
+    id: index + 1,
+    name: product.product_name,
+    price: product.price,
+    isApproved: product.is_approved,
+    isPublic: product.is_public,
+    isService: product.is_service,
+    company: companyData.name || 'N/A', // Assuming you have company_name in the product data
+  }));
 
   useEffect(() => {
     dispatch(
       fetchProductsByCompanyId({
         companyId: parseInt(selectedCompanyId),
         options: {
-          page: paginationModel.page === 0 ? 1 : paginationModel.page + 1,
+          page: paginationModel.page + 1,
           limit: paginationModel.pageSize,
         },
       })
     );
+
     return () => {
       dispatch(clearProductsData());
     };
-  }, [paginationModel]);
+  }, [paginationModel, dispatch, selectedCompanyId]);
+
   const handlePaginationModelChange = (newPaginationModel: {
     page: number;
     pageSize: number;
   }) => {
+    console.log('====================================');
+    console.log(newPaginationModel);
+    console.log('====================================');
     setPaginationModel(newPaginationModel);
   };
+
   return (
     <>
       <AddProductModal
         companyId={parseInt(selectedCompanyId)}
         open={openModal}
         handleClose={(event: MouseEvent, reason: string) => {
-          if (reason === 'backdropClick') {
-            event.stopPropagation();
-            return;
+          if (reason !== 'backdropClick') {
+            setOpenModal(false);
           }
-          handleOpenCloseModal(false);
         }}
         onSubmit={(data: CreateProductType[]) => {
           createProducts(data);
         }}
-      ></AddProductModal>
-      {!isEmbedded && <h2>{items[0]?.name}</h2>}
-      <Card raised sx={{ borderRadius: '12px' }}>
+      />
+      {!isEmbedded && <h2>test</h2>}
+      <Card raised sx={{ borderRadius: '12px', width: '100%' }}>
         {isEmbedded && (
           <CardHeader
             title='Productos'
@@ -137,9 +135,7 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
                   <Button
                     variant='outlined'
                     startIcon={<AddOutlined />}
-                    onClick={() => {
-                      handleOpenCloseModal(true);
-                    }}
+                    onClick={() => setOpenModal(true)}
                   >
                     <Typography>Agregar Productos</Typography>
                   </Button>
@@ -148,12 +144,12 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
             }
           />
         )}
-        {(rows && Boolean(rows.length)) ?? (
-          <CardContent>
+        <CardContent>
+          <Box sx={{ height: 400, width: '100%', overflowX: 'auto' }}>
             <DataGrid
-              rows={rows ?? []}
+              rows={rows}
               columns={columns}
-              rowCount={rowCountState}
+              rowCount={totalItems}
               loading={loading}
               paginationMode='server'
               onPaginationModelChange={handlePaginationModelChange}
@@ -165,12 +161,13 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
                   opacity: 0.5,
                 },
               }}
+              slots={{ noRowsOverlay: NoRowsOverlay }}
             />
-          </CardContent>
-        )}
+          </Box>
+        </CardContent>
       </Card>
     </>
   );
-  // }
 };
+
 export default ProductsByCompany;

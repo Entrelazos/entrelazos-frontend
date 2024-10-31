@@ -3,19 +3,10 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { Box } from '@mui/material';
 import MiniDrawer, { DrawerHeader } from '../components/Drawer';
 import Breadcrumb from '../components/Breadcrumb';
-import { ADMIN_ROUTES_INFO } from '../constants/constants';
+import { ROUTES_INFO } from '../constants/constants';
+import { getComponentWithProps } from '../utils/Common';
 
 export const AdminRoutes: React.FC = () => {
-  const getComponentWithProps = (breadcrumbId, Component) => {
-    switch (breadcrumbId) {
-      case 'perfil-compania':
-        return <Component isCompany={true} />;
-      // Add more cases as needed for other breadcrumbIds
-      default:
-        return <Component />;
-    }
-  };
-
   return (
     <Box sx={{ display: 'flex' }}>
       <MiniDrawer />
@@ -25,7 +16,7 @@ export const AdminRoutes: React.FC = () => {
           <Breadcrumb />
         </Box>
         <Routes>
-          {ADMIN_ROUTES_INFO.map(
+          {ROUTES_INFO.ADMIN_ROUTES_INFO.map(
             ({ id, path, breadcrumbId, component: Component }) => (
               <Route
                 path={path}

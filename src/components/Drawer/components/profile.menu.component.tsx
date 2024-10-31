@@ -5,6 +5,7 @@ import {
   MoreVert,
   SettingsOutlined,
   AdminPanelSettingsOutlined,
+  LogoutOutlined,
 } from '@mui/icons-material';
 import {
   Badge,
@@ -20,9 +21,12 @@ import {
   Typography,
 } from '@mui/material';
 import { FC, MouseEventHandler } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { hasRole } from '../../../store/auth';
+import { startLogout } from '../../../store/auth';
+import { AsyncThunkAction, Dispatch } from '@reduxjs/toolkit';
+import { AppDispatch } from '../../../store/store';
 
 interface ProfileMenuComponent {
   anchorEl:
@@ -47,6 +51,10 @@ export const ProfileMenuComponent: FC<ProfileMenuComponent> = ({
   handleProfileMenuOpen,
   mobileMenuId,
 }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const handleLogout = () => {
+    dispatch(startLogout());
+  };
   const isAdmin = useSelector(hasRole('admin'));
   const renderMenu = (
     <Menu
@@ -71,18 +79,12 @@ export const ProfileMenuComponent: FC<ProfileMenuComponent> = ({
             <AccountCircleOutlined fontSize='small' />
           </ListItemIcon>
           <ListItemText>Mi cuenta</ListItemText>
-          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-            ⌘C
-          </Typography>
         </MenuItem>
         <MenuItem>
           <ListItemIcon>
             <AccountCircleOutlined fontSize='small' />
           </ListItemIcon>
           <ListItemText>Perfil</ListItemText>
-          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-            ⌘V
-          </Typography>
         </MenuItem>
         <Divider />
         {isAdmin && (
@@ -94,6 +96,12 @@ export const ProfileMenuComponent: FC<ProfileMenuComponent> = ({
           </MenuItem>
         )}
       </MenuList>
+      <MenuItem onClick={handleLogout}>
+        <ListItemIcon>
+          <LogoutOutlined fontSize='small' />
+        </ListItemIcon>
+        <ListItemText>Salir</ListItemText>
+      </MenuItem>
     </Menu>
   );
 

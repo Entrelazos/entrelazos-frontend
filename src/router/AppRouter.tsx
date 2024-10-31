@@ -6,30 +6,35 @@ import { AuthRoutes } from './PublicRoute';
 import { RootState } from '../store/store';
 import { hasRole } from '../store/auth';
 import { AdminRoutes } from './AdminRoutes';
+import { Box } from '@mui/material';
+import Breadcrumb from '../components/Breadcrumb';
+import MiniDrawer, { DrawerHeader } from '../components/Drawer';
 
 const AppRouter: React.FC = () => {
   const { status } = useSelector((state: RootState) => state.auth);
   const isAdmin = useSelector(hasRole('admin'));
 
   return (
-    <Routes>
-      {status === 'authenticated' ? (
-        <>
-          <Route path='/*' element={<PrivateRoute />} />
-          {isAdmin && <Route path='/admin/*' element={<AdminRoutes />} />}
-        </>
-      ) : (
-        <Route path='/*' element={<AuthRoutes />} />
-      )}
-
-      <Route path='/*' element={<Navigate to='/login' />} />
-
-      {/* Login y Registro */}
-      {/* <Route path="/auth/*" element={ <AuthRoutes /> } /> */}
-
-      {/* JournalApp */}
-      {/* <Route path="/*" element={ <JournalRoutes /> } /> */}
-    </Routes>
+    <Box sx={{ display: 'flex' }}>
+      <MiniDrawer />
+      <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
+        <DrawerHeader />
+        <Box marginBottom={3}>
+          <Breadcrumb />
+        </Box>
+        <Routes>
+          {status === 'authenticated' ? (
+            <>
+              <Route path='/*' element={<PrivateRoute />} />
+              {isAdmin && <Route path='/admin/*' element={<AdminRoutes />} />}
+            </>
+          ) : (
+            <Route path='/*' element={<AuthRoutes />} />
+          )}
+          <Route path='/*' element={<Navigate to='/login' />} />
+        </Routes>
+      </Box>
+    </Box>
   );
 };
 

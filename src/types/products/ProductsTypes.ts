@@ -32,6 +32,11 @@ export interface ProductMeta {
 }
 
 export interface ProductApiResponse {
-  items: CategoryItem[];
+  items: CompanyItem[];
+  meta: ProductMeta;
+}
+
+export interface ProductByCompanyApiResponse {
+  items: ProductItem[];
   meta: ProductMeta;
 }

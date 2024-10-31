@@ -4,6 +4,10 @@ import {
   getProductsByCompanyId,
 } from '../../services/products/productsService';
 import { CompanyApiResponse } from '../../types/companies/CompaniesTypes';
+import {
+  ProductApiResponse,
+  ProductByCompanyApiResponse,
+} from '../../types/products/ProductsTypes';
 
 export const fetchProductsByCompanyId = createAsyncThunk(
   'products/fetchProductsByCompanyId',
@@ -13,8 +17,8 @@ export const fetchProductsByCompanyId = createAsyncThunk(
   }: {
     companyId: number;
     options: { page: number; limit: number };
-  }): Promise<CompanyApiResponse> => {
-    const response: CompanyApiResponse = await getProductsByCompanyId(
+  }): Promise<ProductByCompanyApiResponse> => {
+    const response: ProductByCompanyApiResponse = await getProductsByCompanyId(
       companyId,
       options
     );

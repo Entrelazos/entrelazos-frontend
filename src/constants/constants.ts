@@ -20,6 +20,8 @@ import AddCompanies from '../pages/Companies/add/companies.add';
 import ProfilePage from '../pages/Profile/profile.page';
 import ProductsByCompany from '../pages/ProductosServicios/ProductsByCompany';
 import AdminPage from '../pages/Admin/admin.page';
+import Login from '../pages/Login/Login';
+import { Signup } from '../pages/signup/Signup';
 
 export const CATEGORIES = [
   { name: 'Otros', image: 'otros.png' },
@@ -81,74 +83,91 @@ export const PROFILE_TABS = [
   // },
 ];
 
-export const ROUTES_INFO = [
-  {
-    id: 1,
-    breadcrumbId: 'dashboard',
-    name: 'Home',
-    path: '/dashboard',
-    component: Dashboard,
-  },
-  {
-    id: 2,
-    breadcrumbId: 'productos-servicios',
-    name: 'Productos y Servicios',
-    path: '/productos-servicios',
-    component: ProductosServicios,
-  },
-  {
-    id: 3,
-    breadcrumbId: ':categoryId',
-    name: '',
-    path: '/productos-servicios/:categoryId',
-    component: ProductsByCategory,
-  },
-  {
-    id: 4,
-    breadcrumbId: 'empresas',
-    name: 'Empresas',
-    path: '/empresas',
-    component: CompaniesPage,
-  },
-  {
-    id: 5,
-    breadcrumbId: ':companyId',
-    name: '',
-    path: '/empresas/productos-servicios/:companyId',
-    component: ProductsByCompany,
-  },
-  {
-    id: 6,
-    breadcrumbId: 'inscribir-empresas',
-    name: 'Inscribir Empresas',
-    path: '/inscribir-empresas',
-    component: AddCompanies,
-  },
-  {
-    id: 7,
-    breadcrumbId: 'perfil-compania',
-    name: 'Perfil de Compañia',
-    path: '/empresas/perfil-compania/:companyName',
-    component: ProfilePage,
-  },
-  {
-    id: 8,
-    breadcrumbId: 'perfil-usuario',
-    name: 'Perfil de Usuario',
-    path: '/empresas/perfil-usuario/:userId',
-    component: ProfilePage,
-  },
-];
-
-export const ADMIN_ROUTES_INFO = [
-  {
-    id: 9,
-    breadcrumbId: 'admin',
-    name: 'Administracion',
-    path: '/',
-    component: AdminPage,
-  },
-];
+export const ROUTES_INFO = {
+  PUBLIC_ROUTES: [
+    {
+      id: 10,
+      breadcrumbId: 'login',
+      name: 'Login',
+      path: '/login',
+      component: Login,
+    },
+    {
+      id: 10,
+      breadcrumbId: 'signup',
+      name: 'Signup',
+      path: '/signup',
+      component: Signup,
+    },
+    {
+      id: 2,
+      breadcrumbId: 'productos-servicios',
+      name: 'Productos y Servicios',
+      path: '/productos-servicios',
+      component: ProductosServicios,
+    },
+    {
+      id: 3,
+      breadcrumbId: ':categoryId',
+      name: '',
+      path: '/productos-servicios/:categoryId',
+      component: ProductsByCategory,
+    },
+    {
+      id: 4,
+      breadcrumbId: 'empresas',
+      name: 'Empresas',
+      path: '/empresas',
+      component: CompaniesPage,
+    },
+    {
+      id: 5,
+      breadcrumbId: ':companyId',
+      name: '',
+      path: '/empresas/productos-servicios/:companyId',
+      component: ProductsByCompany,
+    },
+    {
+      id: 7,
+      breadcrumbId: 'perfil-compania',
+      name: 'Perfil de Compañia',
+      path: '/empresas/perfil-compania/:companyName',
+      component: ProfilePage,
+    },
+  ],
+  PRIVATE_ROUTES: [
+    {
+      id: 1,
+      breadcrumbId: 'dashboard',
+      name: 'Home',
+      path: '/dashboard',
+      component: Dashboard,
+    },
+    {
+      id: 6,
+      breadcrumbId: 'inscribir-empresas',
+      name: 'Inscribir Empresas',
+      path: '/inscribir-empresas',
+      component: AddCompanies,
+    },
+    {
+      id: 8,
+      breadcrumbId: 'perfil-usuario',
+      name: 'Perfil de Usuario',
+      path: '/empresas/perfil-usuario/:userId',
+      component: ProfilePage,
+    },
+  ],
+  ADMIN_ROUTES_INFO: [
+    {
+      id: 9,
+      breadcrumbId: 'admin',
+      name: 'Administracion',
+      path: '/',
+      component: AdminPage,
+    },
+  ],
+};
 
 export const SOCIAL_NETWORK_DATA = [
   {

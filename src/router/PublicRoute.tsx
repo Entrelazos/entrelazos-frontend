@@ -1,14 +1,21 @@
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import Login from '../pages/Login/Login';
-import Signup from '../pages/signup/Signup';
+import { ROUTES_INFO } from '../constants/constants';
+import { getComponentWithProps } from '../utils/Common';
 
 export const AuthRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route path='/login' element={<Login />} />
-      <Route path='/signup' element={<Signup />} />
-      <Route path='/*' element={<Navigate to='/login' />} />
+      {ROUTES_INFO.PUBLIC_ROUTES.map(
+        ({ id, path, breadcrumbId, component: Component }) => (
+          <Route
+            path={path}
+            element={getComponentWithProps(breadcrumbId, Component)}
+            key={id}
+          />
+        )
+      )}
+      <Route path='/*' element={<Navigate to='/empresas' />} />
     </Routes>
   );
 };
