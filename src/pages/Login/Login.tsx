@@ -61,6 +61,7 @@ export function Login({ authError }) {
       const { email, password } = values;
 
       dispatch(startLoginWithEmailPassword({ email, password }));
+      navigate('/', { replace: true });
     }
   );
 

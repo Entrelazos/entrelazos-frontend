@@ -9,9 +9,12 @@ import { AdminRoutes } from './AdminRoutes';
 import { Box } from '@mui/material';
 import Breadcrumb from '../components/Breadcrumb';
 import MiniDrawer, { DrawerHeader } from '../components/Drawer';
+import { ROUTES_INFO } from '../constants/constants';
 
 const AppRouter: React.FC = () => {
-  const { status } = useSelector((state: RootState) => state.auth);
+  const { status, registerUserSuccess } = useSelector(
+    (state: RootState) => state.auth
+  );
   const isAdmin = useSelector(hasRole('admin'));
 
   return (
@@ -23,15 +26,50 @@ const AppRouter: React.FC = () => {
           <Breadcrumb />
         </Box>
         <Routes>
-          {status === 'authenticated' ? (
-            <>
-              <Route path='/*' element={<PrivateRoute />} />
-              {isAdmin && <Route path='/admin/*' element={<AdminRoutes />} />}
-            </>
-          ) : (
-            <Route path='/*' element={<AuthRoutes />} />
+          {/* Redirect authenticated users from root path to /dashboard */}
+          {status === 'authenticated' && (
+            <Route path='/' element={<Navigate to='/dashboard' replace />} />
           )}
-          <Route path='/*' element={<Navigate to='/login' />} />
+          {/* Public Routes */}
+          {ROUTES_INFO.PUBLIC_ROUTES.map((route) => (
+            <Route
+              key={route.id}
+              path={route.path}
+              element={
+                route.name === 'Signup' ? (
+                  <route.component registerUserSucces={registerUserSuccess} />
+                ) : (
+                  <route.component registerUserSucces={false} />
+                )
+              }
+            />
+          ))}
+
+          {/* Private Routes - only accessible if authenticated */}
+          {status === 'authenticated' &&
+            ROUTES_INFO.PRIVATE_ROUTES.map((route) => (
+              <Route
+                key={route.id}
+                path={route.path}
+                element={<route.component />}
+              />
+            ))}
+
+          {/* Admin Routes - only accessible if authenticated and isAdmin */}
+          {status === 'authenticated' &&
+            isAdmin &&
+            ROUTES_INFO.ADMIN_ROUTES_INFO.map((route) => (
+              <Route
+                key={route.id}
+                path={route.path}
+                element={<route.component />}
+              />
+            ))}
+
+          {/* Redirect unauthenticated users */}
+          {status !== 'authenticated' && (
+            <Route path='/' element={<Navigate to='/empresas' replace />} />
+          )}
         </Routes>
       </Box>
     </Box>
