@@ -10,12 +10,23 @@ import { Box } from '@mui/material';
 import Breadcrumb from '../components/Breadcrumb';
 import MiniDrawer, { DrawerHeader } from '../components/Drawer';
 import { ROUTES_INFO } from '../constants/constants';
+import { getComponentWithProps } from '../utils/Common';
+
+export interface ComponentParams {
+  signUpParam: boolean;
+  profileParam: boolean;
+}
 
 const AppRouter: React.FC = () => {
   const { status, registerUserSuccess } = useSelector(
     (state: RootState) => state.auth
   );
   const isAdmin = useSelector(hasRole('admin'));
+
+  const params: ComponentParams = {
+    signUpParam: registerUserSuccess,
+    profileParam: true,
+  };
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -30,18 +41,17 @@ const AppRouter: React.FC = () => {
           {status === 'authenticated' && (
             <Route path='/' element={<Navigate to='/dashboard' replace />} />
           )}
+
           {/* Public Routes */}
           {ROUTES_INFO.PUBLIC_ROUTES.map((route) => (
             <Route
               key={route.id}
               path={route.path}
-              element={
-                route.name === 'Signup' ? (
-                  <route.component registerUserSucces={registerUserSuccess} />
-                ) : (
-                  <route.component registerUserSucces={false} />
-                )
-              }
+              element={getComponentWithProps(
+                route.breadcrumbId,
+                route.component,
+                params
+              )}
             />
           ))}
 
@@ -51,7 +61,11 @@ const AppRouter: React.FC = () => {
               <Route
                 key={route.id}
                 path={route.path}
-                element={<route.component />}
+                element={getComponentWithProps(
+                  route.breadcrumbId,
+                  route.component,
+                  params
+                )}
               />
             ))}
 
@@ -70,6 +84,18 @@ const AppRouter: React.FC = () => {
           {status !== 'authenticated' && (
             <Route path='/' element={<Navigate to='/empresas' replace />} />
           )}
+
+          {/* Unknown routes redirect based on authentication */}
+          <Route
+            path='*'
+            element={
+              status === 'authenticated' ? (
+                <Navigate to='/dashboard' replace />
+              ) : (
+                <Navigate to='/empresas' replace />
+              )
+            }
+          />
         </Routes>
       </Box>
     </Box>

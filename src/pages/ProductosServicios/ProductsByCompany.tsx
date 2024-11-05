@@ -100,9 +100,6 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
     page: number;
     pageSize: number;
   }) => {
-    console.log('====================================');
-    console.log(newPaginationModel);
-    console.log('====================================');
     setPaginationModel(newPaginationModel);
   };
 

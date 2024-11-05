@@ -57,10 +57,10 @@ export function Login({ authError }) {
       password: '',
     },
     validationSchema,
-    (values) => {
+    async (values) => {
       const { email, password } = values;
 
-      dispatch(startLoginWithEmailPassword({ email, password }));
+      await dispatch(startLoginWithEmailPassword({ email, password }));
       navigate('/', { replace: true });
     }
   );
