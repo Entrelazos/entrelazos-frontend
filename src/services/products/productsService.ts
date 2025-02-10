@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import {
   CreateProductType,
   ProductApiResponse,
+  ProductItem,
 } from '../../types/products/ProductsTypes';
 
 const productService = axios.create({
@@ -88,6 +89,13 @@ export const createProducts = async (
       error.response?.data?.message || 'Failed to create products'
     );
   }
+};
+
+export const getSingleProduct = async (id: string): Promise<ProductItem> => {
+  try {
+    const response = await productService.get(`/${id}`);
+    return response.data;
+  } catch (error) {}
 };
 
 export default productService;

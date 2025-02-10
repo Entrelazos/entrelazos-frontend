@@ -22,6 +22,8 @@ import ProductsByCompany from '../pages/ProductosServicios/ProductsByCompany';
 import AdminPage from '../pages/Admin/admin.page';
 import Login from '../pages/Login/Login';
 import { Signup } from '../pages/signup/Signup';
+import { v4 as uuidv4 } from 'uuid';
+import ProductPage from '../pages/ProductosServicios/product.page';
 
 export const CATEGORIES = [
   { name: 'Otros', image: 'otros.png' },
@@ -86,72 +88,79 @@ export const PROFILE_TABS = [
 export const ROUTES_INFO = {
   PUBLIC_ROUTES: [
     {
-      id: 10,
+      id: uuidv4(),
       breadcrumbId: 'login',
       name: 'Login',
       path: '/login',
       component: Login,
     },
     {
-      id: 10,
+      id: uuidv4(),
       breadcrumbId: 'signup',
       name: 'Signup',
       path: '/signup',
       component: Signup,
     },
     {
-      id: 2,
+      id: uuidv4(),
       breadcrumbId: 'productos-servicios',
       name: 'Productos y Servicios',
       path: '/productos-servicios',
       component: ProductosServicios,
     },
     {
-      id: 3,
+      id: uuidv4(),
       breadcrumbId: ':categoryId',
       name: '',
       path: '/productos-servicios/:categoryId',
       component: ProductsByCategory,
     },
     {
-      id: 4,
+      id: uuidv4(),
       breadcrumbId: 'empresas',
       name: 'Empresas',
       path: '/empresas',
       component: CompaniesPage,
     },
     {
-      id: 5,
+      id: uuidv4(),
       breadcrumbId: ':companyId',
       name: '',
       path: '/empresas/productos-servicios/:companyId',
       component: ProductsByCompany,
     },
     {
-      id: 7,
+      id: uuidv4(),
       breadcrumbId: 'perfil-compania',
       name: 'Perfil de Compañia',
       path: '/empresas/perfil-compania/:companyName',
       component: ProfilePage,
     },
+    {
+      id: uuidv4(),
+      breadcrumbId: 'producto',
+      name: 'Producto',
+      path: '/productos/:productId',
+      component: ProductPage,
+    },
   ],
   PRIVATE_ROUTES: [
     {
-      id: 1,
+      id: uuidv4(),
       breadcrumbId: 'dashboard',
       name: 'Home',
       path: '/dashboard',
       component: Dashboard,
     },
     {
-      id: 6,
+      id: uuidv4(),
       breadcrumbId: 'inscribir-empresas',
       name: 'Inscribir Empresas',
       path: '/inscribir-empresas',
       component: AddCompanies,
     },
     {
-      id: 8,
+      id: uuidv4(),
       breadcrumbId: 'perfil-usuario',
       name: 'Perfil de Usuario',
       path: '/empresas/perfil-usuario/:userId',
@@ -160,7 +169,7 @@ export const ROUTES_INFO = {
   ],
   ADMIN_ROUTES_INFO: [
     {
-      id: 9,
+      id: uuidv4(),
       breadcrumbId: 'admin',
       name: 'Administracion',
       path: '/',

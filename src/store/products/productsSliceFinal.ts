@@ -6,7 +6,10 @@ import {
   ProductByCompanyApiResponse,
   ProductItem,
 } from '../../types/products/ProductsTypes';
-import { fetchProductsByCompanyId } from './productsThunks';
+import {
+  fetchProductsByCompanyId,
+  fetchProductsByCategoryId,
+} from './productsThunks';
 
 // Async thunk for fetching products by category
 export const fetchProductsByCategory = createAsyncThunk(
@@ -47,6 +50,7 @@ const productsSlice = createSlice({
   reducers: {
     clearProductsData: (state) => {
       state.byCompany = null;
+      state.byCategory = null;
       state.loading = false;
       state.error = null;
     },
@@ -72,20 +76,22 @@ const productsSlice = createSlice({
       })
 
       // Handle fetchProductsByCategory actions
-      .addCase(fetchProductsByCategory.pending, (state) => {
+      .addCase(fetchProductsByCategoryId.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchProductsByCategory.fulfilled, (state, action) => {
+      .addCase(fetchProductsByCategoryId.fulfilled, (state, action) => {
         state.loading = false;
-        state.byCategory = action.payload.items;
+        state.byCategory = action.payload;
       })
-      .addCase(fetchProductsByCategory.rejected, (state, action) => {
+      .addCase(fetchProductsByCategoryId.rejected, (state, action) => {
         state.loading = false;
         state.error =
           action.error.message || 'Failed to fetch products by category';
       });
   },
 });
+
+export const { clearProductsData } = productsSlice.actions;
 
 export default productsSlice.reducer;

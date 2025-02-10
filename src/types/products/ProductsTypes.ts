@@ -8,6 +8,7 @@ export interface ProductItem {
   is_public: boolean;
   is_service: boolean;
   is_approved: boolean;
+  product_description: string;
   company: CompanyItem;
 }
 

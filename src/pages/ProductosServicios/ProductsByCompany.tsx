@@ -1,13 +1,18 @@
 import { FC, useEffect, useState, MouseEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { AppDispatch, RootState } from '../../store/store';
 import { fetchProductsByCompanyId } from '../../store/products/productsThunks';
 import {
   CreateProductType,
   ProductItem,
 } from '../../types/products/ProductsTypes';
-import { DataGrid, GridColDef, GridOverlay } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridColDef,
+  GridOverlay,
+  GridRowParams,
+} from '@mui/x-data-grid';
 import {
   Box,
   Button,
@@ -16,12 +21,12 @@ import {
   CardHeader,
   Typography,
 } from '@mui/material';
-import { clearProductsData } from '../../store/products/productsSlice';
 import { AddOutlined } from '@mui/icons-material';
 import { isMyCompany } from '../../store/companies/companiesSlice';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import AddProductModal from './components/AddProductModal';
 import { createProducts } from '../../services/products/productsService';
+import { clearProductsData } from '../../store/products/productsSliceFinal';
 
 interface ProductsByCompanyProps {
   companyIdParam?: string;
@@ -47,6 +52,7 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
   const { data: companyData } = useSelector(
     (state: RootState) => state.company
   );
+  const navigate = useNavigate();
 
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
@@ -67,17 +73,18 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
     { field: 'isService', headerName: 'Servicio', width: 150 },
     ...(isEmbedded
       ? []
-      : [{ field: 'company', headerName: 'Empresa', flex: 1 }]), // Conditionally include company column
+      : [{ field: 'company', headerName: 'Empresa', flex: 1 }]),
   ];
 
   const rows = items.map((product: ProductItem, index: number) => ({
     id: index + 1,
+    dbId: product.id,
     name: product.product_name,
     price: product.price,
     isApproved: product.is_approved,
     isPublic: product.is_public,
     isService: product.is_service,
-    company: companyData.name || 'N/A', // Assuming you have company_name in the product data
+    company: companyData.name || 'N/A',
   }));
 
   useEffect(() => {
@@ -101,6 +108,11 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
     pageSize: number;
   }) => {
     setPaginationModel(newPaginationModel);
+  };
+
+  const handleRowClick = (params: GridRowParams) => {
+    const { row } = params;
+    navigate(`/productos/${row.dbId}`);
   };
 
   return (
@@ -159,6 +171,7 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
                 },
               }}
               slots={{ noRowsOverlay: NoRowsOverlay }}
+              onRowClick={(params) => handleRowClick(params)}
             />
           </Box>
         </CardContent>

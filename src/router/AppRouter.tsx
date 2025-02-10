@@ -31,7 +31,12 @@ const AppRouter: React.FC = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       <MiniDrawer />
-      <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
+      <Box
+        component='main'
+        width='100%'
+        sx={{ flexGrow: 1, p: 3 }}
+        overflow='hidden'
+      >
         <DrawerHeader />
         <Box marginBottom={3}>
           <Breadcrumb />

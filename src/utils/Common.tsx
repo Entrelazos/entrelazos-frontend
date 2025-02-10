@@ -14,7 +14,7 @@ const setupInterceptors = (instance) => {
 const getComponentWithProps = (
   breadcrumbId: string,
   Component: React.ComponentType<any>,
-  params: ComponentParams
+  params?: ComponentParams
 ) => {
   switch (breadcrumbId) {
     case 'perfil-compania':

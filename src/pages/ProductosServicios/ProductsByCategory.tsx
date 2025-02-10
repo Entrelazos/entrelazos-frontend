@@ -6,6 +6,7 @@ import { fetchProductsByCategoryId } from '../../store/products/productsThunks';
 import { ProductItem } from '../../types/products/ProductsTypes';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import {
+  Box,
   Card,
   CardContent,
   IconButton,
@@ -13,9 +14,11 @@ import {
   ImageListItem,
   ImageListItemBar,
   ListSubheader,
+  Theme,
+  useMediaQuery,
 } from '@mui/material';
-import { clearProductsData } from '../../store/products/productsSlice';
 import { Info } from '@mui/icons-material';
+import { clearProductsData } from '../../store/products/productsSliceFinal';
 
 const columns: GridColDef[] = [
   { field: 'name', headerName: 'Nombre', width: 70, flex: 1 },
@@ -29,9 +32,19 @@ const columns: GridColDef[] = [
 const ProductsByCategory: FC = () => {
   const { categoryId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const { data, loading, error } = useSelector(
+  const { byCategory, loading, error } = useSelector(
     (state: RootState) => state.products
   );
+
+  const isSm = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+  const isMd = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
+  const isLg = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
+
+  // Determine the number of columns based on breakpoints
+  let cols = 1; // Default for extra-small screens
+  if (isLg) cols = 5;
+  else if (isMd) cols = 4;
+  else if (isSm) cols = 2;
 
   useEffect(() => {
     dispatch(fetchProductsByCategoryId(parseInt(categoryId)));
@@ -46,14 +59,25 @@ const ProductsByCategory: FC = () => {
   if (error) {
     return <p>{error}</p>;
   }
-  if (data) {
-    const { items, meta } = data || {
+  if (byCategory) {
+    const { items, meta } = byCategory || {
       items: [],
       meta: { currentPage: 1, itemsPerPage: 10 },
     };
 
     return (
-      <ImageList cols={8}>
+      <ImageList
+        sx={{
+          width: '100%',
+          gap: {
+            xs: 4, // Smaller gap on extra-small screens
+            sm: 8, // Medium gap on small screens
+            md: 12, // Larger gap on medium screens
+            lg: 16, // Largest gap on large screens
+          },
+        }}
+        cols={cols} // Set columns responsively
+      >
         {items[0]?.products?.map((item) => (
           <ImageListItem key={item.id}>
             <img
