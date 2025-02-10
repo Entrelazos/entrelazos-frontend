@@ -10,6 +10,7 @@ export interface ProductItem {
   is_approved: boolean;
   product_description: string;
   company: CompanyItem;
+  images: string[];
 }
 
 export interface CreateProductType {
