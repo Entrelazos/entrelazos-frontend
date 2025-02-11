@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 
 const Breadcrumb = () => {
-  const { data, loading, error } = useSelector(
+  const { byCompany, loading, error } = useSelector(
     (state: RootState) => state.products
   );
   const location = useLocation();
@@ -31,7 +31,7 @@ const Breadcrumb = () => {
     pathnames.forEach((pathname, index) => {
       if (pathname === 'productos-servicios' && pathnames[index + 1]) {
         const productId = pathnames[index + 1];
-        const category = data?.items?.find(
+        const category = byCompany?.items?.find(
           (item) => item.id === parseInt(productId)
         );
         if (category) {
@@ -40,7 +40,7 @@ const Breadcrumb = () => {
             path: '/productos-servicios',
           });
           updatedBreadcrumbs.push({
-            name: category.category_name,
+            name: category.company.categories,
             path: `/productos-servicios/${productId}`,
           });
         }
@@ -55,7 +55,7 @@ const Breadcrumb = () => {
     });
 
     setBreadcrumbs(updatedBreadcrumbs);
-  }, [location.pathname, data?.items]);
+  }, [location.pathname, byCompany?.items]);
 
   return (
     <Breadcrumbs aria-label='breadcrumb'>
