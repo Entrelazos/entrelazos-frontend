@@ -60,9 +60,7 @@ const ProductPage: FC = () => {
               <Skeleton variant='rectangular' width='100%' height={400} />
             ) : images.length > 0 ? (
               <CarouselComponent images={images} width='100%' />
-            ) : (
-              <Skeleton variant='rectangular' width='100%' height={400} />
-            )}
+            ) : null}
           </Box>
         </Grid2>
         <Grid2 xs={12} md={6} lg={6}>

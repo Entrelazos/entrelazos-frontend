@@ -15,6 +15,7 @@ import AddIcon from '@mui/icons-material/Add';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShareIcon from '@mui/icons-material/Share';
 import { ProductItem } from '../../../types/products/ProductsTypes';
+import parse from 'html-react-parser';
 
 interface ProductCardProperties {
   product: ProductItem;
@@ -35,39 +36,39 @@ const ProductCard: FC<ProductCardProperties> = ({ product }) => {
         borderRadius: 2,
       }}
     >
-      <Typography color='error' fontWeight='bold'>
+      {/* <Typography color='error' fontWeight='bold'>
         OUT OF STOCK
-      </Typography>
+      </Typography> */}
 
       <Typography variant='h6' fontWeight='bold' mt={1}>
         {product.product_name}
       </Typography>
 
-      <Grid container alignItems='center' spacing={1}>
+      {/* <Grid container alignItems='center' spacing={1}>
         <Grid item>
           <Rating value={4} readOnly size='small' />
         </Grid>
         <Grid item>
           <Typography variant='body2'>(1.95k reviews)</Typography>
         </Grid>
-      </Grid>
+      </Grid> */}
 
-      <Typography
+      {/* <Typography
         mt={1}
         color='grey.500'
         sx={{ textDecoration: 'line-through' }}
       >
         ${product.price}
-      </Typography>
+      </Typography> */}
       <Typography variant='h6' fontWeight='bold'>
         ${product.price}
       </Typography>
 
       <Typography mt={1} fontSize='14px' color='grey.400'>
-        {product.product_description}
+        {parse(product.product_description)}
       </Typography>
 
-      <Typography mt={2} fontWeight='bold'>
+      {/* <Typography mt={2} fontWeight='bold'>
         Color
       </Typography>
       <Chip label='✔' color='error' sx={{ mt: 1, fontSize: 18 }} />
@@ -86,9 +87,9 @@ const ProductCard: FC<ProductCardProperties> = ({ product }) => {
             {s}
           </MenuItem>
         ))}
-      </Select>
+      </Select> */}
 
-      <Typography mt={2} fontWeight='bold'>
+      {/* <Typography mt={2} fontWeight='bold'>
         Quantity
       </Typography>
       <Box display='flex' alignItems='center' mt={1}>
@@ -102,9 +103,9 @@ const ProductCard: FC<ProductCardProperties> = ({ product }) => {
         <Typography ml={2} color='grey.500'>
           Available: 0
         </Typography>
-      </Box>
+      </Box> */}
 
-      <Grid container spacing={1} mt={2}>
+      {/* <Grid container spacing={1} mt={2}>
         <Grid item xs={6}>
           <Button
             variant='contained'
@@ -125,16 +126,16 @@ const ProductCard: FC<ProductCardProperties> = ({ product }) => {
             Buy now
           </Button>
         </Grid>
-      </Grid>
+      </Grid> */}
 
-      <Grid container justifyContent='space-between' mt={2}>
+      {/* <Grid container justifyContent='space-between' mt={2}>
         <Button startIcon={<FavoriteBorderIcon />} sx={{ color: 'grey.400' }}>
           Favorite
         </Button>
         <Button startIcon={<ShareIcon />} sx={{ color: 'grey.400' }}>
           Share
         </Button>
-      </Grid>
+      </Grid> */}
     </Box>
   );
 };

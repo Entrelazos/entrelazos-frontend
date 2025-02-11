@@ -25,6 +25,7 @@
     "axios": "^1.6.0",
     "bootstrap": "^5.2.3",
     "formik": "^2.4.5",
+    "html-react-parser": "^5.2.2",
     "immer": "^9.0.16",
     "mui-tel-input": "^4.0.1",
     "phosphor-react": "^1.4.1",
