@@ -20,6 +20,10 @@ import AddCompanies from '../pages/Companies/add/companies.add';
 import ProfilePage from '../pages/Profile/profile.page';
 import ProductsByCompany from '../pages/ProductosServicios/ProductsByCompany';
 import AdminPage from '../pages/Admin/admin.page';
+import Login from '../pages/Login/Login';
+import { Signup } from '../pages/signup/Signup';
+import { v4 as uuidv4 } from 'uuid';
+import ProductPage from '../pages/ProductosServicios/product.page';
 
 export const CATEGORIES = [
   { name: 'Otros', image: 'otros.png' },
@@ -81,74 +85,98 @@ export const PROFILE_TABS = [
   // },
 ];
 
-export const ROUTES_INFO = [
-  {
-    id: 1,
-    breadcrumbId: 'dashboard',
-    name: 'Home',
-    path: '/dashboard',
-    component: Dashboard,
-  },
-  {
-    id: 2,
-    breadcrumbId: 'productos-servicios',
-    name: 'Productos y Servicios',
-    path: '/productos-servicios',
-    component: ProductosServicios,
-  },
-  {
-    id: 3,
-    breadcrumbId: ':categoryId',
-    name: '',
-    path: '/productos-servicios/:categoryId',
-    component: ProductsByCategory,
-  },
-  {
-    id: 4,
-    breadcrumbId: 'empresas',
-    name: 'Empresas',
-    path: '/empresas',
-    component: CompaniesPage,
-  },
-  {
-    id: 5,
-    breadcrumbId: ':companyId',
-    name: '',
-    path: '/empresas/productos-servicios/:companyId',
-    component: ProductsByCompany,
-  },
-  {
-    id: 6,
-    breadcrumbId: 'inscribir-empresas',
-    name: 'Inscribir Empresas',
-    path: '/inscribir-empresas',
-    component: AddCompanies,
-  },
-  {
-    id: 7,
-    breadcrumbId: 'perfil-compania',
-    name: 'Perfil de Compañia',
-    path: '/empresas/perfil-compania/:companyName',
-    component: ProfilePage,
-  },
-  {
-    id: 8,
-    breadcrumbId: 'perfil-usuario',
-    name: 'Perfil de Usuario',
-    path: '/empresas/perfil-usuario/:userId',
-    component: ProfilePage,
-  },
-];
-
-export const ADMIN_ROUTES_INFO = [
-  {
-    id: 9,
-    breadcrumbId: 'admin',
-    name: 'Administracion',
-    path: '/',
-    component: AdminPage,
-  },
-];
+export const ROUTES_INFO = {
+  PUBLIC_ROUTES: [
+    {
+      id: uuidv4(),
+      breadcrumbId: 'login',
+      name: 'Login',
+      path: '/login',
+      component: Login,
+    },
+    {
+      id: uuidv4(),
+      breadcrumbId: 'signup',
+      name: 'Signup',
+      path: '/signup',
+      component: Signup,
+    },
+    {
+      id: uuidv4(),
+      breadcrumbId: 'productos-servicios',
+      name: 'Productos y Servicios',
+      path: '/productos-servicios',
+      component: ProductosServicios,
+    },
+    {
+      id: uuidv4(),
+      breadcrumbId: ':categoryId',
+      name: '',
+      path: '/productos-servicios/:categoryId',
+      component: ProductsByCategory,
+    },
+    {
+      id: uuidv4(),
+      breadcrumbId: 'empresas',
+      name: 'Empresas',
+      path: '/empresas',
+      component: CompaniesPage,
+    },
+    {
+      id: uuidv4(),
+      breadcrumbId: ':companyId',
+      name: '',
+      path: '/empresas/productos-servicios/:companyId',
+      component: ProductsByCompany,
+    },
+    {
+      id: uuidv4(),
+      breadcrumbId: 'perfil-compania',
+      name: 'Perfil de Compañia',
+      path: '/empresas/perfil-compania/:companyName',
+      component: ProfilePage,
+    },
+    {
+      id: uuidv4(),
+      breadcrumbId: 'producto',
+      name: 'Producto',
+      path: '/productos/:productId',
+      component: ProductPage,
+    },
+  ],
+  PRIVATE_ROUTES: [
+    {
+      id: uuidv4(),
+      breadcrumbId: 'dashboard',
+      name: 'Home',
+      path: '/dashboard',
+      component: Dashboard,
+    },
+    {
+      id: uuidv4(),
+      breadcrumbId: 'inscribir-empresas',
+      name: 'Inscribir Empresas',
+      path: '/inscribir-empresas',
+      component: AddCompanies,
+    },
+    {
+      id: uuidv4(),
+      breadcrumbId: 'perfil-usuario',
+      name: 'Perfil de Usuario',
+      path: '/empresas/perfil-usuario/:userId',
+      component: ProfilePage,
+    },
+  ],
+  ADMIN_ROUTES_INFO: [
+    {
+      id: uuidv4(),
+      breadcrumbId: 'admin',
+      name: 'Administracion',
+      path: '/',
+      component: AdminPage,
+    },
+  ],
+};
 
 export const SOCIAL_NETWORK_DATA = [
   {

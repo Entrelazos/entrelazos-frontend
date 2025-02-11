@@ -41,7 +41,7 @@ function Copyright(props: any) {
 
 const theme = createTheme();
 
-export function Signup({ registerUserSucces }) {
+export function Signup({ registerUserSuccess }) {
   const validationSchema = {
     email: yup
       .string()
@@ -106,8 +106,8 @@ export function Signup({ registerUserSucces }) {
     navigate('/', { replace: true });
   };
 
-  const successRegisterNotification = (registerUserSucces) => {
-    if (registerUserSucces === true) {
+  const successRegisterNotification = (registerUserSuccess) => {
+    if (registerUserSuccess === true) {
       toast.success('Usuario registrado!', {
         position: 'top-right',
         autoClose: 5000,
@@ -125,8 +125,8 @@ export function Signup({ registerUserSucces }) {
   };
 
   useEffect(() => {
-    successRegisterNotification(registerUserSucces);
-  }, [registerUserSucces]);
+    successRegisterNotification(registerUserSuccess);
+  }, [registerUserSuccess]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -274,7 +274,7 @@ export function Signup({ registerUserSucces }) {
               </Grid>
             </Grid>
 
-            {registerUserSucces === false ? (
+            {registerUserSuccess === false ? (
               <h6 style={{ color: 'red' }}>
                 Oops, parece que ha habido un error.
               </h6>
@@ -307,7 +307,7 @@ export function Signup({ registerUserSucces }) {
 }
 
 const mapStateToProps = (state: AuthState) => ({
-  registerUserSucces: state.registerUserSuccess,
+  registerUserSuccess: state.registerUserSuccess,
 });
 
 export default connect(mapStateToProps)(Signup);

@@ -4,28 +4,19 @@ import { Box } from '@mui/material';
 import MiniDrawer, { DrawerHeader } from '../components/Drawer';
 import Breadcrumb from '../components/Breadcrumb';
 import { ROUTES_INFO } from '../constants/constants';
+import { getComponentWithProps } from '../utils/Common';
 
 export const PrivateRoute: React.FC = () => {
-  const getComponentWithProps = (breadcrumbId, Component) => {
-    switch (breadcrumbId) {
-      case 'perfil-compania':
-        return <Component isCompany={true} />;
-      // Add more cases as needed for other breadcrumbIds
-      default:
-        return <Component />;
-    }
-  };
-
   return (
     <Box sx={{ display: 'flex' }}>
       <MiniDrawer />
-      <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
+      <Box component='main' width='100%' sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <Box marginBottom={3}>
           <Breadcrumb />
         </Box>
         <Routes>
-          {ROUTES_INFO.map(
+          {ROUTES_INFO.PRIVATE_ROUTES.map(
             ({ id, path, breadcrumbId, component: Component }) => (
               <Route
                 path={path}

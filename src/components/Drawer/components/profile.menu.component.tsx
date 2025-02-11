@@ -5,10 +5,13 @@ import {
   MoreVert,
   SettingsOutlined,
   AdminPanelSettingsOutlined,
+  LogoutOutlined,
+  LoginOutlined,
 } from '@mui/icons-material';
 import {
   Badge,
   Box,
+  Button,
   Divider,
   IconButton,
   ListItemIcon,
@@ -20,9 +23,11 @@ import {
   Typography,
 } from '@mui/material';
 import { FC, MouseEventHandler } from 'react';
-import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 import { hasRole } from '../../../store/auth';
+import { startLogout } from '../../../store/auth';
+import { AppDispatch, RootState } from '../../../store/store';
 
 interface ProfileMenuComponent {
   anchorEl:
@@ -47,6 +52,13 @@ export const ProfileMenuComponent: FC<ProfileMenuComponent> = ({
   handleProfileMenuOpen,
   mobileMenuId,
 }) => {
+  const { status } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch<AppDispatch>();
+  const handleLogout = () => {
+    dispatch(startLogout());
+    navigate('/login');
+  };
+  const navigate = useNavigate();
   const isAdmin = useSelector(hasRole('admin'));
   const renderMenu = (
     <Menu
@@ -71,18 +83,12 @@ export const ProfileMenuComponent: FC<ProfileMenuComponent> = ({
             <AccountCircleOutlined fontSize='small' />
           </ListItemIcon>
           <ListItemText>Mi cuenta</ListItemText>
-          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-            ⌘C
-          </Typography>
         </MenuItem>
         <MenuItem>
           <ListItemIcon>
             <AccountCircleOutlined fontSize='small' />
           </ListItemIcon>
           <ListItemText>Perfil</ListItemText>
-          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-            ⌘V
-          </Typography>
         </MenuItem>
         <Divider />
         {isAdmin && (
@@ -94,12 +100,38 @@ export const ProfileMenuComponent: FC<ProfileMenuComponent> = ({
           </MenuItem>
         )}
       </MenuList>
+      {status === 'authenticated' ? (
+        <MenuItem onClick={handleLogout}>
+          <ListItemIcon>
+            <LogoutOutlined fontSize='small' />
+          </ListItemIcon>
+          <ListItemText>Salir</ListItemText>
+        </MenuItem>
+      ) : (
+        <MenuItem onClick={() => navigate('/login')}>
+          <ListItemIcon>
+            <LoginOutlined fontSize='small' />
+          </ListItemIcon>
+          <ListItemText>Ingresar</ListItemText>
+        </MenuItem>
+      )}
     </Menu>
   );
 
   return (
     <>
-      <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+      <Box sx={{ display: { xs: 'none', md: 'flex' } }} alignItems='center'>
+        {status !== 'authenticated' && (
+          <Button
+            onClick={() => navigate('/login')}
+            sx={{ marginRight: 2 }}
+            variant='text'
+            size='small'
+            startIcon={<LoginOutlined />}
+          >
+            Ingresar
+          </Button>
+        )}
         <IconButton size='large' aria-label='show 4 new mails' color='inherit'>
           <Badge color='error'>
             <MailOutline />

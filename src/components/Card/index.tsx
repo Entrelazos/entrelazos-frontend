@@ -61,7 +61,11 @@ const CardComponent: React.FC<CardComponentProps> = ({
     <Card>
       <CardHeader
         avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label='recipe'>
+          <Avatar
+            sx={{ bgcolor: red[500] }}
+            aria-label='recipe'
+            src={avatarImage}
+          >
             {avatarTitle}
           </Avatar>
         }

@@ -45,7 +45,7 @@ const Breadcrumb = () => {
           });
         }
       } else {
-        const route = ROUTES_INFO.find(
+        const route = ROUTES_INFO.PRIVATE_ROUTES.find(
           ({ breadcrumbId }) => breadcrumbId === pathname
         );
         if (route) {

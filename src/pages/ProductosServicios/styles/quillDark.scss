@@ -1,0 +1,41 @@
+.quill-dark {
+  .ql-container {
+    height: 300px; // Set desired height here
+  }
+
+  .ql-editor {
+    color: #fff;
+    .ql-blank::before {
+      color: #fff;
+    }
+  }
+
+  .ql-toolbar {
+    background-color: #444;
+    border-color: #555;
+  }
+
+  .ql-picker {
+    color: #ddd;
+  }
+
+  .ql-stroke {
+    stroke: #ddd;
+  }
+
+  .ql-fill {
+    fill: #ddd;
+  }
+
+  .ql-picker-options {
+    background-color: #444;
+    color: #ddd;
+  }
+
+  .ql-picker-item:hover,
+  .ql-picker-label:hover,
+  .ql-picker-options .ql-picker-item.ql-selected {
+    color: #fff;
+    background-color: #666;
+  }
+}
