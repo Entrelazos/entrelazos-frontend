@@ -6,7 +6,6 @@ import { companiesSlice, companySlice } from './companies/companiesSlice';
 import companyService from '../services/companies/companyService';
 import categoriesSlice from './categories/categoriesSlice';
 import categoriesService from '../services/categories/categoriesService';
-import productsSlice from './products/productsSlice';
 import productsSliceFinal from './products/productsSliceFinal';
 
 import productService from '../services/products/productsService';
