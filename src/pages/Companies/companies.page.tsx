@@ -72,10 +72,10 @@ const CompaniesPage: FC = () => {
           {companiesData?.items.map((item) => (
             <Grid key={item.id} xs={12} md={6} lg={4}>
               <CardComponent
-                avatarImage={`${import.meta.env.VITE_BASE_FILES_URL}${item.images[1].url}`}
+                avatarImage={`${import.meta.env.VITE_BASE_FILES_URL}${item?.images[1]?.url}`}
                 title={item.name}
                 content={item.description}
-                image={`${import.meta.env.VITE_BASE_FILES_URL}${item.images[0].url}`}
+                image={`${import.meta.env.VITE_BASE_FILES_URL}${item?.images[0]?.url}`}
                 onClick={() => handleCardClick(item.name)}
               ></CardComponent>
             </Grid>
