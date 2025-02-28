@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import CardComponent from '../../components/Card';
@@ -11,40 +11,24 @@ import ChipsFilter, {
 import { fetchCategories } from '../../store/categories/categoriesThunks';
 
 const CompaniesPage: FC = () => {
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const { uid } = useSelector((state: RootState) => state.auth);
-
-  const onFilter = (categoryId: number) => {
-    if (!selectedCategories.includes(categoryId)) {
-      // Add categoryId to selectedCategories
-      setSelectedCategories([...selectedCategories, categoryId]);
-    } else {
-      // Remove categoryId from selectedCategories
-      const updatedCategories = selectedCategories.filter(
-        (id) => id !== categoryId
-      );
-      setSelectedCategories(updatedCategories);
-    }
-  };
-  const onClear = () => {
-    setSelectedCategories([]);
-  };
-
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { companiesData, loading, error } = useSelector(
+
+  const { uid } = useSelector((state: RootState) => state.auth);
+  const { companiesData, loading } = useSelector(
     (state: RootState) => state.companies
   );
-
   const { data: categories } = useSelector(
     (state: RootState) => state.categories
   );
+
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
 
   useEffect(() => {
     if (!categories) {
       dispatch(fetchCategories());
     }
-  }, [dispatch]);
+  }, [categories, dispatch]);
 
   useEffect(() => {
     dispatch(
@@ -54,40 +38,52 @@ const CompaniesPage: FC = () => {
         categoryIds: selectedCategories,
       })
     );
-  }, [dispatch, selectedCategories]);
+  }, [selectedCategories, dispatch]);
 
-  const handleCardClick = (companyName: string) => {
+  const onFilter = (categoryId: number) => {
+    setSelectedCategories((prev) =>
+      prev.includes(categoryId)
+        ? prev.filter((id) => id !== categoryId)
+        : [...prev, categoryId]
+    );
+  };
+
+  const onClear = () => setSelectedCategories([]);
+
+  const handleCardClick = (companyName: string) =>
     navigate(`perfil-compania/${companyName}`);
-  };
 
-  const renderContent = () => {
-    if (companiesData && categories) {
-      return (
-        <Grid container spacing={2} padding={2}>
-          <ChipsFilter
-            categories={categories as FilteredCategoryItem[]}
-            onFilter={onFilter}
-            onClear={onClear}
-          />
-          {companiesData?.items.map((item) => (
-            <Grid key={item.id} xs={12} md={6} lg={4}>
-              <CardComponent
-                avatarImage={`${import.meta.env.VITE_BASE_FILES_URL}${item?.images[1]?.url}`}
-                title={item.name}
-                content={item.description}
-                image={`${import.meta.env.VITE_BASE_FILES_URL}${item?.images[0]?.url}`}
-                onClick={() => handleCardClick(item.name)}
-              ></CardComponent>
-            </Grid>
-          ))}
-        </Grid>
-      );
-    }
+  const companies = useMemo(() => companiesData?.items || [], [companiesData]);
 
-    return null;
-  };
+  return (
+    <Grid container spacing={2} padding={2}>
+      {categories && (
+        <ChipsFilter
+          categories={categories as FilteredCategoryItem[]}
+          onFilter={onFilter}
+          onClear={onClear}
+        />
+      )}
 
-  return renderContent();
+      {loading ? (
+        <p>Cargando empresas...</p>
+      ) : companies.length > 0 ? (
+        companies.map((item) => (
+          <Grid key={item.id} xs={12} md={6} lg={4}>
+            <CardComponent
+              avatarImage={`${import.meta.env.VITE_BASE_FILES_URL}${item?.images?.[1]?.url || ''}`}
+              title={item.name}
+              content={item.description}
+              image={`${import.meta.env.VITE_BASE_FILES_URL}${item?.images?.[0]?.url || ''}`}
+              onClick={() => handleCardClick(item.name)}
+            />
+          </Grid>
+        ))
+      ) : (
+        <p>No hay empresas registradas.</p>
+      )}
+    </Grid>
+  );
 };
 
 export default CompaniesPage;
