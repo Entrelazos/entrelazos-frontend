@@ -46,12 +46,12 @@ persistor.subscribe(() => {
   console.log('Rehydrated state:', store.getState());
 });
 
-setTimeout(() => {
-  setupInterceptors(companyService);
-  setupInterceptors(categoriesService);
-  setupInterceptors(productService);
-  setupInterceptors(geoService);
-}, 300);
+// setTimeout(() => {
+//   setupInterceptors(companyService);
+//   setupInterceptors(categoriesService);
+//   setupInterceptors(productService);
+//   setupInterceptors(geoService);
+// }, 300);
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
