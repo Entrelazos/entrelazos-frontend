@@ -24,6 +24,7 @@ export interface CreateProductType {
   category_ids: number[];
   company_id: number;
   files: File[];
+  existingImages: number[];
 }
 
 export interface ProductMeta {

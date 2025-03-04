@@ -88,7 +88,7 @@ const FileDropZone = ({ onDrop, existingFiles = [], onRemoveImage }) => {
               }}
             >
               <img
-                src={file.preview}
+                src={file.preview || file.url}
                 alt={file.name}
                 width='100px'
                 height='100px'

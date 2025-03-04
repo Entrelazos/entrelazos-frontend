@@ -118,11 +118,18 @@ export const updateProduct = async (
       formData.append('category_ids[]', String(id));
     });
 
-    // Append new files if available
-    if (productData) {
+    // ✅ Append existing images to keep (Image IDs)
+    if (productData.existingImages) {
+      productData.existingImages.forEach((imageId) => {
+        formData.append('existingImages[]', String(imageId));
+      });
+    }
+
+    // ✅ Append new files if available (only new ones)
+    if (productData.files) {
       productData.files.forEach((file) => {
         if (file instanceof File) {
-          formData.append('files', file);
+          formData.append('files[]', file);
         }
       });
     }
