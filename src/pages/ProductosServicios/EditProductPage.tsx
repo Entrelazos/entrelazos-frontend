@@ -120,8 +120,9 @@ const EditProductPage: React.FC = () => {
   );
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState<ProductItem>(null);
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<{ url: string; id: number }[]>([]);
   const [newFiles, setNewFiles] = useState<File[]>([]);
+  const [existingImages, setExistingImages] = useState<number[]>([]);
 
   const {
     register,
@@ -144,10 +145,6 @@ const EditProductPage: React.FC = () => {
       files: [],
     },
   });
-
-  useEffect(() => {
-    console.log('Validation Errors:', errors);
-  }, [errors]);
 
   useEffect(() => {
     if (!categories?.length) {
@@ -181,10 +178,13 @@ const EditProductPage: React.FC = () => {
           'product'
         );
         const imageUrls = productImages.map(
-          (img: { url: string }) =>
-            `${import.meta.env.VITE_BASE_FILES_URL}${img.url}`
+          (img: { url: string; id: number }) => ({
+            url: `${import.meta.env.VITE_BASE_FILES_URL}${img.url}`,
+            id: img.id, // Store image ID
+          })
         );
         setImages(imageUrls);
+        setExistingImages(imageUrls.map((img) => img.id)); // Store existing image IDs
       } catch (error) {
         console.error('Error fetching product:', error);
       } finally {
@@ -195,6 +195,11 @@ const EditProductPage: React.FC = () => {
     fetchProductData();
   }, [productId, setValue]);
 
+  const handleRemoveImage = (imageId: number) => {
+    setExistingImages((prev) => prev.filter((id) => id !== imageId));
+    setImages((prevImages) => prevImages.filter((img) => img.id !== imageId));
+  };
+
   const handleUpdateProduct = async (data: CreateProductType) => {
     try {
       setLoading(true);
@@ -202,6 +207,7 @@ const EditProductPage: React.FC = () => {
         ...data,
         company_id: product?.company.id, // Fix undefined company_id
         files: [...(data.files || []), ...newFiles], // Ensure files are sent
+        existingImages,
       });
 
       navigate(`/productos/${productId}`);
@@ -301,11 +307,7 @@ const EditProductPage: React.FC = () => {
           <FileDropZone
             onDrop={(acceptedFiles) => setNewFiles(acceptedFiles)}
             existingFiles={images}
-            onRemoveImage={(file) => {
-              setImages((prevImages) =>
-                prevImages.filter((img) => img !== file.preview)
-              );
-            }}
+            onRemoveImage={(image) => handleRemoveImage(image.id)}
           />
 
           {/* {images.length > 0 && (
