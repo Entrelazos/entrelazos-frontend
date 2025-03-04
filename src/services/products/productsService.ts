@@ -91,6 +91,60 @@ export const createProducts = async (
   }
 };
 
+/**
+ * Update a single product
+ * @param productId - ID of the product to update
+ * @param productData - Updated product details
+ * @returns Updated product
+ */
+export const updateProduct = async (
+  productId: number,
+  productData: CreateProductType
+): Promise<ProductItem> => {
+  try {
+    const formData = new FormData();
+
+    // Append product fields to FormData
+    formData.append('product_name', productData.product_name);
+    formData.append('productDescription', productData.productDescription);
+    formData.append('is_service', String(productData.is_service));
+    formData.append('is_public', String(productData.is_public));
+    formData.append('is_approved', String(productData.is_approved));
+    formData.append('price', String(productData.price));
+    formData.append('company_id', String(productData.company_id));
+
+    // Append category IDs
+    productData.category_ids.forEach((id) => {
+      formData.append('category_ids[]', String(id));
+    });
+
+    // Append new files if available
+    if (productData) {
+      productData.files.forEach((file) => {
+        if (file instanceof File) {
+          formData.append('files', file);
+        }
+      });
+    }
+
+    const response: AxiosResponse<ProductItem> = await productService.put(
+      `/${productId}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message || 'Failed to update product'
+    );
+  }
+};
+
 export const getSingleProduct = async (id: string): Promise<ProductItem> => {
   try {
     const response = await productService.get(`/${id}`);

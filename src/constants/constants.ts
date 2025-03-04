@@ -24,6 +24,7 @@ import Login from '../pages/Login/Login';
 import { Signup } from '../pages/signup/Signup';
 import { v4 as uuidv4 } from 'uuid';
 import ProductPage from '../pages/ProductosServicios/product.page';
+import EditProductPage from '../pages/ProductosServicios/EditProductPage';
 
 export const CATEGORIES = [
   { name: 'Otros', image: 'otros.png' },
@@ -165,6 +166,13 @@ export const ROUTES_INFO = {
       name: 'Perfil de Usuario',
       path: '/empresas/perfil-usuario/:userId',
       component: ProfilePage,
+    },
+    {
+      id: uuidv4(),
+      breadcrumbId: 'editar-producto',
+      name: 'Editar Producto',
+      path: '/productos/editar/:productId',
+      component: EditProductPage,
     },
   ],
   ADMIN_ROUTES_INFO: [

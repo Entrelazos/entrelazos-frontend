@@ -99,7 +99,8 @@ export const companySlice = createSlice({
   },
 });
 
-export const isMyCompany = () => (state: RootState) =>
-  state.company?.data?.users?.some(
+export const isMyCompany = () => (state: RootState) => {
+  return state.company?.data?.users?.some(
     (userCompany) => userCompany.user.id === parseInt(state.auth.uid)
   );
+};

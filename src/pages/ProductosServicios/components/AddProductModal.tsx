@@ -60,7 +60,10 @@ const validationSchema = yup.object({
       .test('fileType', 'Unsupported file type', (value: File) => {
         // Validate file type (example: only images)
         return (
-          value && ['image/jpeg', 'image/png', 'image/gif'].includes(value.type)
+          value &&
+          ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(
+            value.type
+          )
         );
       })
   ),

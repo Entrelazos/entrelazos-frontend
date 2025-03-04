@@ -11,6 +11,7 @@ export interface ProductItem {
   product_description: string;
   company: CompanyItem;
   images: string[];
+  categories: CategoryItem[];
 }
 
 export interface CreateProductType {

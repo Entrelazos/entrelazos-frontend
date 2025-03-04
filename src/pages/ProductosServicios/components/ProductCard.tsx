@@ -64,9 +64,9 @@ const ProductCard: FC<ProductCardProperties> = ({ product }) => {
         ${product.price}
       </Typography>
 
-      <Typography mt={1} fontSize='14px' color='grey.400'>
+      <Box mt={1} fontSize='14px' color='grey.400'>
         {parse(product.product_description)}
-      </Typography>
+      </Box>
 
       {/* <Typography mt={2} fontWeight='bold'>
         Color
