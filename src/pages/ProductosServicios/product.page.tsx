@@ -1,18 +1,24 @@
-import { Box, Skeleton } from '@mui/material';
+import { Box, IconButton, Skeleton } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import { FC, useEffect, useState } from 'react';
 import CarouselComponent from '../../components/Carousel/carousel.component';
 import { getSingleProduct } from '../../services/products/productsService';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ProductCard from './components/ProductCard';
 import { ProductItem } from '../../types/products/ProductsTypes';
 import { getFilesByEntityIdAndType } from '../../services/upload/uploadService';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import EditIcon from '@mui/icons-material/Edit';
 
 const ProductPage: FC = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState<ProductItem | null>(null);
   const [images, setImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isMyCompany, setIsMyCompany] = useState(false);
+  const { companies } = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProductAndImages = async () => {
@@ -41,6 +47,9 @@ const ProductPage: FC = () => {
               : prev
           );
         }
+        setIsMyCompany(
+          companies.some((company) => company.id === productData.company.id)
+        );
       } catch (error) {
         console.error('Error fetching product or images:', error);
       } finally {
@@ -51,11 +60,20 @@ const ProductPage: FC = () => {
     fetchProductAndImages();
   }, [productId]);
 
+  const handleEditClick = () => {
+    navigate(`/productos/editar/${product.id}`);
+  };
+
   return (
     <Box width='100%' maxWidth='100%' mx='auto' p={2}>
       <Grid2 container spacing={3}>
         <Grid2 xs={12} md={6} lg={6} display='flex' justifyContent='center'>
           <Box width='100%'>
+            {isMyCompany && (
+              <IconButton aria-label='edit' onClick={handleEditClick}>
+                <EditIcon />
+              </IconButton>
+            )}
             {loading ? (
               <Skeleton variant='rectangular' width='100%' height={400} />
             ) : images.length > 0 ? (
