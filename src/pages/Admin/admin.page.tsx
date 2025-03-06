@@ -28,6 +28,14 @@ const AdminPage: FC = () => {
           >
             Crear usuario admin
           </Button>
+          <Button
+            variant='contained'
+            startIcon={<Add />}
+            component={Link}
+            to='/admin/productos-pendientes'
+          >
+            Estado de Productos
+          </Button>
         </Box>
       </Box>
     )

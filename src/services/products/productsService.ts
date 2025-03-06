@@ -4,6 +4,7 @@ import {
   ProductApiResponse,
   ProductItem,
 } from '../../types/products/ProductsTypes';
+import { ApprovalStatus } from '../../constants/constants';
 
 const productService = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL_PORT
@@ -20,6 +21,32 @@ export const getProductsByCompanyId = async (
       await productService.get(`/byCompany/${companyId}`, {
         params: options,
       });
+    return response.data;
+  } catch (error) {}
+};
+
+export const getProductsByStatus = async (
+  status: ApprovalStatus,
+  options: { page: number; limit: number }
+): Promise<any> => {
+  try {
+    const response: AxiosResponse<ProductApiResponse> =
+      await productService.get(`/products-status`, {
+        params: { status, ...options },
+      });
+    return response.data;
+  } catch (error) {}
+};
+
+export const updateProductStatus = async (
+  productIds: number[],
+  status: ApprovalStatus
+): Promise<ProductItem> => {
+  try {
+    const response = await productService.patch('/update-status', {
+      productIds,
+      status,
+    });
     return response.data;
   } catch (error) {}
 };

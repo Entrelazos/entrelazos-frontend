@@ -25,6 +25,7 @@ import { Signup } from '../pages/signup/Signup';
 import { v4 as uuidv4 } from 'uuid';
 import ProductPage from '../pages/ProductosServicios/product.page';
 import EditProductPage from '../pages/ProductosServicios/EditProductPage';
+import PendingProducts from '../pages/Admin/PendingProductsPage';
 
 export const CATEGORIES = [
   { name: 'Otros', image: 'otros.png' },
@@ -182,6 +183,13 @@ export const ROUTES_INFO = {
       name: 'Administracion',
       path: '/admin',
       component: AdminPage,
+    },
+    {
+      id: uuidv4(),
+      breadcrumbId: 'admin',
+      name: 'Administracion',
+      path: '/admin/productos-pendientes',
+      component: PendingProducts,
     },
   ],
 };
