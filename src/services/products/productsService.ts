@@ -55,10 +55,7 @@ export const createProducts = async (
         `products[${index}][is_public]`,
         String(product.is_public)
       );
-      formData.append(
-        `products[${index}][is_approved]`,
-        String(product.is_approved)
-      );
+
       formData.append(`products[${index}][price]`, String(product.price));
       formData.append(
         `products[${index}][company_id]`,
@@ -109,7 +106,6 @@ export const updateProduct = async (
     formData.append('productDescription', productData.productDescription);
     formData.append('is_service', String(productData.is_service));
     formData.append('is_public', String(productData.is_public));
-    formData.append('is_approved', String(productData.is_approved));
     formData.append('price', String(productData.price));
     formData.append('company_id', String(productData.company_id));
 

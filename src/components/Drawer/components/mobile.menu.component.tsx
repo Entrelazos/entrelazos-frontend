@@ -75,7 +75,7 @@ const MobileMenuComponent: FC<MobileMenuComponent> = ({
         >
           <AccountCircle />
         </IconButton>
-        <p>Profile</p>
+        <p>Perfil</p>
       </MenuItem>
     </Menu>
   );

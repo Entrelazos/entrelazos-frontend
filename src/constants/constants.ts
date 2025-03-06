@@ -62,7 +62,7 @@ export const DRAWER_ITEMS = [
 export const PROFILE_TABS = [
   {
     id: 1,
-    label: 'Profile',
+    label: 'Perfil',
     icon: Badge,
     component: ProfileComponent,
   },
@@ -180,7 +180,7 @@ export const ROUTES_INFO = {
       id: uuidv4(),
       breadcrumbId: 'admin',
       name: 'Administracion',
-      path: '/',
+      path: '/admin',
       component: AdminPage,
     },
   ],
@@ -237,3 +237,15 @@ export const SOCIAL_NETWORK_DATA = [
     fieldType: 'text',
   },
 ];
+
+export enum ApprovalStatus {
+  PENDING = 'pending',
+  APPROVED = 'approved',
+  REJECTED = 'rejected',
+}
+
+export const approvalStatusMap: Record<string, string> = {
+  pending: 'Pendiente',
+  approved: 'Aprobado',
+  rejected: 'Rechazado',
+};

@@ -27,6 +27,7 @@ import Grid2 from '@mui/material/Unstable_Grid2';
 import AddProductModal from './components/AddProductModal';
 import { createProducts } from '../../services/products/productsService';
 import { clearProductsData } from '../../store/products/productsSliceFinal';
+import { approvalStatusMap } from '../../constants/constants';
 
 interface ProductsByCompanyProps {
   companyIdParam?: string;
@@ -68,7 +69,7 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
     { field: 'id', headerName: 'Id', width: 100 },
     { field: 'name', headerName: 'Nombre', width: 150 },
     { field: 'price', headerName: 'Precio', width: 150 },
-    { field: 'isApproved', headerName: 'Aprobado', width: 150 },
+    { field: 'approvalStatus', headerName: 'Estado', width: 150 },
     { field: 'isPublic', headerName: 'Publico', width: 150 },
     { field: 'isService', headerName: 'Servicio', width: 150 },
     ...(isEmbedded
@@ -81,7 +82,7 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
     dbId: product.id,
     name: product.product_name,
     price: product.price,
-    isApproved: product.is_approved,
+    approvalStatus: approvalStatusMap[product.approval_status],
     isPublic: product.is_public,
     isService: product.is_service,
     company: companyData.name || 'N/A',

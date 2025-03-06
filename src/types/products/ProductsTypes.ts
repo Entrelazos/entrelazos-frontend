@@ -1,3 +1,4 @@
+import { ApprovalStatus } from '../../constants/constants';
 import { CategoryItem } from '../categories/CategoryTypes';
 import { CompanyItem } from '../companies/CompaniesTypes';
 
@@ -7,7 +8,10 @@ export interface ProductItem {
   price: number;
   is_public: boolean;
   is_service: boolean;
-  is_approved: boolean;
+  approval_status:
+    | ApprovalStatus.PENDING
+    | ApprovalStatus.APPROVED
+    | ApprovalStatus.REJECTED;
   product_description: string;
   company: CompanyItem;
   images: string[];
@@ -19,7 +23,10 @@ export interface CreateProductType {
   productDescription: string;
   is_service: boolean;
   is_public: boolean;
-  is_approved: boolean;
+  approval_status:
+    | ApprovalStatus.PENDING
+    | ApprovalStatus.APPROVED
+    | ApprovalStatus.REJECTED;
   price: number;
   category_ids: number[];
   company_id: number;
