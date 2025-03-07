@@ -60,9 +60,9 @@ export const getFileByEntityIdAndType = async (
 export const getFilesByEntityIdAndType = async (
   entityId: number,
   entityType: string
-): Promise<FileResponseType> => {
+): Promise<FileResponseType[]> => {
   try {
-    const response: AxiosResponse<FileResponseType> = await uploadService.get(
+    const response: AxiosResponse<FileResponseType[]> = await uploadService.get(
       `/multiple`,
       { params: { entityId, entityType } }
     );

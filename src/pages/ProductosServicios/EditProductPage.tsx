@@ -12,7 +12,6 @@ import {
   OutlinedInput,
   Select,
   FormHelperText,
-  Chip,
   Skeleton,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
@@ -31,13 +30,13 @@ import {
   getFilesByEntityIdAndType,
   // uploadFiles,
 } from '../../services/upload/uploadService';
-import CarouselComponent from '../../components/Carousel/carousel.component';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import {
   CreateProductType,
   ProductItem,
 } from '../../types/products/ProductsTypes';
+import { CategoryItem } from '../../types/categories/CategoryTypes';
 
 // Validation Schema
 const validationSchema = yup.object({
@@ -167,7 +166,7 @@ const EditProductPage: React.FC = () => {
         setValue('price', productData.price);
         setValue(
           'category_ids',
-          productData.categories?.map((c: any) => c.id) || []
+          productData.categories?.map((c: CategoryItem) => c.id) || []
         );
 
         const productImages = await getFilesByEntityIdAndType(

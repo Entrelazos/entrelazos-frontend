@@ -2,6 +2,7 @@ import { AxiosResponse } from 'axios';
 import {
   CreateProductType,
   ProductApiResponse,
+  ProductByCompanyApiResponse,
   ProductItem,
 } from '../../types/products/ProductsTypes';
 import { ApprovalStatus } from '../../constants/constants';
@@ -18,9 +19,9 @@ const productService = createAxiosInstance({ baseEndpoint: '/products' });
 export const getProductsByCompanyId = async (
   companyId: number,
   options: { page: number; limit: number }
-): Promise<ProductApiResponse> => {
+): Promise<ProductByCompanyApiResponse> => {
   try {
-    const response: AxiosResponse<ProductApiResponse> =
+    const response: AxiosResponse<ProductByCompanyApiResponse> =
       await productService.get(`/byCompany/${companyId}`, {
         params: options,
       });
@@ -33,9 +34,9 @@ export const getProductsByCompanyId = async (
 export const getProductsByStatus = async (
   status: ApprovalStatus,
   options: { page: number; limit: number }
-): Promise<ProductApiResponse> => {
+): Promise<ProductByCompanyApiResponse> => {
   try {
-    const response: AxiosResponse<ProductApiResponse> =
+    const response: AxiosResponse<ProductByCompanyApiResponse> =
       await productServiceWithAuth.get(`/products-status`, {
         params: { status, ...options },
       });
