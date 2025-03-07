@@ -4,7 +4,6 @@ import axios from 'axios';
 import {
   ProductApiResponse,
   ProductByCompanyApiResponse,
-  ProductItem,
 } from '../../types/products/ProductsTypes';
 import {
   fetchProductsByCompanyId,

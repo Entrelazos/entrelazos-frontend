@@ -4,10 +4,7 @@ import {
   getProductsByCompanyId,
 } from '../../services/products/productsService';
 import { CompanyApiResponse } from '../../types/companies/CompaniesTypes';
-import {
-  ProductApiResponse,
-  ProductByCompanyApiResponse,
-} from '../../types/products/ProductsTypes';
+import { ProductByCompanyApiResponse } from '../../types/products/ProductsTypes';
 
 export const fetchProductsByCompanyId = createAsyncThunk(
   'products/fetchProductsByCompanyId',
