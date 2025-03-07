@@ -1,41 +1,61 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import {
   Credentials,
   RegisterData,
   AuthResponse,
 } from '../../types/auth/AuthTypes';
+import { createAxiosInstance } from '../axiosFactory';
+import { User } from '../../types/user/UserTypes';
 
-const authService = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL_PORT
-    ? `${import.meta.env.VITE_BASE_URL_PORT}/auth`
-    : 'https://pear-clear-sockeye.cyclic.app/auth',
+const authServiceWithAuth = createAxiosInstance({
+  useAuth: true,
+  handleErrors: true,
+  baseEndpoint: '/auth',
+});
+
+const authService = createAxiosInstance({
+  useAuth: false,
+  handleErrors: false,
+  baseEndpoint: '/auth',
 });
 
 export const register = async (
   registerData: RegisterData
 ): Promise<AuthResponse> => {
-  const response: AxiosResponse<AuthResponse> = await authService.post(
-    '/register',
-    registerData
-  );
-  const { accessToken } = response.data;
-  setAuthToken(accessToken); // Set the authentication token in Axios headers
-  return response.data;
+  try {
+    const response: AxiosResponse<AuthResponse> = await authService.post(
+      '/register',
+      registerData
+    );
+    const { accessToken } = response.data;
+    setAuthToken(accessToken); // Set the authentication token in Axios headers
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to get register');
+  }
 };
 
 export const login = async (
   credentials: Credentials
 ): Promise<AuthResponse> => {
-  const response: AxiosResponse<AuthResponse> = await authService.post(
-    '/login',
-    credentials
-  );
-  const { accessToken } = response.data;
-  setAuthToken(accessToken); // Set the authentication token in Axios headers
-  return response.data;
+  try {
+    const response: AxiosResponse<AuthResponse> = await authService.post(
+      '/login',
+      credentials
+    );
+    const { accessToken, refreshToken } = response.data;
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('refreshToken', refreshToken);
+    setAuthToken(accessToken); // Set the authentication token in Axios headers
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to login');
+  }
 };
 
 export const logout = (): void => {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
   clearAuthToken();
 };
 
@@ -43,31 +63,36 @@ export const getNewAccessToken = async (
   refreshToken: string
 ): Promise<AuthResponse> => {
   try {
-    const response = await authService.post('/refresh-token', { refreshToken });
+    const response = await authServiceWithAuth.post('/refresh-token', {
+      refreshToken,
+    });
     const { accessToken } = response.data;
     setAuthToken(accessToken); // Set the authentication token in Axios headers
     return response.data;
   } catch (error) {
-    console.log(error);
+    throw new Error(error.response?.data?.message || 'Failed to get token');
   }
 };
 
-export const getCurrentUser = async (): Promise<any> => {
-  const response: AxiosResponse<any> = await authService.get('/user');
-  return response.data;
+export const getCurrentUser = async (): Promise<User> => {
+  try {
+    const response: AxiosResponse<User> =
+      await authServiceWithAuth.get('/user');
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to get user');
+  }
 };
 
 const setAuthToken = (accessToken: string): void => {
   if (accessToken) {
-    authService.defaults.headers.common['Authorization'] =
+    authServiceWithAuth.defaults.headers.common['Authorization'] =
       `Bearer ${accessToken}`;
   } else {
-    delete authService.defaults.headers.common['Authorization'];
+    delete authServiceWithAuth.defaults.headers.common['Authorization'];
   }
 };
 
 const clearAuthToken = (): void => {
-  delete authService.defaults.headers.common['Authorization'];
+  delete authServiceWithAuth.defaults.headers.common['Authorization'];
 };
-
-export default authService;

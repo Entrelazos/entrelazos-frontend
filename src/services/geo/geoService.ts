@@ -1,18 +1,17 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { CityType, CountryType, RegionType } from '../../types/geo/geoTypes';
+import { createAxiosInstance } from '../axiosFactory';
 
-const geoService = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL_PORT
-    ? `${import.meta.env.VITE_BASE_URL_PORT}/geo`
-    : 'https://pear-clear-sockeye.cyclic.app/products',
-});
+const geoService = createAxiosInstance({ baseEndpoint: '/geo' });
 
 export const getCountries = async (): Promise<CountryType[]> => {
   try {
     const response: AxiosResponse<CountryType[]> =
       await geoService.get('/countries');
     return response.data;
-  } catch (error) {}
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to get countries');
+  }
 };
 
 export const getRegionsByCountry = async (
@@ -23,7 +22,9 @@ export const getRegionsByCountry = async (
       `/${countryId}/regions`
     );
     return response.data;
-  } catch (error) {}
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to get regions');
+  }
 };
 
 export const getCitiesByRegion = async (
@@ -34,7 +35,9 @@ export const getCitiesByRegion = async (
       `/${regionId}/cities`
     );
     return response.data;
-  } catch (error) {}
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to get cities');
+  }
 };
 
 export default geoService;

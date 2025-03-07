@@ -22,7 +22,6 @@ const AppRouter: React.FC = () => {
     (state: RootState) => state.auth
   );
   const isAdmin = useSelector(hasRole('admin'));
-
   const params: ComponentParams = {
     signUpParam: registerUserSuccess,
     profileParam: true,

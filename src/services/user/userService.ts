@@ -1,29 +1,37 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { CompanyApiResponse } from '../../types/companies/CompaniesTypes';
+import { User } from '../../types/user/UserTypes';
+import { createAxiosInstance } from '../axiosFactory';
 
-const userService = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL_PORT
-    ? `${import.meta.env.VITE_BASE_URL_PORT}/user`
-    : 'https://pear-clear-sockeye.cyclic.app/user',
+const userServiceAuth = createAxiosInstance({
+  useAuth: true,
+  handleErrors: true,
+  baseEndpoint: '/user',
 });
 
-export const getAllUsers = async (): Promise<any> => {
-  const response: AxiosResponse<any> = await userService.get('/list');
+const userService = createAxiosInstance({
+  useAuth: false,
+  handleErrors: false,
+  baseEndpoint: '/user',
+});
+
+export const getAllUsers = async (): Promise<User> => {
+  const response: AxiosResponse<User> = await userService.get('/list');
   return response.data;
 };
 
 export const getUserCompanies = async (
   userId: number,
   options: { page: number; limit: number }
-): Promise<any> => {
+): Promise<CompanyApiResponse> => {
   try {
-    const response: AxiosResponse<CompanyApiResponse> = await userService.get(
-      `/${userId}/companies`,
-      { params: options }
-    );
+    const response: AxiosResponse<CompanyApiResponse> =
+      await userServiceAuth.get(`/${userId}/companies`, { params: options });
     return response.data;
   } catch (error) {
-    console.log(error);
+    throw new Error(
+      error.response?.data?.message || 'Failed to get user companies'
+    );
   }
 };
 export default userService;

@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { AuthState } from '../../types/auth/AuthTypes';
 import {
   startLoginWithEmailPassword,
@@ -8,22 +8,6 @@ import {
   startLogout,
 } from './thunks';
 import { RootState } from '../store';
-
-interface LoginPayload {
-  payload: AuthState;
-}
-
-interface LogoutPayload {
-  payload: { errorMessage: string };
-}
-
-interface SetNewAccessTokenPayload {
-  payload: { accessToken: string };
-}
-
-interface RegisterUserErrorPayload {
-  payload: { errorMessage: string };
-}
 
 const initialState: AuthState = {
   status: 'checking',

@@ -6,7 +6,6 @@ import {
   TextField,
   Button,
   FormControlLabel,
-  Checkbox,
   IconButton,
   Card,
   CardContent,
@@ -17,6 +16,7 @@ import {
   OutlinedInput,
   Select,
   FormHelperText,
+  Switch,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm, Controller } from 'react-hook-form';
@@ -35,7 +35,6 @@ const validationSchema = yup.object({
   productDescription: yup.string().required('Product description is required'),
   is_service: yup.boolean().required(),
   is_public: yup.boolean().required(),
-  is_approved: yup.boolean().required(),
   price: yup
     .number()
     .required('Price is required')
@@ -109,7 +108,6 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
       productDescription: '',
       is_service: false, // Reset boolean to default
       is_public: false, // Reset boolean to default
-      is_approved: false, // Reset boolean to default
       price: '',
       category_ids: [],
       company_id: companyId,
@@ -119,7 +117,6 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
 
   const isServiceChecked = watch('is_service');
   const isPublicChecked = watch('is_public');
-  const isApprovedChecked = watch('is_approved');
   const existingFilesWatch = watch('files');
 
   // Handle form submission
@@ -141,7 +138,6 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
       productDescription: '',
       is_service: false, // Reset boolean to default
       is_public: false, // Reset boolean to default
-      is_approved: false, // Reset boolean to default
       price: '',
       category_ids: [],
       company_id: companyId,
@@ -159,7 +155,6 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
     setValue('productDescription', productToEdit.productDescription);
     setValue('is_service', productToEdit.is_service);
     setValue('is_public', productToEdit.is_public);
-    setValue('is_approved', productToEdit.is_approved);
     setValue('price', productToEdit.price);
     setValue('category_ids', productToEdit.category_ids);
     setValue('company_id', productToEdit.company_id);
@@ -225,11 +220,11 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
           <CloseIcon />
         </IconButton>
         <Typography variant='h6' component='h2' gutterBottom>
-          {editIndex !== null ? 'Edit Product' : 'Add New Product'}
+          {editIndex !== null ? 'Editar Producto' : 'Agregar Producto'}
         </Typography>
         <form onSubmit={handleSubmit(handleAddOrEditProduct)}>
           <TextField
-            label='Product Name'
+            label='Nombre del producto'
             {...register('product_name')}
             error={!!errors.product_name}
             helperText={
@@ -271,22 +266,17 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
             )}
           />
           <FormControlLabel
-            control={<Checkbox {...register('is_service')} />}
-            label='Is Service'
+            control={<Switch {...register('is_service')} />}
+            label='Servicio'
             checked={isServiceChecked}
           />
           <FormControlLabel
-            control={<Checkbox {...register('is_public')} />}
-            label='Is Public'
+            control={<Switch {...register('is_public')} />}
+            label='Público'
             checked={isPublicChecked}
           />
-          <FormControlLabel
-            control={<Checkbox {...register('is_approved')} />}
-            label='Is Approved'
-            checked={isApprovedChecked}
-          />
           <TextField
-            label='Price'
+            label='Precio'
             type='number'
             {...register('price')}
             error={!!errors.price}
@@ -354,7 +344,9 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
             />
           )}
           <Button type='submit' variant='contained' color='primary' fullWidth>
-            {editIndex !== null ? 'Update Product' : 'Add Product to List'}
+            {editIndex !== null
+              ? 'Actualizar producto'
+              : 'Agregar producto a la lista'}
           </Button>
         </form>
 
@@ -367,7 +359,7 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
           onClick={handleSubmitAllProducts}
           disabled={products.length === 0} // Disable if no products
         >
-          Submit All Products ({products.length})
+          Guardar productos ({products.length})
         </Button>
 
         {/* List of added products with full details */}
@@ -389,10 +381,6 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
                   </Typography>
                   <Typography variant='body1'>
                     <strong>Public:</strong> {product.is_public ? 'Yes' : 'No'}
-                  </Typography>
-                  <Typography variant='body1'>
-                    <strong>Approved:</strong>{' '}
-                    {product.is_approved ? 'Yes' : 'No'}
                   </Typography>
                   <Typography variant='body1'>
                     <strong>Price:</strong> ${product.price}

@@ -20,7 +20,6 @@ import {
   MenuItem,
   MenuList,
   PopoverVirtualElement,
-  Typography,
 } from '@mui/material';
 import { FC, MouseEventHandler } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -91,7 +90,7 @@ export const ProfileMenuComponent: FC<ProfileMenuComponent> = ({
           <ListItemText>Perfil</ListItemText>
         </MenuItem>
         <Divider />
-        {isAdmin && (
+        {status === 'authenticated' && isAdmin && (
           <MenuItem component={Link} to='/admin' onClick={handleMenuClose}>
             <ListItemIcon>
               <AdminPanelSettingsOutlined fontSize='small' />

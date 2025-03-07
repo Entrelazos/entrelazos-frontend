@@ -46,7 +46,6 @@ const validationSchema = yup.object({
 
   is_service: yup.boolean().oneOf([true, false]).default(false),
   is_public: yup.boolean().oneOf([true, false]).default(false),
-  is_approved: yup.boolean().oneOf([true, false]).default(false),
 
   price: yup
     .number()
@@ -139,7 +138,6 @@ const EditProductPage: React.FC = () => {
       productDescription: '',
       is_service: false,
       is_public: false,
-      is_approved: false,
       price: 0,
       category_ids: [],
       files: [],
@@ -166,7 +164,6 @@ const EditProductPage: React.FC = () => {
         setValue('productDescription', productData.product_description);
         setValue('is_service', productData.is_service);
         setValue('is_public', productData.is_public);
-        setValue('is_approved', productData.is_approved);
         setValue('price', productData.price);
         setValue(
           'category_ids',
@@ -263,11 +260,6 @@ const EditProductPage: React.FC = () => {
             control={<Checkbox {...register('is_public')} />}
             label='Is Public'
             checked={watch('is_public')}
-          />
-          <FormControlLabel
-            control={<Checkbox {...register('is_approved')} />}
-            label='Is Approved'
-            checked={watch('is_approved')}
           />
 
           <TextField
