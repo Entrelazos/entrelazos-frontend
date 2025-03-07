@@ -1,10 +1,17 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { FileResponseType, UploadType } from '../../types/uploads/uploadTypes';
+import { createAxiosInstance } from '../axiosFactory';
 
-const uploadService = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL_PORT
-    ? `${import.meta.env.VITE_BASE_URL_PORT}/images`
-    : 'https://pear-clear-sockeye.cyclic.app/images',
+const uploadServiceWithAuth = createAxiosInstance({
+  useAuth: true,
+  handleErrors: true,
+  baseEndpoint: '/images',
+});
+
+const uploadService = createAxiosInstance({
+  useAuth: false,
+  handleErrors: false,
+  baseEndpoint: '/images',
 });
 
 export const uploadFile = async (payload: UploadType): Promise<any> => {
@@ -19,7 +26,7 @@ export const uploadFile = async (payload: UploadType): Promise<any> => {
     formData.append('entityType', payload.entityType);
     formData.append('imageType', payload.imageType);
 
-    const { data }: AxiosResponse<any> = await uploadService.post(
+    const { data }: AxiosResponse<any> = await uploadServiceWithAuth.post(
       '/upload',
       formData,
       {
@@ -30,7 +37,7 @@ export const uploadFile = async (payload: UploadType): Promise<any> => {
     );
     return data;
   } catch (error) {
-    throw Error('Failed to upload file');
+    throw new Error(error.response?.data?.message || 'Failed to upload file');
   }
 };
 
@@ -38,7 +45,7 @@ export const getFileByEntityIdAndType = async (
   entityId: number,
   entityType: string,
   imageType: string
-): Promise<any> => {
+): Promise<FileResponseType> => {
   try {
     const response: AxiosResponse<FileResponseType> = await uploadService.get(
       `/one`,
@@ -46,14 +53,14 @@ export const getFileByEntityIdAndType = async (
     );
     return response.data;
   } catch (error) {
-    console.log(error);
+    throw new Error(error.response?.data?.message || 'Failed to get file');
   }
 };
 
 export const getFilesByEntityIdAndType = async (
   entityId: number,
   entityType: string
-): Promise<any> => {
+): Promise<FileResponseType> => {
   try {
     const response: AxiosResponse<FileResponseType> = await uploadService.get(
       `/multiple`,
@@ -61,7 +68,7 @@ export const getFilesByEntityIdAndType = async (
     );
     return response.data;
   } catch (error) {
-    console.log(error);
+    throw new Error(error.response?.data?.message || 'Failed to get files');
   }
 };
 

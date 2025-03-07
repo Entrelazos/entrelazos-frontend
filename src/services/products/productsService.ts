@@ -1,41 +1,48 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import {
   CreateProductType,
   ProductApiResponse,
   ProductItem,
 } from '../../types/products/ProductsTypes';
 import { ApprovalStatus } from '../../constants/constants';
+import { createAxiosInstance } from '../axiosFactory';
 
-const productService = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL_PORT
-    ? `${import.meta.env.VITE_BASE_URL_PORT}/products`
-    : 'https://pear-clear-sockeye.cyclic.app/products',
+const productServiceWithAuth = createAxiosInstance({
+  useAuth: true,
+  handleErrors: true,
+  baseEndpoint: '/products',
 });
+
+const productService = createAxiosInstance({ baseEndpoint: '/products' });
 
 export const getProductsByCompanyId = async (
   companyId: number,
   options: { page: number; limit: number }
-): Promise<any> => {
+): Promise<ProductApiResponse> => {
   try {
     const response: AxiosResponse<ProductApiResponse> =
       await productService.get(`/byCompany/${companyId}`, {
         params: options,
       });
     return response.data;
-  } catch (error) {}
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to get products');
+  }
 };
 
 export const getProductsByStatus = async (
   status: ApprovalStatus,
   options: { page: number; limit: number }
-): Promise<any> => {
+): Promise<ProductApiResponse> => {
   try {
     const response: AxiosResponse<ProductApiResponse> =
-      await productService.get(`/products-status`, {
+      await productServiceWithAuth.get(`/products-status`, {
         params: { status, ...options },
       });
     return response.data;
-  } catch (error) {}
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to get products');
+  }
 };
 
 export const updateProductStatus = async (
@@ -43,22 +50,28 @@ export const updateProductStatus = async (
   status: ApprovalStatus
 ): Promise<ProductItem> => {
   try {
-    const response = await productService.patch('/update-status', {
+    const response = await productServiceWithAuth.patch('/update-status', {
       productIds,
       status,
     });
     return response.data;
-  } catch (error) {}
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || 'Failed to update product'
+    );
+  }
 };
 
 export const getProductsByCategoryId = async (
   categoryId: number
-): Promise<any> => {
+): Promise<ProductApiResponse> => {
   try {
     const response: AxiosResponse<ProductApiResponse> =
       await productService.get(`/byCategory/${categoryId}`);
     return response.data;
-  } catch (error) {}
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to get products');
+  }
 };
 
 export const createProducts = async (
@@ -101,13 +114,14 @@ export const createProducts = async (
     });
 
     const response: AxiosResponse<ProductApiResponse> =
-      await productService.post(`/bulk`, formData, {
+      await productServiceWithAuth.post(`/bulk`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
     return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new Error(
       error.response?.data?.message || 'Failed to create products'
@@ -157,17 +171,15 @@ export const updateProduct = async (
       });
     }
 
-    const response: AxiosResponse<ProductItem> = await productService.put(
-      `/${productId}`,
-      formData,
-      {
+    const response: AxiosResponse<ProductItem> =
+      await productServiceWithAuth.put(`/${productId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-      }
-    );
+      });
 
     return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new Error(
       error.response?.data?.message || 'Failed to update product'
@@ -179,7 +191,9 @@ export const getSingleProduct = async (id: string): Promise<ProductItem> => {
   try {
     const response = await productService.get(`/${id}`);
     return response.data;
-  } catch (error) {}
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to get product');
+  }
 };
 
 export default productService;

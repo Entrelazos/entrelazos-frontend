@@ -1,15 +1,4 @@
-import {
-  requestInterceptor,
-  requestErrorInterceptor,
-} from '../services/interceptors/authInterceptors';
 import { ComponentParams } from '../router/AppRouter';
-
-const setupInterceptors = (instance) => {
-  instance.interceptors.request.use(
-    requestInterceptor,
-    requestErrorInterceptor
-  );
-};
 
 const getComponentWithProps = (
   breadcrumbId: string,
@@ -27,4 +16,4 @@ const getComponentWithProps = (
   }
 };
 
-export { setupInterceptors, getComponentWithProps };
+export { getComponentWithProps };

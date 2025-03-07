@@ -70,5 +70,7 @@ export const startClearAuthState = createAsyncThunk(
 );
 
 export const startLogout = createAsyncThunk('auth/logout', async () => {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
   return {};
 });

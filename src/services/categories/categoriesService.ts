@@ -1,18 +1,19 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { CategoryItem } from '../../types/categories/CategoryTypes';
+import { createAxiosInstance } from '../axiosFactory';
 
-const categoriesService = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL_PORT
-    ? `${import.meta.env.VITE_BASE_URL_PORT}/categories`
-    : 'https://pear-clear-sockeye.cyclic.app/products',
-});
+const categoriesService = createAxiosInstance({ baseEndpoint: '/categories' });
 
-export const getCategories = async (): Promise<any> => {
+export const getCategories = async (): Promise<CategoryItem[]> => {
   try {
     const response: AxiosResponse<CategoryItem[]> =
       await categoriesService.get('');
     return response.data;
-  } catch (error) {}
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || 'Failed to get categories'
+    );
+  }
 };
 
 export default categoriesService;
