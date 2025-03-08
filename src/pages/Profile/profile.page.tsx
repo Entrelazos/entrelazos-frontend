@@ -18,10 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { fetchCompanyByName } from '../../store/companies/companiesThunks';
 import { isMyCompany } from '../../store/companies/companiesSlice';
-import {
-  getFileByEntityIdAndType,
-  uploadFile,
-} from '../../services/upload/uploadService';
+import { uploadFile } from '../../services/upload/uploadService';
 import { FileResponseType, imageType } from '../../types/uploads/uploadTypes';
 import ImageUploadV2 from '../../components/ImageUpload/ImageUploadV2';
 
@@ -59,7 +56,8 @@ const ProfilePage: FC<ProfilePageProperties> = ({ isCompany }) => {
   const [bannerImageData, setBannerImageData] = useState<
     FileResponseType | undefined
   >();
-  const userOrCompany = isCompany ? 'company' : 'user';
+  // TODO Implement user profile
+  // const userOrCompany = isCompany ? 'company' : 'user';
 
   const { data, loading, error } = useSelector(
     (state: RootState) => state.company
@@ -71,60 +69,54 @@ const ProfilePage: FC<ProfilePageProperties> = ({ isCompany }) => {
     setValue(newValue);
   };
 
+  useEffect(() => {
+    if (isCompany && companyName) {
+      dispatch(fetchCompanyByName(companyName));
+    }
+  }, [isCompany, companyName, dispatch]);
+
+  useEffect(() => {
+    if (data?.images?.length) {
+      setBannerImageData(data.images[0]);
+      setProfileImageData(data.images[1]);
+    } else {
+      setBannerImageData(undefined);
+      setProfileImageData(undefined);
+    }
+  }, [data]);
+
   const handleImageUpload = async ({
     file,
     imageType,
   }: ImageUploadProperties) => {
-    const entityType = isCompany ? 'company' : 'user';
-    const imageAlt = `Imagen de perfil de ${isCompany ? 'compañia' : 'usuario'}`;
+    const { id: entityId } = data || {};
+    if (!entityId) return;
 
     try {
+      const entityType = isCompany ? 'company' : 'user';
+      const imageAlt = `Imagen de perfil de ${isCompany ? 'compañia' : 'usuario'}`;
+
       const savedImage = (await uploadFile({
         altText: imageAlt,
         description: imageAlt,
         file,
-        entityId: data.id,
+        entityId,
         entityType,
         imageType,
       })) as FileResponseType;
 
-      const { image_type } = savedImage;
+      // ✅ Use a mapping object to dynamically update state
+      const updateState = {
+        company_banner: setBannerImageData,
+        company_profile: setProfileImageData,
+      };
 
-      if (image_type === 'company_profile') {
-        setProfileImageData(savedImage);
-      } else if (image_type === 'company_banner') {
-        setBannerImageData(savedImage);
-      }
+      updateState[imageType]?.(savedImage);
     } catch (error) {
-      console.error('Error uploading image:', error);
+      console.error(`❌ Error uploading ${imageType}:`, error);
     }
   };
 
-  useEffect(() => {
-    const fetchImages = async () => {
-      if (!data?.id) return;
-
-      try {
-        const [profileImage, bannerImage] = await Promise.all([
-          getFileByEntityIdAndType(data.id, userOrCompany, 'company_profile'),
-          getFileByEntityIdAndType(data.id, userOrCompany, 'company_banner'),
-        ]);
-
-        setProfileImageData(profileImage);
-        setBannerImageData(bannerImage);
-      } catch (error) {
-        console.error('Error fetching images:', error);
-      }
-    };
-
-    fetchImages();
-  }, [data, userOrCompany]);
-
-  if (isCompany) {
-    useEffect(() => {
-      dispatch(fetchCompanyByName(companyName));
-    }, [dispatch]);
-  }
   if (loading) {
     return <p>Loading...</p>;
   }
