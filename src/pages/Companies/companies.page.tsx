@@ -14,7 +14,6 @@ const CompaniesPage: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { uid } = useSelector((state: RootState) => state.auth);
   const { companiesData, loading } = useSelector(
     (state: RootState) => state.companies
   );
