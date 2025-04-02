@@ -217,7 +217,7 @@ const EditProductPage: React.FC = () => {
   return (
     <Box width='100%' maxWidth='800px' mx='auto' p={3}>
       <Typography variant='h5' mb={2}>
-        Edit Product
+        Editar Producto
       </Typography>
 
       {loading ? (
@@ -225,7 +225,7 @@ const EditProductPage: React.FC = () => {
       ) : (
         <form onSubmit={handleSubmit(handleUpdateProduct)}>
           <TextField
-            label='Product Name'
+            label='Nombre del Producto'
             fullWidth
             {...register('product_name')}
             error={!!errors.product_name}
@@ -252,17 +252,17 @@ const EditProductPage: React.FC = () => {
 
           <FormControlLabel
             control={<Checkbox {...register('is_service')} />}
-            label='Is Service'
+            label='Servicio'
             checked={watch('is_service')}
           />
           <FormControlLabel
             control={<Checkbox {...register('is_public')} />}
-            label='Is Public'
+            label='Publico'
             checked={watch('is_public')}
           />
 
           <TextField
-            label='Price'
+            label='Precio'
             type='number'
             fullWidth
             {...register('price')}
@@ -277,7 +277,7 @@ const EditProductPage: React.FC = () => {
               control={control}
               render={({ field }) => (
                 <FormControl fullWidth margin='normal'>
-                  <InputLabel>Categories</InputLabel>
+                  <InputLabel>Categorias</InputLabel>
                   <Select
                     {...field}
                     multiple
@@ -312,7 +312,7 @@ const EditProductPage: React.FC = () => {
             fullWidth
             sx={{ mt: 2 }}
           >
-            Update Product
+            Actualizar Producto
           </Button>
         </form>
       )}
