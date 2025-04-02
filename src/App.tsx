@@ -5,18 +5,22 @@ import { ToastContainer } from 'react-toastify';
 import AppRouter from './router/AppRouter';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { esES } from '@mui/x-data-grid/locales';
 
-const darkTheme = createTheme({
-  typography: {
-    fontFamily: [
-      'Public Sans',
-      'sans-serif', // Backup font
-    ].join(','),
+const darkTheme = createTheme(
+  {
+    typography: {
+      fontFamily: [
+        'Public Sans',
+        'sans-serif', // Backup font
+      ].join(','),
+    },
+    palette: {
+      mode: 'dark',
+    },
   },
-  palette: {
-    mode: 'dark',
-  },
-});
+  esES
+);
 
 export function App() {
   return (
