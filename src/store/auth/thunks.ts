@@ -9,43 +9,33 @@ import { Credentials, RegisterData } from '../../types/auth/AuthTypes';
 export const startLoginWithEmailPassword = createAsyncThunk(
   'auth/loginWithEmailPassword',
   async (credentials: Credentials) => {
-    try {
-      const {
-        name,
-        email: userEmail,
-        id,
-        companies,
-        roles,
-        is_active,
-        accessToken,
-        refreshToken,
-      } = await loginService(credentials);
+    const {
+      name,
+      email: userEmail,
+      id,
+      companies,
+      roles,
+      is_active,
+      accessToken,
+      refreshToken,
+    } = await loginService(credentials);
 
-      return {
-        uid: id,
-        displayName: name,
-        email: userEmail,
-        companies,
-        roles,
-        accessToken,
-        refreshToken,
-      };
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+    return {
+      uid: id,
+      displayName: name,
+      email: userEmail,
+      companies,
+      roles,
+      accessToken,
+      refreshToken,
+    };
   }
 );
 
 export const startRegister = createAsyncThunk(
   'auth/register',
   async (registerData: RegisterData) => {
-    try {
-      await register(registerData);
-    } catch (error) {
-      console.log(error.response.data.message);
-      throw error;
-    }
+    await register(registerData);
   }
 );
 

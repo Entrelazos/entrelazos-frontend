@@ -17,7 +17,9 @@ import { useFormValidation } from '../../hooks/useFormValidation';
 import * as yup from 'yup';
 import { AppDispatch } from '../../store/store';
 import { AuthState } from '../../types/auth/AuthTypes';
+import { toast } from 'react-toastify';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Copyright(props: any) {
   return (
     <Typography
@@ -60,8 +62,19 @@ export function Login({ authError }) {
     async (values) => {
       const { email, password } = values;
 
-      await dispatch(startLoginWithEmailPassword({ email, password }));
-      navigate('/', { replace: true });
+      try {
+        await dispatch(
+          startLoginWithEmailPassword({ email, password })
+        ).unwrap(); // 🔥 unwrap to catch rejectedWithValue
+
+        // Optional: redirect on success
+        navigate('/', { replace: true });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        // 👇 Handle and display error nicely
+        console.error('Login failed:', error);
+        toast.error(error.message || 'Something went wrong during login');
+      }
     }
   );
 

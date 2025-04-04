@@ -19,6 +19,7 @@ export interface RegisterData {
 export interface AuthResponse {
   name: string;
   email: string;
+  identification: string;
   id: string;
   is_active: boolean;
   companies: UserCompany[];
