@@ -1,11 +1,8 @@
 import React from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { PrivateRoute } from './PrivateRoute';
-import { AuthRoutes } from './PublicRoute';
 import { RootState } from '../store/store';
 import { hasRole } from '../store/auth';
-import { AdminRoutes } from './AdminRoutes';
 import { Box } from '@mui/material';
 import Breadcrumb from '../components/Breadcrumb';
 import MiniDrawer, { DrawerHeader } from '../components/Drawer';

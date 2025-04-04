@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchCities, fetchCountries, fetchRegions } from './geoThunks';
 import { CityType, CountryType, RegionType } from '../../types/geo/geoTypes';
-import produce from 'immer';
 
 interface DataState<T> {
   data: T[] | null;
