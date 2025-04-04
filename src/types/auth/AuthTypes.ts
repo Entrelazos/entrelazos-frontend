@@ -1,4 +1,3 @@
-import { CompanyItem } from '../companies/CompaniesTypes';
 import { UserCompany } from '../user/UserTypes';
 
 export interface Credentials {
