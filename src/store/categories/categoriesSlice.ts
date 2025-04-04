@@ -1,8 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import {
-  CategoryApiResponse,
-  CategoryItem,
-} from '../../types/categories/CategoryTypes';
+import { CategoryItem } from '../../types/categories/CategoryTypes';
 import { fetchCategories } from './categoriesThunks';
 import { CATEGORIES } from '../../constants/constants';
 

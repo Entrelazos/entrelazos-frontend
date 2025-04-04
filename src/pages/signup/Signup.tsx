@@ -21,6 +21,7 @@ import './Signup.scss';
 import { AppDispatch } from '../../store/store';
 import { AuthState } from '../../types/auth/AuthTypes';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Copyright(props: any) {
   return (
     <Typography
@@ -39,7 +40,11 @@ function Copyright(props: any) {
   );
 }
 
-const theme = createTheme();
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 
 export function Signup({ registerUserSuccess }) {
   const validationSchema = {
@@ -84,20 +89,25 @@ export function Signup({ registerUserSuccess }) {
       name: '',
     },
     validationSchema,
-    (values) => {
+    async (values) => {
       const { cellphone, email, password, identification, name } = values;
 
-      dispatch(
-        startRegister({
-          name,
-          cellphone,
-          email,
-          password,
-          identification,
-          is_active: true,
-          roleIds: [2],
-        })
-      );
+      try {
+        await dispatch(
+          startRegister({
+            name,
+            cellphone,
+            email,
+            password,
+            identification,
+            is_active: true,
+            roleIds: [2],
+          })
+        ).unwrap();
+      } catch (error) {
+        console.error('Login failed:', error);
+        toast.error(error.message || 'Something went wrong during login');
+      }
     }
   );
 
@@ -129,7 +139,7 @@ export function Signup({ registerUserSuccess }) {
   }, [registerUserSuccess]);
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={darkTheme}>
       <Container component='main' maxWidth='xs'>
         <CssBaseline />
         <Box
@@ -274,11 +284,6 @@ export function Signup({ registerUserSuccess }) {
               </Grid>
             </Grid>
 
-            {registerUserSuccess === false ? (
-              <h6 style={{ color: 'red' }}>
-                Oops, parece que ha habido un error.
-              </h6>
-            ) : null}
             <Button
               type='submit'
               fullWidth

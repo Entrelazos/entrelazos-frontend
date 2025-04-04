@@ -1,4 +1,4 @@
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import {
   Credentials,
   RegisterData,
@@ -6,6 +6,7 @@ import {
 } from '../../types/auth/AuthTypes';
 import { createAxiosInstance } from '../axiosFactory';
 import { User } from '../../types/user/UserTypes';
+import { ERROR_CODES } from '../../constants/error-codes';
 
 const authServiceWithAuth = createAxiosInstance({
   useAuth: true,
@@ -19,10 +20,35 @@ const authService = createAxiosInstance({
   baseEndpoint: '/auth',
 });
 
+const SOY_MISIONERO_URL = 'https://back.misioneroslam.com/api/misionero';
+
+export const checkActiveMissionary = async (id: number) => {
+  try {
+    const response = await axios.get(`${SOY_MISIONERO_URL}/${id}`, {
+      headers: {
+        'lam-token': import.meta.env.VITE_LAM_TOKEN,
+      },
+    });
+    const { misionero } = response.data;
+    return misionero;
+  } catch (error) {
+    throw new Error(error || 'Failed to check activeness');
+  }
+};
+
 export const register = async (
   registerData: RegisterData
 ): Promise<AuthResponse> => {
   try {
+    const { activo } = await checkActiveMissionary(
+      parseInt(registerData.identification)
+    );
+    if (!activo || activo?.toLowerCase() === 'n') {
+      const error = new Error('Misionero no encontrado o inactivo');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (error as any).code = ERROR_CODES.NOT_ACTIVE_MISSIONARY;
+      throw error;
+    }
     const response: AxiosResponse<AuthResponse> = await authService.post(
       '/register',
       registerData
@@ -31,7 +57,8 @@ export const register = async (
     setAuthToken(accessToken); // Set the authentication token in Axios headers
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to get register');
+    console.log(error);
+    throw new Error('Misionero no encontrado o inactivo');
   }
 };
 
@@ -43,13 +70,21 @@ export const login = async (
       '/login',
       credentials
     );
-    const { accessToken, refreshToken } = response.data;
+    const { accessToken, refreshToken, identification } = response.data;
+    const { activo } = await checkActiveMissionary(parseInt(identification));
+    if (!activo || activo?.toLowerCase() === 'n') {
+      const error = new Error('Misionero no encontrado o inactivo');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (error as any).code = ERROR_CODES.NOT_ACTIVE_MISSIONARY;
+      throw error;
+    }
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
     setAuthToken(accessToken); // Set the authentication token in Axios headers
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to login');
+    console.log(error);
+    throw new Error('Misionero no encontrado o inactivo');
   }
 };
 
