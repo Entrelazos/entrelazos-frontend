@@ -66,7 +66,7 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
   const totalItems = byCompany?.meta?.totalItems || 0;
 
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'Id', width: 100 },
+    { field: 'dbId', headerName: 'Id', width: 100 },
     { field: 'name', headerName: 'Nombre', width: 150 },
     { field: 'price', headerName: 'Precio', width: 150 },
     { field: 'approvalStatus', headerName: 'Estado', width: 150 },

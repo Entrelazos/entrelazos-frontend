@@ -17,7 +17,9 @@ const ProductPage: FC = () => {
   const [images, setImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [isMyCompany, setIsMyCompany] = useState(false);
-  const { companies } = useSelector((state: RootState) => state.auth);
+  const { userCompaniesData } = useSelector(
+    (state: RootState) => state.companies
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,7 +50,9 @@ const ProductPage: FC = () => {
           );
         }
         setIsMyCompany(
-          companies.some((company) => company.id === productData.company.id)
+          userCompaniesData?.items.some(
+            (company) => company.id === productData.company.id
+          )
         );
       } catch (error) {
         console.error('Error fetching product or images:', error);
