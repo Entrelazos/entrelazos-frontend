@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '../store/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store/store';
 import { hasRole } from '../store/auth';
 import { Box } from '@mui/material';
 import Breadcrumb from '../components/Breadcrumb';
 import MiniDrawer, { DrawerHeader } from '../components/Drawer';
 import { ROUTES_INFO } from '../constants/constants';
 import { getComponentWithProps } from '../utils/Common';
+import { fetchUserCompanies } from '../store/companies/companiesThunks';
 
 export interface ComponentParams {
   signUpParam: boolean;
@@ -15,7 +16,7 @@ export interface ComponentParams {
 }
 
 const AppRouter: React.FC = () => {
-  const { status, registerUserSuccess } = useSelector(
+  const { status, registerUserSuccess, uid } = useSelector(
     (state: RootState) => state.auth
   );
   const isAdmin = useSelector(hasRole('admin'));
@@ -23,6 +24,21 @@ const AppRouter: React.FC = () => {
     signUpParam: registerUserSuccess,
     profileParam: true,
   };
+
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    if (status === 'authenticated') {
+      dispatch(
+        fetchUserCompanies({
+          userId: parseInt(uid),
+          options: {
+            page: 1,
+            limit: 100,
+          },
+        })
+      );
+    }
+  }, [status]);
 
   return (
     <Box sx={{ display: 'flex' }}>

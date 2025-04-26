@@ -39,7 +39,7 @@ const Dashboard: FC = () => {
 
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
-    pageSize: 5,
+    pageSize: 100,
   });
 
   const { items = [], meta = { totalItems: 0 } } = userCompaniesData || {};
@@ -87,14 +87,15 @@ const Dashboard: FC = () => {
       </Box>
 
       <Grid2 container spacing={3}>
-        <Grid2 xs={12} md={4}>
+        {/* TODO: fix this number in the db */}
+        {/* <Grid2 xs={12} md={4}>
           <SimpleDataCard
             title='Número de Empresas Registradas'
             mainText={meta.totalItems.toString()}
           />
-        </Grid2>
+        </Grid2> */}
 
-        <Grid2 xs={12} md={6} lg={8}>
+        <Grid2 xs={12} md={12} lg={12}>
           <Card raised sx={{ borderRadius: 2 }}>
             <CardHeader
               title='Mis Empresas'
@@ -108,7 +109,6 @@ const Dashboard: FC = () => {
                 loading={loading}
                 paginationMode='server'
                 paginationModel={paginationModel}
-                pageSizeOptions={[5, 10]}
                 onPaginationModelChange={setPaginationModel}
                 onRowClick={handleRowClick}
                 sx={{

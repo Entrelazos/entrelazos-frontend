@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import CardComponent from '../../components/Card';
@@ -9,6 +9,8 @@ import ChipsFilter, {
   FilteredCategoryItem,
 } from '../../components/ChipsFilter/chips-filter.component';
 import { fetchCategories } from '../../store/categories/categoriesThunks';
+import { Box, Typography } from '@mui/material';
+import { useState } from 'react';
 
 const CompaniesPage: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -23,8 +25,13 @@ const CompaniesPage: FC = () => {
 
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
 
+  const companies = useMemo(() => companiesData?.items || [], [companiesData]);
+
+  const getImageUrl = (imagePath?: string) =>
+    imagePath ? `${import.meta.env.VITE_BASE_FILES_URL}${imagePath}` : '';
+
   useEffect(() => {
-    if (!categories) {
+    if (!categories || categories.length === 0) {
       dispatch(fetchCategories());
     }
   }, [categories, dispatch]);
@@ -39,49 +46,64 @@ const CompaniesPage: FC = () => {
     );
   }, [selectedCategories, dispatch]);
 
-  const onFilter = (categoryId: number) => {
+  const onFilter = useCallback((categoryId: number) => {
     setSelectedCategories((prev) =>
       prev.includes(categoryId)
         ? prev.filter((id) => id !== categoryId)
         : [...prev, categoryId]
     );
-  };
+  }, []);
 
-  const onClear = () => setSelectedCategories([]);
+  const onClear = useCallback(() => {
+    setSelectedCategories([]);
+  }, []);
 
-  const handleCardClick = (companyName: string) =>
-    navigate(`perfil-compania/${companyName}`);
-
-  const companies = useMemo(() => companiesData?.items || [], [companiesData]);
+  const handleCardClick = useCallback(
+    (companyName: string) => {
+      navigate(`perfil-compania/${companyName}`);
+    },
+    [navigate]
+  );
 
   return (
-    <Grid container spacing={2} padding={2}>
+    <Box p={2}>
       {categories && (
-        <ChipsFilter
-          categories={categories as FilteredCategoryItem[]}
-          onFilter={onFilter}
-          onClear={onClear}
-        />
+        <Box mb={2}>
+          <ChipsFilter
+            categories={categories as FilteredCategoryItem[]}
+            onFilter={onFilter}
+            onClear={onClear}
+          />
+        </Box>
       )}
 
       {loading ? (
-        <p>Cargando empresas...</p>
-      ) : companies.length > 0 ? (
-        companies.map((item) => (
-          <Grid key={item.id} xs={12} md={6} lg={4}>
-            <CardComponent
-              avatarImage={`${import.meta.env.VITE_BASE_FILES_URL}${item?.images?.[1]?.url || ''}`}
-              title={item.name}
-              content={item.description}
-              image={`${import.meta.env.VITE_BASE_FILES_URL}${item?.images?.[0]?.url || ''}`}
-              onClick={() => handleCardClick(item.name)}
-            />
-          </Grid>
-        ))
+        <Typography variant='body1'>Cargando empresas...</Typography>
+      ) : companies.length === 0 ? (
+        <Typography variant='body1'>No hay empresas registradas.</Typography>
       ) : (
-        <p>No hay empresas registradas.</p>
+        <Grid container spacing={2}>
+          {companies.map((item) => {
+            const placeholderImage = `https://placehold.co/600x400?text=${encodeURIComponent(item.name)}`;
+            const mainImage = item?.images?.[0]?.url
+              ? getImageUrl(item.images[0].url)
+              : placeholderImage;
+
+            return (
+              <Grid key={item.id} xs={12} md={6} lg={4}>
+                <CardComponent
+                  avatarImage={getImageUrl(item?.images?.[1]?.url)} // avatar stays as it is
+                  title={item.name}
+                  content={item.description}
+                  image={mainImage} // safe with fallback!
+                  onClick={() => handleCardClick(item.name)}
+                />
+              </Grid>
+            );
+          })}
+        </Grid>
       )}
-    </Grid>
+    </Box>
   );
 };
 

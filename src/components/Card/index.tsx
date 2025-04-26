@@ -77,13 +77,15 @@ const CardComponent: React.FC<CardComponentProps> = ({
         title={title}
         subheader={subheader}
       />
-      <CardMedia
-        component='img'
-        height='194'
-        image={image}
-        alt={title}
-        onClick={onClick}
-      />
+      {image && (
+        <CardMedia
+          component='img'
+          height='194'
+          image={image}
+          alt={title}
+          onClick={onClick}
+        />
+      )}
       <CardContent>
         <Typography variant='body2' color='text.secondary'>
           {content}
