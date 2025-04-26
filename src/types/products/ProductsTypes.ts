@@ -1,6 +1,6 @@
 import { ApprovalStatus } from '../../constants/constants';
 import { CategoryItem } from '../categories/CategoryTypes';
-import { CompanyItem } from '../companies/CompaniesTypes';
+import { CompanyItem, Image } from '../companies/CompaniesTypes';
 
 export interface ProductItem {
   id: number;
@@ -14,7 +14,7 @@ export interface ProductItem {
     | ApprovalStatus.REJECTED;
   product_description: string;
   company: CompanyItem;
-  images: string[];
+  images: Image[];
   categories: CategoryItem[];
 }
 

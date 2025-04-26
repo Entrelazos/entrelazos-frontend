@@ -1,6 +1,6 @@
 import { Box, IconButton, Skeleton } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState, useCallback, useMemo } from 'react';
 import CarouselComponent from '../../components/Carousel/carousel.component';
 import { getSingleProduct } from '../../services/products/productsService';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -12,29 +12,36 @@ import { RootState } from '../../store/store';
 import EditIcon from '@mui/icons-material/Edit';
 
 const ProductPage: FC = () => {
-  const { productId } = useParams();
+  const { productId } = useParams<{ productId: string }>();
+  const navigate = useNavigate();
+
   const [product, setProduct] = useState<ProductItem | null>(null);
   const [images, setImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isMyCompany, setIsMyCompany] = useState(false);
+
   const { userCompaniesData } = useSelector(
     (state: RootState) => state.companies
   );
-  const navigate = useNavigate();
+
+  const isMyCompany = useMemo(() => {
+    if (!product || !userCompaniesData?.items) return false;
+    return userCompaniesData.items.some(
+      (company) => company.id === product.company.id
+    );
+  }, [product, userCompaniesData]);
 
   useEffect(() => {
-    const fetchProductAndImages = async () => {
-      if (!productId) return;
+    if (!productId) return;
 
+    const fetchData = async () => {
       try {
-        setLoading(true); // Start loading
+        setLoading(true);
 
-        const productData = await getSingleProduct(productId);
-        setProduct((prev) =>
-          prev?.id !== productData.id ? productData : prev
-        );
+        const [productData] = await Promise.all([getSingleProduct(productId)]);
 
-        if (productData?.id) {
+        if (productData) {
+          setProduct(productData);
+
           const productImages = await getFilesByEntityIdAndType(
             productData.id,
             'product'
@@ -43,54 +50,56 @@ const ProductPage: FC = () => {
             (image: { url: string }) =>
               `${import.meta.env.VITE_BASE_FILES_URL}${image.url}`
           );
-          setImages((prev) =>
-            JSON.stringify(prev) !== JSON.stringify(imageUrls)
-              ? imageUrls
-              : prev
-          );
+          setImages(imageUrls);
         }
-        setIsMyCompany(
-          userCompaniesData?.items.some(
-            (company) => company.id === productData.company.id
-          )
-        );
       } catch (error) {
         console.error('Error fetching product or images:', error);
       } finally {
-        setLoading(false); // Stop loading after fetching
+        setLoading(false);
       }
     };
 
-    fetchProductAndImages();
+    fetchData();
   }, [productId]);
 
-  const handleEditClick = () => {
-    navigate(`/productos/editar/${product.id}`);
-  };
+  const handleEditClick = useCallback(() => {
+    if (product) {
+      navigate(`/productos/editar/${product.id}`);
+    }
+  }, [navigate, product]);
+
+  const carouselSection = loading ? (
+    <Skeleton variant='rectangular' width='100%' height={400} />
+  ) : images.length > 0 ? (
+    <CarouselComponent images={images} width='100%' />
+  ) : null;
+
+  const productSection = loading ? (
+    <Skeleton variant='rectangular' width='100%' height={300} />
+  ) : product ? (
+    <ProductCard product={product} />
+  ) : null;
 
   return (
     <Box width='100%' maxWidth='100%' mx='auto' p={2}>
       <Grid2 container spacing={3}>
-        <Grid2 xs={12} md={6} lg={6} display='flex' justifyContent='center'>
-          <Box width='100%'>
+        <Grid2 xs={12} md={6} display='flex' justifyContent='center'>
+          <Box width='100%' position='relative'>
             {isMyCompany && (
-              <IconButton aria-label='edit' onClick={handleEditClick}>
+              <IconButton
+                aria-label='edit'
+                onClick={handleEditClick}
+                sx={{ position: 'absolute', top: 8, right: 8, zIndex: 1 }}
+              >
                 <EditIcon />
               </IconButton>
             )}
-            {loading ? (
-              <Skeleton variant='rectangular' width='100%' height={400} />
-            ) : images.length > 0 ? (
-              <CarouselComponent images={images} width='100%' />
-            ) : null}
+            {carouselSection}
           </Box>
         </Grid2>
-        <Grid2 xs={12} md={6} lg={6}>
-          {loading ? (
-            <Skeleton variant='rectangular' width='100%' height={300} />
-          ) : (
-            product && <ProductCard product={product} />
-          )}
+
+        <Grid2 xs={12} md={6}>
+          {productSection}
         </Grid2>
       </Grid2>
     </Box>

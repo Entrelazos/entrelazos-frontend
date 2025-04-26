@@ -83,17 +83,24 @@ const CompaniesPage: FC = () => {
         <Typography variant='body1'>No hay empresas registradas.</Typography>
       ) : (
         <Grid container spacing={2}>
-          {companies.map((item) => (
-            <Grid key={item.id} xs={12} md={6} lg={4}>
-              <CardComponent
-                avatarImage={getImageUrl(item?.images?.[1]?.url)}
-                title={item.name}
-                content={item.description}
-                image={getImageUrl(item?.images?.[0]?.url)}
-                onClick={() => handleCardClick(item.name)}
-              />
-            </Grid>
-          ))}
+          {companies.map((item) => {
+            const placeholderImage = `https://placehold.co/600x400?text=${encodeURIComponent(item.name)}`;
+            const mainImage = item?.images?.[0]?.url
+              ? getImageUrl(item.images[0].url)
+              : placeholderImage;
+
+            return (
+              <Grid key={item.id} xs={12} md={6} lg={4}>
+                <CardComponent
+                  avatarImage={getImageUrl(item?.images?.[1]?.url)} // avatar stays as it is
+                  title={item.name}
+                  content={item.description}
+                  image={mainImage} // safe with fallback!
+                  onClick={() => handleCardClick(item.name)}
+                />
+              </Grid>
+            );
+          })}
         </Grid>
       )}
     </Box>

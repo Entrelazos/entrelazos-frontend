@@ -1,101 +1,133 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AppDispatch, RootState } from '../../store/store';
 import { fetchProductsByCategoryId } from '../../store/products/productsThunks';
+import { clearProductsData } from '../../store/products/productsSliceFinal';
 import {
+  Box,
   IconButton,
   ImageList,
   ImageListItem,
   ImageListItemBar,
+  Skeleton,
   Theme,
+  Typography,
   useMediaQuery,
 } from '@mui/material';
 import { Info } from '@mui/icons-material';
-import { clearProductsData } from '../../store/products/productsSliceFinal';
 
 const ProductsByCategory: FC = () => {
-  const { categoryId } = useParams();
+  const { categoryId } = useParams<{ categoryId: string }>();
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
   const { byCategory, loading, error } = useSelector(
     (state: RootState) => state.products
   );
-  const navigate = useNavigate();
 
   const isSm = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
   const isMd = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
   const isLg = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
 
-  // Determine the number of columns based on breakpoints
-  let cols = 1; // Default for extra-small screens
-  if (isLg) cols = 5;
-  else if (isMd) cols = 4;
-  else if (isSm) cols = 2;
+  const cols = useMemo(() => {
+    if (isLg) return 5;
+    if (isMd) return 4;
+    if (isSm) return 2;
+    return 1;
+  }, [isLg, isMd, isSm]);
 
   useEffect(() => {
-    dispatch(fetchProductsByCategoryId(parseInt(categoryId)));
+    if (!categoryId) return;
+    dispatch(fetchProductsByCategoryId(parseInt(categoryId, 10)));
+
     return () => {
       dispatch(clearProductsData());
     };
-  }, [dispatch]);
+  }, [categoryId, dispatch]);
 
-  const handleProductClick = (productId: number) => {
-    navigate(`/productos/${productId}`);
-  };
+  const handleProductClick = useCallback(
+    (productId: number) => {
+      navigate(`/productos/${productId}`);
+    },
+    [navigate]
+  );
+
+  const items = byCategory?.items?.[0]?.products || [];
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <Box width='100%' p={2}>
+        <ImageList cols={cols} gap={8}>
+          {Array.from({ length: 8 }).map((_, idx) => (
+            <ImageListItem key={idx}>
+              <Skeleton variant='rectangular' width='100%' height={200} />
+            </ImageListItem>
+          ))}
+        </ImageList>
+      </Box>
+    );
   }
 
   if (error) {
-    return <p>{error}</p>;
-  }
-  if (byCategory) {
-    const { items, meta } = byCategory || {
-      items: [],
-      meta: { currentPage: 1, itemsPerPage: 10 },
-    };
-
     return (
-      <ImageList
-        sx={{
-          width: '100%',
-          gap: {
-            xs: 4, // Smaller gap on extra-small screens
-            sm: 8, // Medium gap on small screens
-            md: 12, // Larger gap on medium screens
-            lg: 16, // Largest gap on large screens
-          },
-        }}
-        cols={cols} // Set columns responsively
-      >
-        {items[0]?.products?.map((item) => (
-          <ImageListItem
-            key={item.id}
-            onClick={() => handleProductClick(item.id)}
-          >
-            <img
-              srcSet={item.images[0]}
-              src={item.images[0]}
-              alt={item.product_name}
-              loading='lazy'
-            />
-            <ImageListItemBar
-              title={item.product_name}
-              subtitle={item.company.name}
-              actionIcon={
-                <IconButton
-                  sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
-                  aria-label={`info about ${item.product_name}`}
-                >
-                  <Info />
-                </IconButton>
-              }
-            />
-          </ImageListItem>
-        ))}
-      </ImageList>
+      <Typography color='error' p={2}>
+        {error}
+      </Typography>
     );
   }
+
+  return (
+    <Box width='100%' p={2}>
+      <ImageList
+        cols={cols}
+        sx={{ width: '100%', gap: { xs: 4, sm: 8, md: 12, lg: 16 } }}
+      >
+        {items.map((item) => {
+          const placeholderImage = `https://placehold.co/600x400?text=${encodeURIComponent(item.product_name)}`;
+          const productImage = item.images?.[0]
+            ? `${import.meta.env.VITE_BASE_FILES_URL}${item.images[0].url}`
+            : placeholderImage;
+
+          return (
+            <ImageListItem
+              key={item.id}
+              onClick={() => handleProductClick(item.id)}
+              sx={{
+                cursor: 'pointer',
+                '&:hover img': {
+                  opacity: 0.85,
+                  transition: 'opacity 0.3s ease',
+                },
+              }}
+            >
+              <img
+                src={productImage}
+                alt={item.product_name}
+                loading='lazy'
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = placeholderImage;
+                }}
+                style={{ width: '100%', height: 'auto', objectFit: 'cover' }}
+              />
+              <ImageListItemBar
+                title={item.product_name}
+                subtitle={item.company.name}
+                actionIcon={
+                  <IconButton
+                    sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                    aria-label={`info about ${item.product_name}`}
+                  >
+                    <Info />
+                  </IconButton>
+                }
+              />
+            </ImageListItem>
+          );
+        })}
+      </ImageList>
+    </Box>
+  );
 };
+
 export default ProductsByCategory;
