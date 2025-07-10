@@ -103,7 +103,7 @@ const productsSlice = createSlice({
       })
       .addCase(
         fetchAllProducts.fulfilled,
-        (state, action: PayloadAction<ProductApiResponse>) => {
+        (state, action: PayloadAction<ProductByCompanyApiResponse>) => {
           state.all.loading = false;
           state.all.data = action.payload;
         }

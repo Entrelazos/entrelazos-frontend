@@ -47,9 +47,8 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
   const { companyId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const compayIsMine = useSelector(isMyCompany());
-  const { byCompany, loading } = useSelector(
-    (state: RootState) => state.products
-  );
+  const { byCompany } = useSelector((state: RootState) => state.products);
+  const { data, loading, error } = byCompany;
   const { data: companyData } = useSelector(
     (state: RootState) => state.company
   );
@@ -62,8 +61,8 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
   const [openModal, setOpenModal] = useState(false);
 
   const selectedCompanyId = companyIdParam ?? companyId;
-  const items = byCompany?.items || [];
-  const totalItems = byCompany?.meta?.totalItems || 0;
+  const items = data?.items || [];
+  const totalItems = data?.meta?.totalItems || 0;
 
   const columns: GridColDef[] = [
     { field: 'dbId', headerName: 'Id', width: 100 },
