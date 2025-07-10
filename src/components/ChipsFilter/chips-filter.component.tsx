@@ -70,8 +70,6 @@ const ChipsFilter: FC<ChipsFilterProperties> = ({
           flexWrap: 'wrap',
           listStyle: 'none',
           p: 1,
-          width: '100%',
-          mx: '8px',
           my: 0,
         }}
         component='ul'

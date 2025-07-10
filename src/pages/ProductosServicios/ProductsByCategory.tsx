@@ -22,9 +22,9 @@ const ProductsByCategory: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { byCategory, loading, error } = useSelector(
-    (state: RootState) => state.products
-  );
+  const { byCategory } = useSelector((state: RootState) => state.products);
+
+  const { data, loading, error } = byCategory;
 
   const isSm = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
   const isMd = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
@@ -53,7 +53,7 @@ const ProductsByCategory: FC = () => {
     [navigate]
   );
 
-  const items = byCategory?.items?.[0]?.products || [];
+  const items = data?.items?.[0]?.products || [];
 
   if (loading) {
     return (

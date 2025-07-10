@@ -16,12 +16,13 @@ const companyService = createAxiosInstance({ baseEndpoint: '/companies' });
 export const getAllCompanies = async (
   page: number,
   pageSize: number,
-  categoryIds: number[]
+  categoryIds: number[],
+  search: string = ''
 ): Promise<CompanyApiResponse> => {
   try {
     const response: AxiosResponse<CompanyApiResponse> =
       await companyService.get('', {
-        params: { page, limit: pageSize, categoryIds },
+        params: { page, limit: pageSize, categoryIds, search },
       });
     return response.data;
   } catch (error) {
