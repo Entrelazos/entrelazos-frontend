@@ -9,7 +9,14 @@ import ChipsFilter, {
   FilteredCategoryItem,
 } from '../../components/ChipsFilter/chips-filter.component';
 import { fetchCategories } from '../../store/categories/categoriesThunks';
-import { Box, Typography } from '@mui/material';
+import {
+  Box,
+  TextField,
+  Typography,
+  InputAdornment,
+  Icon,
+} from '@mui/material';
+import { Search } from '@mui/icons-material';
 import { useState } from 'react';
 
 const CompaniesPage: FC = () => {
@@ -30,6 +37,25 @@ const CompaniesPage: FC = () => {
   const getImageUrl = (imagePath?: string) =>
     imagePath ? `${import.meta.env.VITE_BASE_FILES_URL}${imagePath}` : '';
 
+  const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 800);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchTerm]);
+
+  const handleSearchInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSearchTerm(event.target.value);
+  };
+
   useEffect(() => {
     if (!categories || categories.length === 0) {
       dispatch(fetchCategories());
@@ -42,9 +68,10 @@ const CompaniesPage: FC = () => {
         page: 1,
         limit: 10,
         categoryIds: selectedCategories,
+        search: debouncedSearchTerm,
       })
     );
-  }, [selectedCategories, dispatch]);
+  }, [selectedCategories, debouncedSearchTerm, dispatch]);
 
   const onFilter = useCallback((categoryId: number) => {
     setSelectedCategories((prev) =>
@@ -73,6 +100,21 @@ const CompaniesPage: FC = () => {
             categories={categories as FilteredCategoryItem[]}
             onFilter={onFilter}
             onClear={onClear}
+          />
+          <TextField
+            id='outlined-basic'
+            label='Buscar Empresas'
+            variant='outlined'
+            onChange={handleSearchInputChange}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position='start'>
+                  <Icon>
+                    <Search />
+                  </Icon>
+                </InputAdornment>
+              ),
+            }}
           />
         </Box>
       )}

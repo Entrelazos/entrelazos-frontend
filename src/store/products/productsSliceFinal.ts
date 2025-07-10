@@ -5,14 +5,47 @@ import {
   ProductApiResponse,
   ProductByCompanyApiResponse,
 } from '../../types/products/ProductsTypes';
-import {
-  fetchProductsByCompanyId,
-  fetchProductsByCategoryId,
-} from './productsThunks';
+
+export const fetchAllProducts = createAsyncThunk(
+  'products/fetchAllProducts',
+  async ({
+    page,
+    limit,
+    search = '',
+  }: {
+    page: number;
+    limit: number;
+    search?: string;
+  }) => {
+    const response = await axios.get(`/api/products`, {
+      params: { page, limit, search },
+    });
+    return response.data;
+  }
+);
+
+// Async thunk for fetching products by company
+export const fetchProductsByCompanyId = createAsyncThunk(
+  'products/fetchProductsByCompanyId',
+  async ({
+    companyId,
+    page,
+    limit,
+  }: {
+    companyId: number;
+    page: number;
+    limit: number;
+  }) => {
+    const response = await axios.get(`/api/companies/${companyId}/products`, {
+      params: { page, limit },
+    });
+    return response.data;
+  }
+);
 
 // Async thunk for fetching products by category
-export const fetchProductsByCategory = createAsyncThunk(
-  'products/fetchProductsByCategory',
+export const fetchProductsByCategoryId = createAsyncThunk(
+  'products/fetchProductsByCategoryId',
   async ({
     categoryId,
     page,
@@ -29,18 +62,28 @@ export const fetchProductsByCategory = createAsyncThunk(
   }
 );
 
-interface ProductsState {
-  byCompany: ProductByCompanyApiResponse | null;
-  byCategory: ProductApiResponse | null;
+interface AsyncState<T> {
+  data: T | null;
   loading: boolean;
   error: string | null;
 }
 
-const initialState: ProductsState = {
-  byCompany: null,
-  byCategory: null,
+interface ProductsState {
+  byCompany: AsyncState<ProductByCompanyApiResponse>;
+  byCategory: AsyncState<ProductApiResponse>;
+  all: AsyncState<ProductByCompanyApiResponse>;
+}
+
+const initialAsyncState = <T>(): AsyncState<T> => ({
+  data: null,
   loading: false,
   error: null,
+});
+
+const initialState: ProductsState = {
+  byCompany: initialAsyncState<ProductByCompanyApiResponse>(),
+  byCategory: initialAsyncState<ProductApiResponse>(),
+  all: initialAsyncState<ProductByCompanyApiResponse>(),
 };
 
 const productsSlice = createSlice({
@@ -48,44 +91,61 @@ const productsSlice = createSlice({
   initialState,
   reducers: {
     clearProductsData: (state) => {
-      state.byCompany = null;
-      state.byCategory = null;
-      state.loading = false;
-      state.error = null;
+      state.byCompany = initialAsyncState<ProductByCompanyApiResponse>();
+      state.byCategory = initialAsyncState<ProductApiResponse>();
     },
   },
   extraReducers: (builder) => {
     builder
-      // Handle fetchProductsByCompany actions
+      .addCase(fetchAllProducts.pending, (state) => {
+        state.all.loading = true;
+        state.all.error = null;
+      })
+      .addCase(
+        fetchAllProducts.fulfilled,
+        (state, action: PayloadAction<ProductApiResponse>) => {
+          state.all.loading = false;
+          state.all.data = action.payload;
+        }
+      )
+      .addCase(fetchAllProducts.rejected, (state, action) => {
+        state.all.loading = false;
+        state.all.error =
+          action.error.message || 'Failed to fetch all products';
+      })
+      // Handle fetchProductsByCompanyId
       .addCase(fetchProductsByCompanyId.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.byCompany.loading = true;
+        state.byCompany.error = null;
       })
       .addCase(
         fetchProductsByCompanyId.fulfilled,
         (state, action: PayloadAction<ProductByCompanyApiResponse>) => {
-          state.loading = false;
-          state.byCompany = action.payload;
+          state.byCompany.loading = false;
+          state.byCompany.data = action.payload;
         }
       )
       .addCase(fetchProductsByCompanyId.rejected, (state, action) => {
-        state.loading = false;
-        state.error =
+        state.byCompany.loading = false;
+        state.byCompany.error =
           action.error.message || 'Failed to fetch products by company';
       })
 
-      // Handle fetchProductsByCategory actions
+      // Handle fetchProductsByCategoryId
       .addCase(fetchProductsByCategoryId.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.byCategory.loading = true;
+        state.byCategory.error = null;
       })
-      .addCase(fetchProductsByCategoryId.fulfilled, (state, action) => {
-        state.loading = false;
-        state.byCategory = action.payload;
-      })
+      .addCase(
+        fetchProductsByCategoryId.fulfilled,
+        (state, action: PayloadAction<ProductApiResponse>) => {
+          state.byCategory.loading = false;
+          state.byCategory.data = action.payload;
+        }
+      )
       .addCase(fetchProductsByCategoryId.rejected, (state, action) => {
-        state.loading = false;
-        state.error =
+        state.byCategory.loading = false;
+        state.byCategory.error =
           action.error.message || 'Failed to fetch products by category';
       });
   },

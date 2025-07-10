@@ -15,11 +15,13 @@ export const fetchCompaniesData = createAsyncThunk(
     page: number;
     limit: number;
     categoryIds: number[];
+    search?: string;
   }): Promise<CompanyApiResponse> => {
     const response: CompanyApiResponse = await getAllCompanies(
       options.page,
       options.limit,
-      options.categoryIds
+      options.categoryIds,
+      options.search ? options.search : ''
     );
     return response;
   }

@@ -16,6 +16,21 @@ const productServiceWithAuth = createAxiosInstance({
 
 const productService = createAxiosInstance({ baseEndpoint: '/products' });
 
+export const getAllProducts = async (options: {
+  page: number;
+  limit: number;
+  companyId?: number;
+  search?: string;
+}): Promise<ProductByCompanyApiResponse> => {
+  try {
+    const response: AxiosResponse<ProductByCompanyApiResponse> =
+      await productService.get('', { params: options });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to get products');
+  }
+};
+
 export const getProductsByCompanyId = async (
   companyId: number,
   options: { page: number; limit: number }
