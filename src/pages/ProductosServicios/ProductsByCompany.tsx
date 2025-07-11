@@ -27,7 +27,7 @@ import Grid2 from '@mui/material/Unstable_Grid2';
 import AddProductModal from './components/AddProductModal';
 import { createProducts } from '../../services/products/productsService';
 import { clearProductsData } from '../../store/products/productsSliceFinal';
-import { approvalStatusMap } from '../../constants/constants';
+import { ApprovalStatus, approvalStatusMap } from '../../constants/constants';
 
 interface ProductsByCompanyProps {
   companyIdParam?: string;
@@ -60,9 +60,14 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
   });
   const [openModal, setOpenModal] = useState(false);
 
-  const selectedCompanyId = companyIdParam ?? companyId;
-  const items = data?.items || [];
-  const totalItems = data?.meta?.totalItems || 0;
+  const totalItems = data?.meta?.totalItems ?? 0;
+  const items = useMemo(
+    () =>
+      data?.items.filter(
+        (item) => item.approval_status === ApprovalStatus.APPROVED
+      ) ?? [],
+    [data]
+  );
 
   const columns: GridColDef[] = [
     { field: 'dbId', headerName: 'Id', width: 100 },
