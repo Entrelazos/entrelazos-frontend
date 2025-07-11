@@ -243,7 +243,7 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
                   theme='snow'
                   value={field.value}
                   onChange={field.onChange}
-                  placeholder='Enter product description here...'
+                  placeholder='Descripcion del producto...'
                   modules={{
                     toolbar: [
                       [{ header: '1' }, { header: '2' }, { font: [] }],
