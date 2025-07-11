@@ -1,4 +1,11 @@
-import { FC, useEffect, useState, MouseEvent } from 'react';
+import {
+  FC,
+  useEffect,
+  useState,
+  MouseEvent,
+  useMemo,
+  useCallback,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AppDispatch, RootState } from '../../store/store';
@@ -27,7 +34,7 @@ import Grid2 from '@mui/material/Unstable_Grid2';
 import AddProductModal from './components/AddProductModal';
 import { createProducts } from '../../services/products/productsService';
 import { clearProductsData } from '../../store/products/productsSliceFinal';
-import { approvalStatusMap } from '../../constants/constants';
+import { ApprovalStatus, approvalStatusMap } from '../../constants/constants';
 
 interface ProductsByCompanyProps {
   companyIdParam?: string;
@@ -46,13 +53,15 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
 }) => {
   const { companyId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
+  const selectedCompanyId = parseInt(companyIdParam ?? companyId ?? '0');
   const compayIsMine = useSelector(isMyCompany());
   const { byCompany } = useSelector((state: RootState) => state.products);
-  const { data, loading, error } = byCompany;
   const { data: companyData } = useSelector(
     (state: RootState) => state.company
   );
-  const navigate = useNavigate();
+  const { data, loading } = byCompany;
 
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
@@ -60,84 +69,114 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
   });
   const [openModal, setOpenModal] = useState(false);
 
-  const selectedCompanyId = companyIdParam ?? companyId;
-  const items = data?.items || [];
-  const totalItems = data?.meta?.totalItems || 0;
+  const totalItems = data?.meta?.totalItems ?? 0;
+  const items = useMemo(
+    () =>
+      data?.items.filter(
+        (item) => item.approval_status === ApprovalStatus.APPROVED
+      ) ?? [],
+    [data]
+  );
 
-  const columns: GridColDef[] = [
-    { field: 'dbId', headerName: 'Id', width: 100 },
-    { field: 'name', headerName: 'Nombre', width: 150 },
-    { field: 'price', headerName: 'Precio', width: 150 },
-    { field: 'approvalStatus', headerName: 'Estado', width: 150 },
-    { field: 'isPublic', headerName: 'Publico', width: 150 },
-    { field: 'isService', headerName: 'Servicio', width: 150 },
-    ...(isEmbedded
-      ? []
-      : [{ field: 'company', headerName: 'Empresa', flex: 1 }]),
-  ];
+  const columns: GridColDef[] = useMemo(
+    () => [
+      { field: 'dbId', headerName: 'Id', width: 100 },
+      { field: 'name', headerName: 'Nombre', width: 150 },
+      { field: 'price', headerName: 'Precio', width: 150 },
+      { field: 'approvalStatus', headerName: 'Estado', width: 150 },
+      { field: 'isPublic', headerName: 'Publico', width: 150 },
+      { field: 'isService', headerName: 'Servicio', width: 150 },
+      ...(isEmbedded
+        ? []
+        : [{ field: 'company', headerName: 'Empresa', flex: 1 }]),
+    ],
+    [isEmbedded, companyData]
+  );
 
-  const rows = items.map((product: ProductItem, index: number) => ({
-    id: index + 1,
-    dbId: product.id,
-    name: product.product_name,
-    price: product.price,
-    approvalStatus: approvalStatusMap[product.approval_status],
-    isPublic: product.is_public,
-    isService: product.is_service,
-    company: companyData.name || 'N/A',
-  }));
+  const rows = useMemo(
+    () =>
+      items.map((product: ProductItem, index: number) => ({
+        id: index + 1,
+        dbId: product.id,
+        name: product.product_name,
+        price: product.price,
+        approvalStatus: approvalStatusMap[product.approval_status],
+        isPublic: product.is_public,
+        isService: product.is_service,
+        company: companyData?.name || 'N/A',
+      })),
+    [items, companyData]
+  );
 
-  useEffect(() => {
+  const loadProducts = useCallback(() => {
     dispatch(
       fetchProductsByCompanyId({
-        companyId: parseInt(selectedCompanyId),
+        companyId: selectedCompanyId,
         options: {
           page: paginationModel.page + 1,
           limit: paginationModel.pageSize,
         },
       })
     );
+  }, [
+    dispatch,
+    selectedCompanyId,
+    paginationModel.page,
+    paginationModel.pageSize,
+  ]);
 
+  useEffect(() => {
+    if (selectedCompanyId) loadProducts();
     return () => {
       dispatch(clearProductsData());
     };
-  }, [paginationModel, dispatch, selectedCompanyId]);
+  }, [selectedCompanyId, loadProducts, dispatch]);
 
-  const handlePaginationModelChange = (newPaginationModel: {
+  const handlePaginationModelChange = (newModel: {
     page: number;
     pageSize: number;
   }) => {
-    setPaginationModel(newPaginationModel);
+    if (
+      newModel.page !== paginationModel.page ||
+      newModel.pageSize !== paginationModel.pageSize
+    ) {
+      setPaginationModel(newModel);
+    }
   };
 
   const handleRowClick = (params: GridRowParams) => {
-    const { row } = params;
-    navigate(`/productos/${row.dbId}`);
+    navigate(`/productos/${params.row.dbId}`);
+  };
+
+  const handleModalSubmit = async (products: CreateProductType[]) => {
+    await createProducts(products);
+    loadProducts();
   };
 
   return (
     <>
       <AddProductModal
-        companyId={parseInt(selectedCompanyId)}
+        companyId={selectedCompanyId}
         open={openModal}
         handleClose={(event: MouseEvent, reason: string) => {
           if (reason !== 'backdropClick') {
             setOpenModal(false);
           }
         }}
-        onSubmit={(data: CreateProductType[]) => {
-          createProducts(data);
-        }}
+        onSubmit={handleModalSubmit}
       />
-      {!isEmbedded && <h2>test</h2>}
+
+      {!isEmbedded && (
+        <Typography variant='h5' gutterBottom>
+          Productos de la Empresa
+        </Typography>
+      )}
+
       <Card raised sx={{ borderRadius: '12px', width: '100%' }}>
         {isEmbedded && (
           <CardHeader
             title='Productos'
-            titleTypographyProps={{
-              fontSize: '1.125rem',
-              fontWeight: '700',
-            }}
+            titleTypographyProps={{ fontSize: '1.125rem', fontWeight: 700 }}
             action={
               compayIsMine && (
                 <Grid2 display='flex' alignItems='center' padding={0}>
@@ -153,6 +192,7 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
             }
           />
         )}
+
         <CardContent>
           <Box sx={{ height: 400, width: '100%', overflowX: 'auto' }}>
             <DataGrid
@@ -161,8 +201,8 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
               rowCount={totalItems}
               loading={loading}
               paginationMode='server'
-              onPaginationModelChange={handlePaginationModelChange}
               paginationModel={paginationModel}
+              onPaginationModelChange={handlePaginationModelChange}
               pageSizeOptions={[5, 10]}
               sx={{
                 '& .MuiDataGrid-columnHeaders': {
@@ -171,7 +211,7 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
                 },
               }}
               slots={{ noRowsOverlay: NoRowsOverlay }}
-              onRowClick={(params) => handleRowClick(params)}
+              onRowClick={handleRowClick}
             />
           </Box>
         </CardContent>

@@ -5,7 +5,7 @@
 
   .ql-editor {
     color: #fff;
-    .ql-blank::before {
+    &.ql-blank::before {
       color: #fff;
     }
   }
