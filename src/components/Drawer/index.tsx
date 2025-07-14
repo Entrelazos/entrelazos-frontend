@@ -94,7 +94,7 @@ interface DrawerProperties<T> {
   link?: string;
 }
 
-const MiniDrawer: FC<DrawerProperties<any>> = ({ items, link }) => {
+const MiniDrawer: FC<DrawerProperties<any>> = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -117,7 +117,6 @@ const MiniDrawer: FC<DrawerProperties<any>> = ({ items, link }) => {
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
-  const [openItem, setOpenItem] = React.useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -125,10 +124,6 @@ const MiniDrawer: FC<DrawerProperties<any>> = ({ items, link }) => {
 
   const handleDrawerClose = () => {
     setOpen(false);
-  };
-
-  const handleClick = (): void => {
-    setOpenItem(!openItem);
   };
 
   return (

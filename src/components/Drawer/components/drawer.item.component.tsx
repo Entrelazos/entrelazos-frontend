@@ -1,4 +1,4 @@
-/* eslint-disable react/require-default-props */
+ 
 import { FC, ReactElement, useState } from 'react';
 import {
   Collapse,

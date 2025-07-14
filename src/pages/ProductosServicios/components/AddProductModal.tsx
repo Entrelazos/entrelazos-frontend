@@ -26,9 +26,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategories } from '../../../store/categories/categoriesThunks';
 import { AppDispatch, RootState } from '../../../store/store';
 import FileDropZone from '../../../components/FileDropZone/FileDropZone';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import '../styles/quillDark.scss';
+import TiptapEditor from '../../../components/TipTapEditor/TipTapEditor';
 // Validation schema
 const validationSchema = yup.object({
   product_name: yup.string().required('Product name is required'),
@@ -239,24 +237,7 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
             rules={{ required: 'Product description is required' }}
             render={({ field }) => (
               <div>
-                <ReactQuill
-                  theme='snow'
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder='Descripcion del producto...'
-                  modules={{
-                    toolbar: [
-                      [{ header: '1' }, { header: '2' }, { font: [] }],
-                      [{ list: 'ordered' }, { list: 'bullet' }],
-                      ['bold', 'italic', 'underline', 'code-block'],
-                      ['link', 'image'],
-                      [{ align: [] }],
-                      [{ color: [] }, { background: [] }],
-                      ['clean'],
-                    ],
-                  }}
-                  className='quill-dark'
-                />
+                <TiptapEditor value={field.value} onChange={field.onChange} />
                 {errors.productDescription && (
                   <FormHelperText error>
                     {errors.productDescription.message}

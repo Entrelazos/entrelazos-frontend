@@ -1,4 +1,3 @@
-import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { FC } from 'react';
 import {
   Box,
@@ -8,6 +7,7 @@ import {
   Link,
   Stack,
   Typography,
+  Grid,
 } from '@mui/material';
 import {
   Place,
@@ -24,11 +24,8 @@ import ProductsByCompany from '../../ProductosServicios/ProductsByCompany';
 
 const ProfileComponent: FC<CompanyItem> = ({
   id,
-  name,
-  nit,
   description,
   addresses,
-  products,
   social,
 }) => {
   const renderSocial = (key: string, value: string) => {
@@ -64,8 +61,8 @@ const ProfileComponent: FC<CompanyItem> = ({
   };
 
   return (
-    <Grid2 container spacing={2}>
-      <Grid2 xs={12} md={6}>
+    <Grid container spacing={2}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Stack direction='column' spacing={3}>
           <Card raised sx={{ borderRadius: '12px' }}>
             <CardHeader
@@ -137,11 +134,11 @@ const ProfileComponent: FC<CompanyItem> = ({
             </CardContent>
           </Card>
         </Stack>
-      </Grid2>
-      <Grid2 xs={12} md={6}>
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
         <ProductsByCompany isEmbedded companyIdParam={id.toString()} />
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 };
 

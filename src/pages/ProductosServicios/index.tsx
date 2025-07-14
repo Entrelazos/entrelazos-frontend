@@ -27,7 +27,6 @@ const ProductosServicios: FC = () => {
   const isMediumScreen = useMediaQuery(
     '(min-width:601px) and (max-width:960px)'
   );
-  const isLargeScreen = useMediaQuery('(min-width:961px)');
 
   const dispatch = useDispatch<AppDispatch>();
 

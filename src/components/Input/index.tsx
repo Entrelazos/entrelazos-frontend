@@ -12,7 +12,7 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   rightText?: string;
 };
 
-// eslint-disable-next-line react/display-name
+ 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ error, rightText, className, ...props }, ref) => {
     return (

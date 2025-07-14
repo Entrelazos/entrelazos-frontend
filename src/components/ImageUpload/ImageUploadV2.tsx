@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import { Box, Typography } from '@mui/material';
 import CameraEnhance from '@mui/icons-material/CameraEnhance';
 

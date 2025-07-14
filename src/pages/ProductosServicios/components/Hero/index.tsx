@@ -1,14 +1,4 @@
-import {
-  HeroContainer,
-  HeroContent,
-  HeroTitle,
-  BenefitsContainer,
-} from './styles';
-
-import heroImage from '../../../../assets/compras.jpg';
-import { RegularText } from '../../../../components/Typography';
-import { InfoWithIcon } from '../../../../components/InfoWithIcon';
-import { ShoppingCart, Package, Timer, Coffee } from 'phosphor-react';
+import { HeroContainer, HeroContent } from './styles';
 
 export function Hero() {
   return (

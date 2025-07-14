@@ -8,7 +8,7 @@ import { RootState } from '../../store/store';
 
 const Breadcrumb = () => {
   const { byCompany } = useSelector((state: RootState) => state.products);
-  const { data, loading, error } = byCompany;
+  const { data } = byCompany;
   const location = useLocation();
   const [breadcrumbs, setBreadcrumbs] = useState([]);
 

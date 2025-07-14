@@ -1,5 +1,4 @@
-import { Box, IconButton, Skeleton } from '@mui/material';
-import Grid2 from '@mui/material/Unstable_Grid2';
+import { Box, IconButton, Skeleton, Grid } from '@mui/material';
 import { FC, useEffect, useState, useCallback, useMemo } from 'react';
 import CarouselComponent from '../../components/Carousel/carousel.component';
 import { getSingleProduct } from '../../services/products/productsService';
@@ -82,8 +81,8 @@ const ProductPage: FC = () => {
 
   return (
     <Box width='100%' maxWidth='100%' mx='auto' p={2}>
-      <Grid2 container spacing={3}>
-        <Grid2 xs={12} md={6} display='flex' justifyContent='center'>
+      <Grid container spacing={3}>
+        <Grid size={{ xs: 12, md: 6 }} display='flex' justifyContent='center'>
           <Box width='100%' position='relative'>
             {isMyCompany && (
               <IconButton
@@ -96,12 +95,10 @@ const ProductPage: FC = () => {
             )}
             {carouselSection}
           </Box>
-        </Grid2>
+        </Grid>
 
-        <Grid2 xs={12} md={6}>
-          {productSection}
-        </Grid2>
-      </Grid2>
+        <Grid size={{ xs: 12, md: 6 }}>{productSection}</Grid>
+      </Grid>
     </Box>
   );
 };

@@ -15,7 +15,6 @@ export const startLoginWithEmailPassword = createAsyncThunk(
       id,
       companies,
       roles,
-      is_active,
       accessToken,
       refreshToken,
     } = await loginService(credentials);

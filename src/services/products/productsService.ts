@@ -137,7 +137,7 @@ export const createProducts = async (
       });
 
     return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
   } catch (error: any) {
     throw new Error(
       error.response?.data?.message || 'Failed to create products'
@@ -195,7 +195,7 @@ export const updateProduct = async (
       });
 
     return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
   } catch (error: any) {
     throw new Error(
       error.response?.data?.message || 'Failed to update product'

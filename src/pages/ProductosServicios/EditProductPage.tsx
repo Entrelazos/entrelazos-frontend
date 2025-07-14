@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  FormControlLabel,
-  Checkbox,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  FormHelperText,
-  Skeleton,
-} from '@mui/material';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Select from '@mui/material/Select';
+import FormHelperText from '@mui/material/FormHelperText';
+import Skeleton from '@mui/material/Skeleton';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -30,13 +28,12 @@ import {
   getFilesByEntityIdAndType,
   // uploadFiles,
 } from '../../services/upload/uploadService';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import {
   CreateProductType,
   ProductItem,
 } from '../../types/products/ProductsTypes';
 import { CategoryItem } from '../../types/categories/CategoryTypes';
+import TiptapEditor from '../../components/TipTapEditor/TipTapEditor';
 
 // Validation Schema
 const validationSchema = yup.object({
@@ -237,11 +234,7 @@ const EditProductPage: React.FC = () => {
             name='productDescription'
             control={control}
             render={({ field }) => (
-              <ReactQuill
-                theme='snow'
-                value={field.value}
-                onChange={field.onChange}
-              />
+              <TiptapEditor value={field.value} onChange={field.onChange} />
             )}
           />
           {errors.productDescription && (

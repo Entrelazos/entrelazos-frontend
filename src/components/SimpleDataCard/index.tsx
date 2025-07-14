@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Paper,
-  Box,
-  Typography,
-  Stack,
-  SvgIcon,
-  Card,
-  CardContent,
-} from '@mui/material';
+import { Typography, Stack, Card, CardContent } from '@mui/material';
 import { SvgIconComponent } from '@mui/icons-material';
 
 interface SimpleDataCardProperties {

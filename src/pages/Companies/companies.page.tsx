@@ -2,20 +2,18 @@ import { FC, useEffect, useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import CardComponent from '../../components/Card';
-import Grid from '@mui/material/Unstable_Grid2';
 import { fetchCompaniesData } from '../../store/companies/companiesThunks';
 import { useNavigate } from 'react-router-dom';
 import ChipsFilter, {
   FilteredCategoryItem,
 } from '../../components/ChipsFilter/chips-filter.component';
 import { fetchCategories } from '../../store/categories/categoriesThunks';
-import {
-  Box,
-  TextField,
-  Typography,
-  InputAdornment,
-  Icon,
-} from '@mui/material';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import InputAdornment from '@mui/material/InputAdornment';
+import Icon from '@mui/material/Icon';
+import Grid from '@mui/material/Grid';
 import { Search } from '@mui/icons-material';
 import { useState } from 'react';
 
@@ -132,7 +130,7 @@ const CompaniesPage: FC = () => {
               : placeholderImage;
 
             return (
-              <Grid key={item.id} xs={12} md={6} lg={4}>
+              <Grid key={item.id} size={{ xs: 12, md: 6, lg: 4 }}>
                 <CardComponent
                   avatarImage={getImageUrl(item?.images?.[1]?.url)} // avatar stays as it is
                   title={item.name}
