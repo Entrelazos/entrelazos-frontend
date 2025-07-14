@@ -1,6 +1,5 @@
 import { FC, useEffect, useMemo, useState } from 'react';
-import { Box, Button, Card, CardHeader } from '@mui/material';
-import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
+import { Box, Button, Card, CardHeader, Grid } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserCompanies } from '../../store/companies/companiesThunks';
@@ -86,16 +85,16 @@ const Dashboard: FC = () => {
         </Button>
       </Box>
 
-      <Grid2 container spacing={3}>
+      <Grid container spacing={3}>
         {/* TODO: fix this number in the db */}
-        {/* <Grid2 xs={12} md={4}>
+        {/* <Grid xs={12} md={4}>
           <SimpleDataCard
             title='Número de Empresas Registradas'
             mainText={meta.totalItems.toString()}
           />
-        </Grid2> */}
+        </Grid> */}
 
-        <Grid2 xs={12} md={12} lg={12}>
+        <Grid size={{ xs: 12, md: 12, lg: 12 }}>
           <Card raised sx={{ borderRadius: 2 }}>
             <CardHeader
               title='Mis Empresas'
@@ -120,8 +119,8 @@ const Dashboard: FC = () => {
               />
             </Box>
           </Card>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </Box>
   );
 };

@@ -21,7 +21,6 @@ import CompanyAddressComponent from './company.address.component';
 import { AddressData } from '../../../types/address/AddressTypes';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import '../companies.form.styles.scss';
-import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { SocialType } from '../../../types/social/SocialTypes';
 import { SOCIAL_NETWORK_DATA } from '../../../constants/constants';
 import { MuiTelInput } from 'mui-tel-input';
@@ -146,8 +145,8 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
       <Card raised sx={{ borderRadius: '12px' }}>
         <CardHeader title='Informacion' />
         <CardContent>
-          <Grid2 container spacing={2}>
-            <Grid2 xs={12} md={6}>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Stack direction='column' spacing={3}>
                 <TextField
                   name='name'
@@ -203,8 +202,8 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                   </FormControl>
                 )}
               </Stack>
-            </Grid2>
-            <Grid2 xs={12} md={6}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Stack direction='column' spacing={3}>
                 <TextField
                   name='description'
@@ -217,13 +216,13 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                   onChange={handleCompanyInfoChange}
                 />
               </Stack>
-            </Grid2>
-          </Grid2>
+            </Grid>
+          </Grid>
         </CardContent>
       </Card>
 
-      <Grid2 container spacing={2}>
-        <Grid2 xs={12} md={6}>
+      <Grid container spacing={2}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card raised sx={{ borderRadius: '12px' }}>
             <CardHeader title='Redes Sociales' />
             <CardContent>
@@ -285,8 +284,8 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
               </Stack>
             </CardContent>
           </Card>
-        </Grid2>
-        <Grid2 xs={12} md={6}>
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card variant='outlined' sx={{ borderRadius: '12px' }}>
             <CardHeader title='Direcciones' />
             <CardContent
@@ -337,8 +336,8 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
               </Box>
             </CardContent>
           </Card>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
 
       <Box display='flex' gap={2} justifyContent='end'>
         <Button type='submit' variant='contained' color='primary'>

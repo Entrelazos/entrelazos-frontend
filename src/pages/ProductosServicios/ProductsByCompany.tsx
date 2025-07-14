@@ -30,7 +30,7 @@ import {
 } from '@mui/material';
 import { AddOutlined } from '@mui/icons-material';
 import { isMyCompany } from '../../store/companies/companiesSlice';
-import Grid2 from '@mui/material/Unstable_Grid2';
+import Grid from '@mui/material/Grid';
 import AddProductModal from './components/AddProductModal';
 import { createProducts } from '../../services/products/productsService';
 import { clearProductsData } from '../../store/products/productsSliceFinal';
@@ -179,7 +179,7 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
             titleTypographyProps={{ fontSize: '1.125rem', fontWeight: 700 }}
             action={
               compayIsMine && (
-                <Grid2 display='flex' alignItems='center' padding={0}>
+                <Grid display='flex' alignItems='center' padding={0}>
                   <Button
                     variant='outlined'
                     startIcon={<AddOutlined />}
@@ -187,7 +187,7 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
                   >
                     <Typography>Agregar Productos</Typography>
                   </Button>
-                </Grid2>
+                </Grid>
               )
             }
           />

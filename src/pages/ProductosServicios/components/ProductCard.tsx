@@ -106,7 +106,7 @@ const ProductCard: FC<ProductCardProperties> = ({ product }) => {
       </Box> */}
 
       {/* <Grid container spacing={1} mt={2}>
-        <Grid item xs={6}>
+        <Grid item size={{ xs: 6 }}>
           <Button
             variant='contained'
             fullWidth
@@ -116,7 +116,7 @@ const ProductCard: FC<ProductCardProperties> = ({ product }) => {
             Add to cart
           </Button>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item size={{ xs: 6 }}>
           <Button
             variant='contained'
             fullWidth

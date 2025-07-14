@@ -159,7 +159,7 @@ export function Signup({ registerUserSuccess }) {
             sx={{ mt: 1 }}
           >
             <Grid container spacing={2} className='grid-system-form'>
-              <Grid item xs={12} md={6} xl>
+              <Grid item size={{ xs: 12, md: 6 }}>
                 <TextField
                   margin='normal'
                   required
@@ -177,7 +177,7 @@ export function Signup({ registerUserSuccess }) {
                   }
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item size={{ xs: 12, md: 6 }}>
                 <TextField
                   margin='normal'
                   required
@@ -195,7 +195,7 @@ export function Signup({ registerUserSuccess }) {
                   }
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item size={{ xs: 12, md: 6 }}>
                 <TextField
                   margin='normal'
                   required
@@ -217,7 +217,7 @@ export function Signup({ registerUserSuccess }) {
                   }
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item size={{ xs: 12, md: 6 }}>
                 <MuiTelInput
                   defaultCountry='CO'
                   margin='normal'
@@ -239,7 +239,7 @@ export function Signup({ registerUserSuccess }) {
                   }
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item size={{ xs: 12, md: 6 }}>
                 <TextField
                   margin='normal'
                   required
@@ -260,7 +260,7 @@ export function Signup({ registerUserSuccess }) {
                   }
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item size={{ xs: 12, md: 6 }}>
                 <TextField
                   margin='normal'
                   required
