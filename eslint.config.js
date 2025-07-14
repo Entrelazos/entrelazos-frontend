@@ -2,45 +2,54 @@
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import react from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 
 export default [
-  // Base JavaScript configuration
+  {
+    ignores: ['**/node_modules/**', '**/dist/**', '**/build/**'],
+  },
   js.configs.recommended,
-
-  // TypeScript configuration
   ...Object.values(tseslint.configs.recommended),
 
-  // React configuration (Fixed plugin format)
   {
     plugins: {
-      react, // Flat config requires this object format
+      react,
+      'react-hooks': reactHooks,
     },
     settings: {
       react: {
-        version: 'detect', // Automatically detect React version
+        version: 'detect',
       },
     },
     rules: {
-      'react/jsx-uses-react': 'off', // Not needed in React 17+
-      'react/react-in-jsx-scope': 'off', // Not needed in React 17+
-      'react/prop-types': 'off', // Using TypeScript, so PropTypes are unnecessary
+      'react/jsx-uses-react': 'off',
+      'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off',
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
     },
   },
 
-  // General configuration for all files
   {
     files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
     languageOptions: {
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+        ...globals.react,
+      },
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
+        ecmaFeatures: {
+          jsx: true,
+        },
       },
     },
     rules: {
       'no-unused-vars': 'warn',
       'no-console': 'warn',
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
 ];

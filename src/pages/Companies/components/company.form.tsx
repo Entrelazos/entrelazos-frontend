@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState, useRef } from 'react';
 import {
   Grid,
   TextField,
@@ -16,6 +16,7 @@ import {
   OutlinedInput,
   Select,
   Typography,
+  SelectChangeEvent,
 } from '@mui/material';
 import CompanyAddressComponent from './company.address.component';
 import { AddressData } from '../../../types/address/AddressTypes';
@@ -27,6 +28,7 @@ import { MuiTelInput } from 'mui-tel-input';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../store/store';
 import { fetchCategories } from '../../../store/categories/categoriesThunks';
+import { useRefsList } from '../../../hooks/useRefsList';
 
 export interface FormData {
   name: string;
@@ -62,9 +64,11 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
     }
   }, [dispatch]);
   // Create a mapping of category IDs to category names
-  const categoryMap =
-    data &&
-    new Map(data.map((category) => [category.id, category.category_name]));
+  const categoryMap = useMemo(
+    () =>
+      new Map(data?.map((category) => [category.id, category.category_name])),
+    [data]
+  );
   const [companyInfo, setCompanyInfo] = useState({
     name: '',
     nit: '',
@@ -81,6 +85,7 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
     whatsapp: '',
     x: '',
   });
+  const nodeRefs = useRefsList<HTMLDivElement>(addresses.length);
 
   const handleCompanyInfoChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -132,6 +137,7 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
     setAddresses((prevAddresses) => prevAddresses.slice(0, -1));
   };
 
+  // No need to implement useRef manually, just import it from React.
   return (
     <form
       onSubmit={handleFormSubmit}
@@ -171,7 +177,7 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                     <InputLabel id='demo-multiple-chip-label'>
                       Categorias
                     </InputLabel>
-                    <Select
+                    <Select<number[]>
                       name='categories'
                       labelId='demo-multiple-chip-label'
                       id='demo-multiple-chip'
@@ -295,8 +301,13 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                 style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}
               >
                 {addresses.map((address, index) => (
-                  <CSSTransition key={index} timeout={300} classNames='fade'>
-                    <div style={{ flex: '1 1 500px' }}>
+                  <CSSTransition
+                    key={index}
+                    timeout={300}
+                    classNames='fade'
+                    nodeRef={nodeRefs[index]}
+                  >
+                    <div ref={nodeRefs[index]} style={{ flex: '1 1 500px' }}>
                       <Card raised sx={{ borderRadius: '12px' }}>
                         <CardHeader title={`Dirección ${index + 1}`} />
                         <CardContent>

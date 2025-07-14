@@ -24,11 +24,8 @@ import ProductsByCompany from '../../ProductosServicios/ProductsByCompany';
 
 const ProfileComponent: FC<CompanyItem> = ({
   id,
-  name,
-  nit,
   description,
   addresses,
-  products,
   social,
 }) => {
   const renderSocial = (key: string, value: string) => {

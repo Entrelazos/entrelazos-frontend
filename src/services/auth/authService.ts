@@ -45,7 +45,7 @@ export const register = async (
     );
     if (!activo || activo?.toLowerCase() === 'n') {
       const error = new Error('Misionero no encontrado o inactivo');
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       (error as any).code = ERROR_CODES.NOT_ACTIVE_MISSIONARY;
       throw error;
     }
@@ -74,7 +74,7 @@ export const login = async (
     const { activo } = await checkActiveMissionary(parseInt(identification));
     if (!activo || activo?.toLowerCase() === 'n') {
       const error = new Error('Misionero no encontrado o inactivo');
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       (error as any).code = ERROR_CODES.NOT_ACTIVE_MISSIONARY;
       throw error;
     }

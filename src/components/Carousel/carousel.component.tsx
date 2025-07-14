@@ -17,10 +17,7 @@ const StyledSlider = styled(Slider)({
   },
 });
 
-const CarouselComponent: React.FC<CarouselComponentProps> = ({
-  images,
-  width,
-}) => {
+const CarouselComponent: React.FC<CarouselComponentProps> = ({ images }) => {
   const [currentSlide, setCurrentSlide] = React.useState(0);
   const sliderRef = React.useRef<Slider>(null);
 

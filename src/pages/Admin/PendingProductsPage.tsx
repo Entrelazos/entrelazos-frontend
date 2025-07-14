@@ -83,7 +83,7 @@ const PendingProducts: FC = () => {
       ) : (
         <Grid container spacing={2}>
           {products?.map((product) => (
-            <Grid item size={{ xs: 12 }} key={product.id}>
+            <Grid size={{ xs: 12 }} key={product.id}>
               <Card variant='outlined'>
                 <CardContent
                   sx={{

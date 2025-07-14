@@ -8,7 +8,7 @@ interface SectionTitleProps {
   icon: ReactNode;
 }
 
-export function SectionTitle({ title, subtitle, icon }: SectionTitleProps) {
+export function SectionTitle({ title, icon }: SectionTitleProps) {
   return (
     <SectionTitleContainer>
       {icon}

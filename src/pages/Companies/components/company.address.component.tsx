@@ -94,7 +94,7 @@ const CompanyAddressComponent: FC<CompanyAddressComponentProps> = ({
 
   return (
     <>
-      <Grid item size={{ xs: 12, sm: 6 }}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <TextField
           name='nomenclature'
           label='Direccion'
@@ -106,13 +106,13 @@ const CompanyAddressComponent: FC<CompanyAddressComponentProps> = ({
           }
         />
       </Grid>
-      <Grid item size={{ xs: 12, sm: 6 }}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <CountrySelector
           value={address.country}
           onChange={(value) => onChange({ ...address, country: value })}
         />
       </Grid>
-      <Grid item size={{ xs: 12, sm: 6 }}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <FormControl fullWidth>
           <InputLabel
             id='region-select-label'
@@ -135,7 +135,7 @@ const CompanyAddressComponent: FC<CompanyAddressComponentProps> = ({
           </Select>
         </FormControl>
       </Grid>
-      <Grid item size={{ xs: 12, sm: 6 }}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <FormControl fullWidth>
           <InputLabel
             id='city-select-label'

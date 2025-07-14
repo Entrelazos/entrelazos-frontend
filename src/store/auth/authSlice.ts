@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { createSlice } from '@reduxjs/toolkit';
 import { AuthState } from '../../types/auth/AuthTypes';
 import {

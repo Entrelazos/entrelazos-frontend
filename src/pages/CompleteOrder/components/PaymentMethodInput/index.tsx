@@ -6,7 +6,7 @@ type PaymentMethodInputProps = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
 };
 
-// eslint-disable-next-line react/display-name
+ 
 export const PaymentMethodInput = forwardRef<
   HTMLInputElement,
   PaymentMethodInputProps

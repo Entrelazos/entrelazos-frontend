@@ -1,19 +1,5 @@
-import { FC, useState } from 'react';
-import {
-  Box,
-  Button,
-  Chip,
-  Grid,
-  IconButton,
-  Rating,
-  Select,
-  MenuItem,
-  Typography,
-} from '@mui/material';
-import RemoveIcon from '@mui/icons-material/Remove';
-import AddIcon from '@mui/icons-material/Add';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import ShareIcon from '@mui/icons-material/Share';
+import { FC } from 'react';
+import { Box, Typography } from '@mui/material';
 import { ProductItem } from '../../../types/products/ProductsTypes';
 import parse from 'html-react-parser';
 
@@ -22,10 +8,6 @@ interface ProductCardProperties {
 }
 
 const ProductCard: FC<ProductCardProperties> = ({ product }) => {
-  const [size, setSize] = useState<number>(9);
-  const [quantity, setQuantity] = useState<number>(0);
-  const isOutOfStock = true; // Based on availability (Available: 0)
-
   return (
     <Box
       sx={{

@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import CompanyForm, { FormData } from '../components/company.form';
 import { createCompany } from '../../../services/companies/companyService';
 import { useNavigate } from 'react-router-dom';

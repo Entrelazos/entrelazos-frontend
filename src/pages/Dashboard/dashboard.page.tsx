@@ -8,7 +8,6 @@ import { CompanyItem } from '../../types/companies/CompaniesTypes';
 import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid';
 import ReactCountryFlag from 'react-country-flag';
 import { Link, useNavigate } from 'react-router-dom';
-import SimpleDataCard from '../../components/SimpleDataCard';
 
 const columns: GridColDef[] = [
   { field: 'name', headerName: 'Nombre', flex: 1 },

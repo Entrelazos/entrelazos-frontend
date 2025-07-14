@@ -19,7 +19,6 @@ import { AppDispatch } from '../../store/store';
 import { AuthState } from '../../types/auth/AuthTypes';
 import { toast } from 'react-toastify';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Copyright(props: any) {
   return (
     <Typography
@@ -69,7 +68,6 @@ export function Login({ authError }) {
 
         // Optional: redirect on success
         navigate('/', { replace: true });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         // 👇 Handle and display error nicely
         console.error('Login failed:', error);
@@ -156,12 +154,12 @@ export function Login({ authError }) {
               Iniciar Sesión
             </Button>
             <Grid container>
-              <Grid item xs>
+              <Grid>
                 <Link href='#' variant='body2'>
                   Forgot password?
                 </Link>
               </Grid>
-              <Grid item>
+              <Grid>
                 <Link onClick={handleGoToRegister} variant='body2'>
                   {'No tienes una cuenta? regístrate'}
                 </Link>

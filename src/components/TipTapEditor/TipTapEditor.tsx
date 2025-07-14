@@ -7,8 +7,10 @@ import Color from '@tiptap/extension-color';
 import Highlight from '@tiptap/extension-highlight';
 import Heading from '@tiptap/extension-heading';
 import CodeBlock from '@tiptap/extension-code-block';
-import React, { useEffect } from 'react';
+import Placeholder from '@tiptap/extension-placeholder';
+import { useEffect } from 'react';
 import { Box, Button, ButtonGroup } from '@mui/material';
+import './tiptap-style.scss';
 
 const MenuBar = ({ editor }: { editor: any }) => {
   if (!editor) return null;
@@ -23,32 +25,32 @@ const MenuBar = ({ editor }: { editor: any }) => {
         onClick={() => editor.chain().focus().toggleBold().run()}
         disabled={!editor.can().chain().focus().toggleBold().run()}
       >
-        Bold
+        Negrita
       </Button>
       <Button
         onClick={() => editor.chain().focus().toggleItalic().run()}
         disabled={!editor.can().chain().focus().toggleItalic().run()}
       >
-        Italic
+        Cursiva
       </Button>
       <Button onClick={() => editor.chain().focus().toggleUnderline().run()}>
-        Underline
+        Subrayado
       </Button>
       <Button onClick={() => editor.chain().focus().toggleCodeBlock().run()}>
-        Code Block
+        Código
       </Button>
       <Button onClick={() => editor.chain().focus().setTextAlign('left').run()}>
-        Left
+        Izquierda
       </Button>
       <Button
         onClick={() => editor.chain().focus().setTextAlign('center').run()}
       >
-        Center
+        Centro
       </Button>
       <Button
         onClick={() => editor.chain().focus().setTextAlign('right').run()}
       >
-        Right
+        Derecha
       </Button>
     </ButtonGroup>
   );
@@ -71,6 +73,9 @@ const TiptapEditor = ({
       Highlight,
       Heading.configure({ levels: [1, 2] }),
       CodeBlock,
+      Placeholder.configure({
+        placeholder: 'Descripcion...',
+      }),
     ],
     content: value,
     onUpdate: ({ editor }) => {
@@ -92,7 +97,7 @@ const TiptapEditor = ({
       sx={{ '& .ProseMirror': { minHeight: '150px', outline: 'none' } }}
     >
       <MenuBar editor={editor} />
-      <EditorContent editor={editor} />
+      <EditorContent editor={editor} lang='es' />
     </Box>
   );
 };
