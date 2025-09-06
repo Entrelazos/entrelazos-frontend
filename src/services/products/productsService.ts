@@ -7,6 +7,7 @@ import {
 } from '../../types/products/ProductsTypes';
 import { ApprovalStatus } from '../../constants/constants';
 import { createAxiosInstance } from '../axiosFactory';
+import { handleApiError } from '../../utils/errorHandler';
 
 const productServiceWithAuth = createAxiosInstance({
   useAuth: true,
@@ -27,7 +28,7 @@ export const getAllProducts = async (options: {
       await productService.get('', { params: options });
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to get products');
+    return handleApiError(error);
   }
 };
 
@@ -42,7 +43,7 @@ export const getProductsByCompanyId = async (
       });
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to get products');
+    return handleApiError(error);
   }
 };
 
@@ -57,7 +58,7 @@ export const getProductsByStatus = async (
       });
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to get products');
+    return handleApiError(error);
   }
 };
 
@@ -72,9 +73,7 @@ export const updateProductStatus = async (
     });
     return response.data;
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || 'Failed to update product'
-    );
+    return handleApiError(error);
   }
 };
 
@@ -86,7 +85,7 @@ export const getProductsByCategoryId = async (
       await productService.get(`/byCategory/${categoryId}`);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to get products');
+    return handleApiError(error);
   }
 };
 
@@ -138,10 +137,8 @@ export const createProducts = async (
 
     return response.data;
      
-  } catch (error: any) {
-    throw new Error(
-      error.response?.data?.message || 'Failed to create products'
-    );
+  } catch (error) {
+    return handleApiError(error);
   }
 };
 
@@ -196,10 +193,8 @@ export const updateProduct = async (
 
     return response.data;
      
-  } catch (error: any) {
-    throw new Error(
-      error.response?.data?.message || 'Failed to update product'
-    );
+  } catch (error) {
+    return handleApiError(error);
   }
 };
 
@@ -208,7 +203,7 @@ export const getSingleProduct = async (id: string): Promise<ProductItem> => {
     const response = await productService.get(`/${id}`);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to get product');
+    return handleApiError(error);
   }
 };
 

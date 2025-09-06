@@ -144,7 +144,7 @@ const MiniDrawer: FC<DrawerProperties<any>> = () => {
             <MenuIcon />
           </IconButton>
           <Typography variant='h6' noWrap component='div'>
-            Entrelazos
+            Interlazos
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <ProfileMenuComponent

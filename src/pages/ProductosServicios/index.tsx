@@ -144,9 +144,9 @@ const ProductosServicios: FC = () => {
           </ImageList>
         )}
 
-        {debouncedSearchTerm && products?.items?.length > 0 && (
+        {debouncedSearchTerm && products?.items && products.items.length > 0 && (
           <Box width='100%' p={2}>
-            {products.items.map((item) => (
+            {products?.items?.map((item) => (
               <h1 key={item.id}>{item.product_name}</h1>
             ))}
           </Box>

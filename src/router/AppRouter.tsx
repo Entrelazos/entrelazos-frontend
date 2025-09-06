@@ -21,16 +21,16 @@ const AppRouter: React.FC = () => {
   );
   const isAdmin = useSelector(hasRole('admin'));
   const params: ComponentParams = {
-    signUpParam: registerUserSuccess,
+    signUpParam: Boolean(registerUserSuccess || false),
     profileParam: true,
   };
 
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
-    if (status === 'authenticated') {
+    if (status === 'authenticated' && uid) {
       dispatch(
         fetchUserCompanies({
-          userId: parseInt(uid),
+          userId: parseInt(uid || '0'),
           options: {
             page: 1,
             limit: 100,
@@ -38,7 +38,7 @@ const AppRouter: React.FC = () => {
         })
       );
     }
-  }, [status]);
+  }, [status, uid]);
 
   return (
     <Box sx={{ display: 'flex' }}>

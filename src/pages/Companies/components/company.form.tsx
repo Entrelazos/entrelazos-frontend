@@ -122,7 +122,7 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
       addresses,
       social,
       categoryIds: categories,
-      userIds: [parseInt(uid)],
+      userIds: uid ? [parseInt(uid)] : [],
     });
   };
 
@@ -184,7 +184,7 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                       required
                       multiple
                       value={companyInfo.categories}
-                      onChange={handleCompanyInfoChange}
+                      onChange={(event: SelectChangeEvent<number[]>) => handleCompanyInfoChange(event as any)}
                       input={
                         <OutlinedInput id='select-multiple-chip' label='Chip' />
                       }
@@ -268,7 +268,7 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                         key={name}
                         required={isRequired}
                         onChange={(event) =>
-                          handleSocialChange(event, basePath)
+                          handleSocialChange(event, basePath || '')
                         }
                         InputProps={{
                           startAdornment: (

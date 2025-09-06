@@ -14,7 +14,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-import entreLazosLogoImage from '../../assets/entreLazosLogoVertical.png';
+import interLazosLogoImage from '../../assets/entreLazosLogoVertical.png';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import * as yup from 'yup';
 import './Signup.scss';
@@ -45,7 +45,11 @@ const darkTheme = createTheme({
   },
 });
 
-export function Signup({ registerUserSuccess }) {
+interface SignupProps {
+  registerUserSuccess?: boolean | null;
+}
+
+export function Signup({ registerUserSuccess }: SignupProps) {
   const validationSchema = {
     email: yup
       .string()
@@ -61,7 +65,10 @@ export function Signup({ registerUserSuccess }) {
       ),
     confirmPassword: yup
       .string()
-      .oneOf([yup.ref('password'), null], 'Las contraseñas deben coincidir')
+      .oneOf(
+        [yup.ref('password'), undefined],
+        'Las contraseñas deben coincidir'
+      )
       .required('Por favor confirma tu contraseña'),
 
     identification: yup.string().required('La identificacion es obligatioria'),
@@ -88,7 +95,7 @@ export function Signup({ registerUserSuccess }) {
       name: '',
     },
     validationSchema,
-    async (values) => {
+    async (values: any) => {
       const { cellphone, email, password, identification, name } = values;
 
       try {
@@ -103,7 +110,7 @@ export function Signup({ registerUserSuccess }) {
             roleIds: [2],
           })
         ).unwrap();
-      } catch (error) {
+      } catch (error: any) {
         console.error('Login failed:', error);
         toast.error(error.message || 'Something went wrong during login');
       }
@@ -115,7 +122,7 @@ export function Signup({ registerUserSuccess }) {
     navigate('/', { replace: true });
   };
 
-  const successRegisterNotification = (registerUserSuccess) => {
+  const successRegisterNotification = (registerUserSuccess?: boolean) => {
     if (registerUserSuccess === true) {
       toast.success('Usuario registrado!', {
         position: 'top-right',
@@ -134,7 +141,7 @@ export function Signup({ registerUserSuccess }) {
   };
 
   useEffect(() => {
-    successRegisterNotification(registerUserSuccess);
+    successRegisterNotification(registerUserSuccess || undefined);
   }, [registerUserSuccess]);
 
   return (
@@ -149,7 +156,7 @@ export function Signup({ registerUserSuccess }) {
             alignItems: 'center',
           }}
         >
-          <img width={150} src={entreLazosLogoImage} alt='' />
+          <img width={150} src={interLazosLogoImage} alt='' />
 
           <Box
             component='form'

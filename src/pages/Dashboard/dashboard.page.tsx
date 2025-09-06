@@ -56,15 +56,17 @@ const Dashboard: FC = () => {
   );
 
   useEffect(() => {
-    dispatch(
-      fetchUserCompanies({
-        userId: parseInt(uid),
-        options: {
-          page: paginationModel.page + 1,
-          limit: paginationModel.pageSize,
-        },
-      })
-    );
+    if (uid) {
+      dispatch(
+        fetchUserCompanies({
+          userId: parseInt(uid),
+          options: {
+            page: paginationModel.page + 1,
+            limit: paginationModel.pageSize,
+          },
+        })
+      );
+    }
   }, [paginationModel, dispatch, uid]);
 
   const handleRowClick = (params: GridRowParams) => {

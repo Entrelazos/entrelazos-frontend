@@ -11,8 +11,9 @@ interface CarouselComponentProps {
 }
 
 const StyledSlider = styled(Slider)({
+  maxWidth: '100%',
   '.slick-list': {
-    borderRadius: '16px', // Adjust radius as needed
+    borderRadius: '16px',
     overflow: 'hidden',
   },
 });
@@ -27,7 +28,7 @@ const CarouselComponent: React.FC<CarouselComponentProps> = ({ images }) => {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    beforeChange: (oldIndex: number, newIndex: number) =>
+    beforeChange: (_: number, newIndex: number) =>
       setCurrentSlide(newIndex),
     arrows: false,
   };
@@ -47,7 +48,6 @@ const CarouselComponent: React.FC<CarouselComponentProps> = ({ images }) => {
         <StyledSlider
           ref={sliderRef}
           {...settings}
-          style={{ maxWidth: '100%' }}
         >
           {images.map((src, index) => (
             <Box key={index} sx={{ outline: 'none' }}>

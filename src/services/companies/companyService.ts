@@ -5,6 +5,7 @@ import {
 } from '../../types/companies/CompaniesTypes';
 import { FormData } from '../../pages/Companies/components/company.form';
 import { createAxiosInstance } from '../axiosFactory';
+import { handleApiError } from '../../utils/errorHandler';
 
 const companyServiceWithAuth = createAxiosInstance({
   useAuth: true,
@@ -26,7 +27,7 @@ export const getAllCompanies = async (
       });
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to get companies');
+    return handleApiError(error);
   }
 };
 
@@ -37,7 +38,7 @@ export const getCompanyByName = async (name: string): Promise<CompanyItem> => {
     );
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to get company');
+    return handleApiError(error);
   }
 };
 
@@ -49,9 +50,7 @@ export const createCompany = async (
       await companyServiceWithAuth.post('', payload);
     return data;
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || 'Failed to get create company'
-    );
+    return handleApiError(error);
   }
 };
 

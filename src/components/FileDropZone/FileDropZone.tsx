@@ -4,8 +4,19 @@ import { Box, Typography, IconButton } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const FileDropZone = ({ onDrop, existingFiles = [], onRemoveImage }) => {
-  const [files, setFiles] = useState([]);
+interface FileWithPreview extends File {
+  preview?: string;
+  url?: string;
+}
+
+interface FileDropZoneProps {
+  onDrop: (files: File[]) => void;
+  existingFiles?: (string | FileWithPreview)[];
+  onRemoveImage: (file: FileWithPreview) => void;
+}
+
+const FileDropZone: React.FC<FileDropZoneProps> = ({ onDrop, existingFiles = [], onRemoveImage }) => {
+  const [files, setFiles] = useState<FileWithPreview[]>([]);
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: { 'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'] },
@@ -13,7 +24,7 @@ const FileDropZone = ({ onDrop, existingFiles = [], onRemoveImage }) => {
       const mappedFiles = acceptedFiles.map((file) =>
         Object.assign(file, { preview: URL.createObjectURL(file) })
       );
-      setFiles((prev) => [...prev, ...mappedFiles]);
+      setFiles((prev: FileWithPreview[]) => [...prev, ...mappedFiles]);
       onDrop(acceptedFiles);
     },
   });
@@ -35,18 +46,18 @@ const FileDropZone = ({ onDrop, existingFiles = [], onRemoveImage }) => {
           return image; // Keep already existing File objects
         })
       );
-      setFiles(fileObjects);
+      setFiles(fileObjects as FileWithPreview[]);
     };
 
     // Check if existingFiles contains URLs, and only then convert
     if (existingFiles.some((file) => typeof file === 'string')) {
       convertUrlsToFiles();
     } else {
-      setFiles(existingFiles); // Directly set files if they are already File objects
+      setFiles(existingFiles as FileWithPreview[]); // Directly set files if they are already File objects
     }
   }, [existingFiles]);
 
-  const handleRemoveImage = (file) => {
+  const handleRemoveImage = (file: FileWithPreview) => {
     setFiles((prevFiles) => prevFiles.filter((f) => f !== file));
     onRemoveImage(file);
   };

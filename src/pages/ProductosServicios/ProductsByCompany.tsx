@@ -159,11 +159,7 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
       <AddProductModal
         companyId={selectedCompanyId}
         open={openModal}
-        handleClose={(_event: MouseEvent, reason: string) => {
-          if (reason !== 'backdropClick') {
-            setOpenModal(false);
-          }
-        }}
+        handleClose={() => setOpenModal(false)}
         onSubmit={handleModalSubmit}
       />
 

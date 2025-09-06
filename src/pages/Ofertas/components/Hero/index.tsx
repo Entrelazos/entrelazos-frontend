@@ -9,7 +9,7 @@ import heroImage from '../../../../assets/hero-image.png';
 import { RegularText } from '../../../../components/Typography';
 import { InfoWithIcon } from '../../../../components/InfoWithIcon';
 import { ShoppingCart, Package, Timer, Coffee } from 'phosphor-react';
-import { colors } from '@mui/material';
+import { defaultTheme } from '../../../../styles/themes/default';
 
 export function Hero() {
   return (
@@ -28,22 +28,22 @@ export function Hero() {
 
           <BenefitsContainer>
             <InfoWithIcon
-              iconColor={colors['brand-yellow-dark']}
+              iconColor={defaultTheme.colors['brand-yellow-dark']}
               icon={<ShoppingCart weight='fill' />}
               text='Compra simples e segura'
             />
             <InfoWithIcon
-              iconColor={colors['base-text']}
+              iconColor={defaultTheme.colors['base-text']}
               icon={<Package weight='fill' />}
               text='Embalagem mantém o café intacto'
             />
             <InfoWithIcon
-              iconColor={colors['brand-yellow']}
+              iconColor={defaultTheme.colors['brand-yellow']}
               icon={<Timer weight='fill' />}
               text='Entrega rápida e rastreada'
             />
             <InfoWithIcon
-              iconColor={colors['brand-purple']}
+              iconColor={defaultTheme.colors['brand-purple']}
               icon={<Coffee weight='fill' />}
               text='O café chega fresquinho até você'
             />
