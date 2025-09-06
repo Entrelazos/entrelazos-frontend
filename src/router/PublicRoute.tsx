@@ -10,7 +10,7 @@ export const AuthRoutes: React.FC = () => {
         ({ id, path, breadcrumbId, component: Component }) => (
           <Route
             path={path}
-            element={getComponentWithProps(breadcrumbId, Component, null)}
+            element={getComponentWithProps(breadcrumbId, Component, undefined)}
             key={id}
           />
         )

@@ -9,10 +9,12 @@ export const getCategories = async (): Promise<CategoryItem[]> => {
     const response: AxiosResponse<CategoryItem[]> =
       await categoriesService.get('');
     return response.data;
-  } catch (error) {
-    throw new Error(
-      error.response?.data?.message || 'Failed to get categories'
-    );
+  } catch (error: unknown) {
+    if (error && typeof error === 'object' && 'response' in error) {
+      const apiError = error as { response?: { data?: { message?: string } } };
+      throw new Error(apiError.response?.data?.message || 'Failed to get categories');
+    }
+    throw new Error('Failed to get categories');
   }
 };
 

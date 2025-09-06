@@ -41,7 +41,7 @@ export function OrderConfirmedPage() {
         <OrderDetailsContainer>
           <InfoWithIcon
             icon={<MapPin weight='fill' />}
-            iconColor={colors['brand-purple']}
+            iconColor={colors.purple[500]}
             text={
               <RegularText>
                 Entrega em
@@ -56,7 +56,7 @@ export function OrderConfirmedPage() {
 
           <InfoWithIcon
             icon={<Clock weight='fill' />}
-            iconColor={colors['brand-yellow']}
+            iconColor={colors.yellow[500]}
             text={
               <RegularText>
                 Previsão de entrega
@@ -68,7 +68,7 @@ export function OrderConfirmedPage() {
 
           <InfoWithIcon
             icon={<CurrencyDollar weight='fill' />}
-            iconColor={colors['brand-yellow-dark']}
+            iconColor={colors.yellow[700]}
             text={
               <RegularText>
                 Pagamento na entrega

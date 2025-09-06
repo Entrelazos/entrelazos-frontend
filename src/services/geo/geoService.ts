@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { CityType, CountryType, RegionType } from '../../types/geo/geoTypes';
 import { createAxiosInstance } from '../axiosFactory';
+import { handleApiError } from '../../utils/errorHandler';
 
 const geoService = createAxiosInstance({ baseEndpoint: '/geo' });
 
@@ -10,7 +11,7 @@ export const getCountries = async (): Promise<CountryType[]> => {
       await geoService.get('/countries');
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to get countries');
+    return handleApiError(error);
   }
 };
 
@@ -23,7 +24,7 @@ export const getRegionsByCountry = async (
     );
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to get regions');
+    return handleApiError(error);
   }
 };
 
@@ -36,7 +37,7 @@ export const getCitiesByRegion = async (
     );
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to get cities');
+    return handleApiError(error);
   }
 };
 

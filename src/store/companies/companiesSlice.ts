@@ -101,6 +101,6 @@ export const companySlice = createSlice({
 
 export const isMyCompany = () => (state: RootState) => {
   return state.company?.data?.users?.some(
-    (userCompany) => userCompany.user.id === parseInt(state.auth.uid)
-  );
+    (userCompany) => userCompany.user.id === parseInt(state.auth.uid || '0')
+  ) || false;
 };

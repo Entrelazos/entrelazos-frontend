@@ -82,6 +82,6 @@ export const authSlice = createSlice({
 });
 
 export const hasRole = (role: any) => (state: RootState) =>
-  state.auth.roles.some((findRole: any) => findRole.role_name === role);
+  state.auth.roles?.some((findRole: any) => findRole.role_name === role) || false;
 
 export default authSlice.reducer;

@@ -55,7 +55,7 @@ const validationSchema = yup.object({
   company_id: yup
     .number()
     .transform((value, originalValue) =>
-      originalValue === '' ? undefined : Number(originalValue)
+      originalValue === '' ? 0 : Number(originalValue)
     )
     .typeError('Company ID must be a number')
     .required('Company is required')
@@ -114,7 +114,7 @@ const EditProductPage: React.FC = () => {
     (state: RootState) => state.categories
   );
   const [loading, setLoading] = useState(true);
-  const [product, setProduct] = useState<ProductItem>(null);
+  const [product, setProduct] = useState<ProductItem | null>(null);
   const [images, setImages] = useState<{ url: string; id: number }[]>([]);
   const [newFiles, setNewFiles] = useState<File[]>([]);
   const [existingImages, setExistingImages] = useState<number[]>([]);
@@ -130,13 +130,13 @@ const EditProductPage: React.FC = () => {
     resolver: yupResolver(validationSchema),
     defaultValues: {
       product_name: '',
-      company_id: null,
+      company_id: 0,
       productDescription: '',
       is_service: false,
       is_public: false,
       price: 0,
-      category_ids: [],
-      files: [],
+      category_ids: [] as number[],
+      files: [] as File[],
     },
   });
 
@@ -156,14 +156,14 @@ const EditProductPage: React.FC = () => {
         setProduct(productData);
 
         setValue('product_name', productData.product_name);
-        setValue('company_id', productData.company.id);
+        setValue('company_id', productData.company?.id || 0);
         setValue('productDescription', productData.product_description);
         setValue('is_service', productData.is_service);
         setValue('is_public', productData.is_public);
         setValue('price', productData.price);
         setValue(
           'category_ids',
-          productData.categories?.map((c: CategoryItem) => c.id) || []
+          (productData.categories?.map((c: CategoryItem) => c.id) || []) as number[]
         );
 
         const productImages = await getFilesByEntityIdAndType(
@@ -193,12 +193,12 @@ const EditProductPage: React.FC = () => {
     setImages((prevImages) => prevImages.filter((img) => img.id !== imageId));
   };
 
-  const handleUpdateProduct = async (data: CreateProductType) => {
+  const handleUpdateProduct = async (data: any) => {
     try {
       setLoading(true);
-      await updateProduct(parseInt(productId)!, {
+      await updateProduct(parseInt(productId || '0'), {
         ...data,
-        company_id: product?.company.id, // Fix undefined company_id
+        company_id: product?.company?.id || 0,
         files: [...(data.files || []), ...newFiles], // Ensure files are sent
         existingImages,
       });
@@ -290,8 +290,8 @@ const EditProductPage: React.FC = () => {
 
           <FileDropZone
             onDrop={(acceptedFiles) => setNewFiles(acceptedFiles)}
-            existingFiles={images}
-            onRemoveImage={(image) => handleRemoveImage(image.id)}
+            existingFiles={images as any}
+            onRemoveImage={(image: any) => handleRemoveImage(image.id)}
           />
 
           {/* {images.length > 0 && (

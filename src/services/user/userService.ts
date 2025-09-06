@@ -2,6 +2,7 @@ import { AxiosResponse } from 'axios';
 import { CompanyApiResponse } from '../../types/companies/CompaniesTypes';
 import { User } from '../../types/user/UserTypes';
 import { createAxiosInstance } from '../axiosFactory';
+import { handleApiError } from '../../utils/errorHandler';
 
 const userServiceAuth = createAxiosInstance({
   useAuth: true,
@@ -29,9 +30,7 @@ export const getUserCompanies = async (
       await userServiceAuth.get(`/${userId}/companies`, { params: options });
     return response.data;
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || 'Failed to get user companies'
-    );
+    return handleApiError(error);
   }
 };
 export default userService;

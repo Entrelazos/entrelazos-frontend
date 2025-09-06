@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { FileResponseType, UploadType } from '../../types/uploads/uploadTypes';
 import { createAxiosInstance } from '../axiosFactory';
+import { handleApiError } from '../../utils/errorHandler';
 
 const uploadServiceWithAuth = createAxiosInstance({
   useAuth: true,
@@ -37,7 +38,7 @@ export const uploadFile = async (payload: UploadType): Promise<any> => {
     );
     return data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to upload file');
+    return handleApiError(error);
   }
 };
 
@@ -53,7 +54,7 @@ export const getFileByEntityIdAndType = async (
     );
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to get file');
+    return handleApiError(error);
   }
 };
 
@@ -68,7 +69,7 @@ export const getFilesByEntityIdAndType = async (
     );
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to get files');
+    return handleApiError(error);
   }
 };
 

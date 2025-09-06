@@ -80,7 +80,7 @@ const ChipsFilter: FC<ChipsFilterProperties> = ({
           <ListItem key={category.id}>
             <Chip
               color={category.selected ? 'success' : 'default'}
-              icon={category.selected ? <Check /> : null}
+              icon={category.selected ? <Check /> : undefined}
               label={category.category_name}
               variant='outlined'
               onClick={() => {

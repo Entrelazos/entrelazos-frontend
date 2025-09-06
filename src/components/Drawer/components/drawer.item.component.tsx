@@ -49,8 +49,8 @@ const DrawerItem: FC<DrawerItemProperties> = ({
     <>
       <ListItem disablePadding sx={{ display: 'block' }}>
         <ListItemButton
-          component={Link}
-          to={link}
+          component={link ? Link : 'div'}
+          to={link || undefined}
           sx={{
             minHeight: 48,
             justifyContent: drawerOpen ? 'initial' : 'center',

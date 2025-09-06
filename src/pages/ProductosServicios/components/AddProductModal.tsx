@@ -50,11 +50,11 @@ const validationSchema = yup.object({
   files: yup.array().of(
     yup
       .mixed()
-      .test('fileSize', 'File size is too large', (value: File) => {
+      .test('fileSize', 'File size is too large', (value: any) => {
         // Validate file size (example: max 2MB per file)
         return value && value.size <= 2000000;
       })
-      .test('fileType', 'Unsupported file type', (value: File) => {
+      .test('fileType', 'Unsupported file type', (value: any) => {
         // Validate file type (example: only images)
         return (
           value &&
@@ -77,7 +77,19 @@ const MenuProps = {
   },
 };
 
-const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
+interface AddProductModalProps {
+  open: boolean;
+  handleClose: () => void;
+  onSubmit: (data: any) => void;
+  companyId: number;
+}
+
+const AddProductModal: React.FC<AddProductModalProps> = ({
+  open,
+  handleClose,
+  onSubmit,
+  companyId,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const { data } = useSelector((state: RootState) => state.categories);
   useEffect(() => {
@@ -89,8 +101,8 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
   const categoryMap =
     data &&
     new Map(data.map((category) => [category.id, category.category_name]));
-  const [products, setProducts] = useState([]); // State for storing multiple products
-  const [editIndex, setEditIndex] = useState(null); // Track the index of the product being edited
+  const [products, setProducts] = useState<any[]>([]); // State for storing multiple products
+  const [editIndex, setEditIndex] = useState<number | null>(null); // Track the index of the product being edited
   const {
     register,
     handleSubmit,
@@ -107,9 +119,9 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
       is_service: false, // Reset boolean to default
       is_public: false, // Reset boolean to default
       price: '',
-      category_ids: [],
+      category_ids: [] as number[],
       company_id: companyId,
-      files: [],
+      files: [] as File[],
     },
   });
 
@@ -118,7 +130,7 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
   const existingFilesWatch = watch('files');
 
   // Handle form submission
-  const handleAddOrEditProduct = (data) => {
+  const handleAddOrEditProduct = (data: any) => {
     if (editIndex !== null) {
       // If editing a product, update it in the list
       const updatedProducts = [...products];
@@ -137,14 +149,14 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
       is_service: false, // Reset boolean to default
       is_public: false, // Reset boolean to default
       price: '',
-      category_ids: [],
+      category_ids: [] as number[],
       company_id: companyId,
-      files: [],
+      files: [] as File[],
     });
   };
 
   // Handle edit action (prefill form with selected product)
-  const handleEditProduct = (index) => {
+  const handleEditProduct = (index: number) => {
     const productToEdit = products[index];
     setEditIndex(index);
 
@@ -159,7 +171,7 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
     setValue('files', productToEdit.files);
   };
 
-  const handleDeleteProduct = (index) => {
+  const handleDeleteProduct = (index: number) => {
     // Confirm deletion if necessary
     const confirmDelete = window.confirm('¿Quieres eliminar el producto?');
     if (confirmDelete) {
@@ -270,7 +282,7 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
             control={control}
             render={({ field: { onChange } }) => (
               <FileDropZone
-                onDrop={(acceptedFiles) => {
+                onDrop={(acceptedFiles: File[]) => {
                   onChange(acceptedFiles); // Set files in form state
                   setValue('files', acceptedFiles); // Save to form state
                 }}
@@ -305,16 +317,19 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
                         label='Categorias'
                       />
                     }
-                    renderValue={(selected: []) => (
+                    renderValue={(selected: number[]) => (
                       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                         {selected.map((id) => (
-                          <Chip key={id} label={categoryMap.get(id)} />
+                          <Chip
+                            key={id}
+                            label={categoryMap?.get(id) || 'Unknown'}
+                          />
                         ))}
                       </Box>
                     )}
                     MenuProps={MenuProps}
                   >
-                    {data.map((category) => (
+                    {data?.map((category) => (
                       <MenuItem key={category.id} value={category.id}>
                         {category.category_name}
                       </MenuItem>
@@ -370,7 +385,7 @@ const AddProductModal = ({ open, handleClose, onSubmit, companyId }) => {
                     <strong>Categorias: </strong>
                     {product.category_ids.map(
                       (category: number, index: number) => {
-                        const categoryItem = data.find(
+                        const categoryItem = data?.find(
                           (categoryItem) => categoryItem.id === category
                         );
                         return (
