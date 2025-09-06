@@ -21,6 +21,7 @@ import { isMyCompany } from '../../store/companies/companiesSlice';
 import { uploadFile } from '../../services/upload/uploadService';
 import { FileResponseType, imageType } from '../../types/uploads/uploadTypes';
 import ImageUploadV2 from '../../components/ImageUpload/ImageUploadV2';
+import { getErrorMessage } from '../../utils/errorHandler';
 
 interface ProfilePageProperties {
   isCompany: boolean;
@@ -64,8 +65,9 @@ const ProfilePage: FC<ProfilePageProperties> = ({ isCompany }) => {
   );
 
   const { displayName } = useSelector((state: RootState) => state.auth);
+  const safeDisplayName = displayName || 'Usuario';
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
@@ -106,14 +108,19 @@ const ProfilePage: FC<ProfilePageProperties> = ({ isCompany }) => {
       })) as FileResponseType;
 
       // ✅ Use a mapping object to dynamically update state
-      const updateState = {
+      const updateState: Record<imageType, (data: FileResponseType) => void> = {
         company_banner: setBannerImageData,
         company_profile: setProfileImageData,
+        user_profile: setProfileImageData, // Add missing mapping
       };
 
-      updateState[imageType]?.(savedImage);
-    } catch (error) {
-      console.error(`❌ Error uploading ${imageType}:`, error);
+      const updateFunction = updateState[imageType];
+      if (updateFunction) {
+        updateFunction(savedImage);
+      }
+    } catch (error: unknown) {
+      console.error(`❌ Error uploading ${imageType}:`, getErrorMessage(error));
+      // You could show a toast notification here
     }
   };
 
@@ -182,15 +189,15 @@ const ProfilePage: FC<ProfilePageProperties> = ({ isCompany }) => {
                     rounded
                   >
                     <Avatar
-                      alt={displayName}
-                      src={`${import.meta.env.VITE_BASE_FILES_URL}${profileImageData?.url}`}
+                      alt={safeDisplayName}
+                      src={profileImageData?.url ? `${import.meta.env.VITE_BASE_FILES_URL}${profileImageData.url}` : undefined}
                       sx={{ width: '128px', height: '128px' }}
                     />
                   </ImageUploadV2>
                 ) : (
                   <Avatar
-                    alt={displayName}
-                    src={`${import.meta.env.VITE_BASE_FILES_URL}${profileImageData?.url}`}
+                    alt={safeDisplayName}
+                    src={profileImageData?.url ? `${import.meta.env.VITE_BASE_FILES_URL}${profileImageData.url}` : undefined}
                     sx={{ width: '128px', height: '128px' }}
                   />
                 )}
@@ -247,7 +254,8 @@ const ProfilePage: FC<ProfilePageProperties> = ({ isCompany }) => {
       </Box>
     );
   }
-  return;
+  
+  return <Typography>No data available</Typography>;
 };
 
 export default ProfilePage;

@@ -1,11 +1,4 @@
-import {
-  FC,
-  useEffect,
-  useState,
-  MouseEvent,
-  useMemo,
-  useCallback,
-} from 'react';
+import { FC, useEffect, useState, MouseEvent, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AppDispatch, RootState } from '../../store/store';
@@ -34,7 +27,7 @@ import Grid from '@mui/material/Grid';
 import AddProductModal from './components/AddProductModal';
 import { createProducts } from '../../services/products/productsService';
 import { clearProductsData } from '../../store/products/productsSliceFinal';
-import { ApprovalStatus, approvalStatusMap } from '../../constants/constants';
+import { toast } from 'react-toastify';
 
 interface ProductsByCompanyProps {
   companyIdParam?: string;
@@ -61,7 +54,7 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
   const { data: companyData } = useSelector(
     (state: RootState) => state.company
   );
-  const { data, loading } = byCompany;
+  const { data, loading, error } = byCompany;
 
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
@@ -69,21 +62,15 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
   });
   const [openModal, setOpenModal] = useState(false);
 
+  const items = data?.items ?? [];
+
   const totalItems = data?.meta?.totalItems ?? 0;
-  const items = useMemo(
-    () =>
-      data?.items.filter(
-        (item) => item.approval_status === ApprovalStatus.APPROVED
-      ) ?? [],
-    [data]
-  );
 
   const columns: GridColDef[] = useMemo(
     () => [
       { field: 'dbId', headerName: 'Id', width: 100 },
       { field: 'name', headerName: 'Nombre', width: 150 },
       { field: 'price', headerName: 'Precio', width: 150 },
-      { field: 'approvalStatus', headerName: 'Estado', width: 150 },
       { field: 'isPublic', headerName: 'Publico', width: 150 },
       { field: 'isService', headerName: 'Servicio', width: 150 },
       ...(isEmbedded
@@ -100,7 +87,6 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
         dbId: product.id,
         name: product.product_name,
         price: product.price,
-        approvalStatus: approvalStatusMap[product.approval_status],
         isPublic: product.is_public,
         isService: product.is_service,
         company: companyData?.name || 'N/A',
@@ -108,16 +94,18 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
     [items, companyData]
   );
 
-  const loadProducts = useCallback(() => {
-    dispatch(
-      fetchProductsByCompanyId({
-        companyId: selectedCompanyId,
-        options: {
-          page: paginationModel.page + 1,
-          limit: paginationModel.pageSize,
-        },
-      })
-    );
+  useEffect(() => {
+    if (selectedCompanyId) {
+      dispatch(
+        fetchProductsByCompanyId({
+          companyId: selectedCompanyId,
+          options: {
+            page: paginationModel.page + 1, // Server expects 1-based pagination
+            limit: paginationModel.pageSize,
+          },
+        })
+      );
+    }
   }, [
     dispatch,
     selectedCompanyId,
@@ -126,11 +114,10 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
   ]);
 
   useEffect(() => {
-    if (selectedCompanyId) loadProducts();
     return () => {
       dispatch(clearProductsData());
     };
-  }, [selectedCompanyId, loadProducts, dispatch]);
+  }, [dispatch]);
 
   const handlePaginationModelChange = (newModel: {
     page: number;
@@ -149,8 +136,22 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
   };
 
   const handleModalSubmit = async (products: CreateProductType[]) => {
-    await createProducts(products);
-    loadProducts();
+    try {
+      await createProducts(products);
+
+      // Reset to first page to see newly created products
+      setPaginationModel((prev) => ({ ...prev, page: 0 }));
+
+      // The useEffect will automatically reload data when page changes
+      toast.success('Producto creado exitosamente.', {
+        position: 'top-right',
+        autoClose: 3000,
+      });
+      setOpenModal(false);
+    } catch (error) {
+      console.error('Error creating products:', error);
+      toast.error('Hubo un error creando el producto.');
+    }
   };
 
   return (
@@ -158,7 +159,7 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
       <AddProductModal
         companyId={selectedCompanyId}
         open={openModal}
-        handleClose={(event: MouseEvent, reason: string) => {
+        handleClose={(_event: MouseEvent, reason: string) => {
           if (reason !== 'backdropClick') {
             setOpenModal(false);
           }
@@ -172,11 +173,19 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
         </Typography>
       )}
 
+      {error && (
+        <Typography color='error' variant='body2' sx={{ mb: 2 }}>
+          Error loading products: {error}
+        </Typography>
+      )}
+
       <Card raised sx={{ borderRadius: '12px', width: '100%' }}>
         {isEmbedded && (
           <CardHeader
             title='Productos'
-            titleTypographyProps={{ fontSize: '1.125rem', fontWeight: 700 }}
+            slotProps={{
+              title: { fontSize: '1.125rem', fontWeight: 700 },
+            }}
             action={
               compayIsMine && (
                 <Grid display='flex' alignItems='center' padding={0}>

@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
+import TokenManager from '../utils/tokenManager';
 
 const API_BASE_URL =
   import.meta.env.VITE_BASE_URL_PORT || 'http://localhost:3000';
@@ -23,7 +24,7 @@ export const createAxiosInstance = ({
   if (useAuth) {
     instance.interceptors.request.use(
       (config) => {
-        const token = localStorage.getItem('accessToken');
+        const token = TokenManager.getAccessToken();
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -63,7 +64,7 @@ export const createAxiosInstance = ({
 // ✅ Function to Refresh Access Token
 const refreshAccessToken = async () => {
   try {
-    const refreshToken = localStorage.getItem('refreshToken');
+    const refreshToken = TokenManager.getRefreshToken();
     if (!refreshToken) throw new Error('No refresh token');
 
     const response = await axios.post(`${API_BASE_URL}/auth/refresh-token`, {
@@ -72,14 +73,12 @@ const refreshAccessToken = async () => {
     const { accessToken, refreshToken: newRefreshToken } = response.data;
 
     // Store new tokens
-    localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('refreshToken', newRefreshToken);
+    TokenManager.setTokens(accessToken, newRefreshToken);
 
     return accessToken;
   } catch (error) {
     console.error('Failed to refresh token', error);
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+    TokenManager.clearTokens();
     window.location.href = '/login'; // Redirect to login if refresh fails
     return null;
   }

@@ -6,15 +6,20 @@ import { ROUTES_INFO } from '../../constants/constants';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 
+interface BreadcrumbItem {
+  name: string;
+  path: string;
+}
+
 const Breadcrumb = () => {
   const { byCompany } = useSelector((state: RootState) => state.products);
   const { data } = byCompany;
   const location = useLocation();
-  const [breadcrumbs, setBreadcrumbs] = useState([]);
+  const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbItem[]>([]);
 
   useEffect(() => {
     const pathnames = location.pathname.split('/').filter((x) => x);
-    const updatedBreadcrumbs = [];
+    const updatedBreadcrumbs: BreadcrumbItem[] = [];
 
     if (pathnames.includes('login')) {
       setBreadcrumbs(updatedBreadcrumbs);

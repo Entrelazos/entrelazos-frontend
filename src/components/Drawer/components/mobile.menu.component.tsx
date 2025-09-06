@@ -4,16 +4,11 @@ import {
   MenuItem,
   IconButton,
   Badge,
-  PopoverVirtualElement,
 } from '@mui/material';
 import { FC, MouseEventHandler } from 'react';
 
 interface MobileMenuComponent {
-  anchorEl:
-    | Element
-    | (() => Element)
-    | PopoverVirtualElement
-    | (() => PopoverVirtualElement);
+  anchorEl: HTMLElement | null;
   mobileMenuId: string;
   isMobileMenuOpen: boolean;
   handleMobileMenuClose: () => void;

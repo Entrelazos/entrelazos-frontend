@@ -19,7 +19,6 @@ import {
   Menu,
   MenuItem,
   MenuList,
-  PopoverVirtualElement,
 } from '@mui/material';
 import { FC, MouseEventHandler } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,13 +26,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { hasRole } from '../../../store/auth';
 import { startLogout } from '../../../store/auth';
 import { AppDispatch, RootState } from '../../../store/store';
+import ThemeSwitcher from '../../ThemeSwitcher';
 
 interface ProfileMenuComponent {
-  anchorEl:
-    | Element
-    | (() => Element)
-    | PopoverVirtualElement
-    | (() => PopoverVirtualElement);
+  anchorEl: HTMLElement | null;
   menuId: string;
   isMenuOpen: boolean;
   handleMenuClose: () => void;
@@ -120,6 +116,7 @@ export const ProfileMenuComponent: FC<ProfileMenuComponent> = ({
   return (
     <>
       <Box sx={{ display: { xs: 'none', md: 'flex' } }} alignItems='center'>
+        <ThemeSwitcher />
         {status !== 'authenticated' && (
           <Button
             onClick={() => navigate('/login')}

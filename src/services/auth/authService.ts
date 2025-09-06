@@ -7,6 +7,8 @@ import {
 import { createAxiosInstance } from '../axiosFactory';
 import { User } from '../../types/user/UserTypes';
 import { ERROR_CODES } from '../../constants/error-codes';
+import TokenManager from '../../utils/tokenManager';
+import { getErrorMessage, handleApiError } from '../../utils/errorHandler';
 
 const authServiceWithAuth = createAxiosInstance({
   useAuth: true,
@@ -32,7 +34,9 @@ export const checkActiveMissionary = async (id: number) => {
     const { misionero } = response.data;
     return misionero;
   } catch (error) {
-    throw new Error(error || 'Failed to check activeness');
+    throw new Error(
+      typeof error === 'string' ? error : 'Failed to check activeness'
+    );
   }
 };
 
@@ -45,7 +49,7 @@ export const register = async (
     );
     if (!activo || activo?.toLowerCase() === 'n') {
       const error = new Error('Misionero no encontrado o inactivo');
-       
+
       (error as any).code = ERROR_CODES.NOT_ACTIVE_MISSIONARY;
       throw error;
     }
@@ -74,12 +78,11 @@ export const login = async (
     const { activo } = await checkActiveMissionary(parseInt(identification));
     if (!activo || activo?.toLowerCase() === 'n') {
       const error = new Error('Misionero no encontrado o inactivo');
-       
+
       (error as any).code = ERROR_CODES.NOT_ACTIVE_MISSIONARY;
       throw error;
     }
-    localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('refreshToken', refreshToken);
+    TokenManager.setTokens(accessToken, refreshToken);
     setAuthToken(accessToken); // Set the authentication token in Axios headers
     return response.data;
   } catch (error) {
@@ -89,8 +92,7 @@ export const login = async (
 };
 
 export const logout = (): void => {
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('refreshToken');
+  TokenManager.clearTokens();
   clearAuthToken();
 };
 
@@ -105,7 +107,7 @@ export const getNewAccessToken = async (
     setAuthToken(accessToken); // Set the authentication token in Axios headers
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to get token');
+    return handleApiError(error);
   }
 };
 
@@ -115,7 +117,7 @@ export const getCurrentUser = async (): Promise<User> => {
       await authServiceWithAuth.get('/user');
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to get user');
+    return handleApiError(error);
   }
 };
 

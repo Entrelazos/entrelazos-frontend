@@ -1,4 +1,5 @@
-import { useDispatch, connect } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -15,11 +16,16 @@ import { useNavigate } from 'react-router-dom';
 import entreLazosLogoImage from '../../assets/entreLazosLogoVertical.png';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import * as yup from 'yup';
-import { AppDispatch } from '../../store/store';
-import { AuthState } from '../../types/auth/AuthTypes';
+import { AppDispatch, RootState } from '../../store/store';
 import { toast } from 'react-toastify';
+import { getErrorMessage } from '../../utils/errorHandler';
 
-function Copyright(props: any) {
+interface LoginFormValues {
+  email: string;
+  password: string;
+}
+
+function Copyright(props: React.ComponentProps<typeof Typography>) {
   return (
     <Typography
       variant='body2'
@@ -43,7 +49,8 @@ const darkTheme = createTheme({
   },
 });
 
-export function Login({ authError }) {
+export const Login: React.FC = () => {
+  const authError = useSelector((state: RootState) => state.auth.authError);
   const validationSchema = {
     email: yup
       .string()
@@ -58,7 +65,7 @@ export function Login({ authError }) {
       password: '',
     },
     validationSchema,
-    async (values) => {
+    async (values: LoginFormValues) => {
       const { email, password } = values;
 
       try {
@@ -68,10 +75,10 @@ export function Login({ authError }) {
 
         // Optional: redirect on success
         navigate('/', { replace: true });
-      } catch (error: any) {
+      } catch (error: unknown) {
         // 👇 Handle and display error nicely
         console.error('Login failed:', error);
-        toast.error(error.message || 'Something went wrong during login');
+        toast.error(getErrorMessage(error));
       }
     }
   );
@@ -173,8 +180,4 @@ export function Login({ authError }) {
   );
 }
 
-const mapStateToProps = (state: AuthState) => ({
-  authError: state.authError,
-});
-
-export default connect(mapStateToProps)(Login);
+export default Login;

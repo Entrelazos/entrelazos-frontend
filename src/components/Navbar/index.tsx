@@ -7,6 +7,7 @@ import './navbar.scss';
 import entreLazosLogoImage from '../../assets/entreLazosLogoHorizontal.png';
 import { startLogout } from '../../store/auth';
 import { AppDispatch, RootState } from '../../store/store';
+import ThemeSwitcher from '../ThemeSwitcher';
 
 function Navbar() {
   const { displayName } = useSelector((state: RootState) => state.auth);
@@ -94,6 +95,7 @@ function Navbar() {
           </ul>
         </nav>
         <div className='header__content__toggle'>
+          <ThemeSwitcher />
           {!menuOpen ? (
             <BiMenuAltRight onClick={menuToggleHandler} />
           ) : (
