@@ -4,7 +4,7 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { Link, useNavigate, NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import './navbar.scss';
-import entreLazosLogoImage from '../../assets/entreLazosLogoHorizontal.png';
+import interLazosLogoImage from '../../assets/entreLazosLogoHorizontal.png';
 import { startLogout } from '../../store/auth';
 import { AppDispatch, RootState } from '../../store/store';
 import ThemeSwitcher from '../ThemeSwitcher';
@@ -50,7 +50,7 @@ function Navbar() {
     <header className='header'>
       <div className='header__content'>
         <NavLink to='/'>
-          <img width={200} src={entreLazosLogoImage} alt='' />
+          <img width={200} src={interLazosLogoImage} alt='' />
         </NavLink>
         <nav
           className={`${'header__content__nav'} 

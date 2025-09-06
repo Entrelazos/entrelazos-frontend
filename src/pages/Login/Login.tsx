@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-import entreLazosLogoImage from '../../assets/entreLazosLogoVertical.png';
+import interLazosLogoImage from '../../assets/entreLazosLogoVertical.png';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import * as yup from 'yup';
 import { AppDispatch, RootState } from '../../store/store';
@@ -35,7 +35,7 @@ function Copyright(props: React.ComponentProps<typeof Typography>) {
     >
       {'Copyright © '}
       <Link color='inherit' href='https://mui.com/'>
-        ENTRELAZOS
+        INTERLAZOS
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -102,7 +102,7 @@ export const Login: React.FC = () => {
             alignItems: 'center',
           }}
         >
-          <img width={150} src={entreLazosLogoImage} alt='' />
+          <img width={150} src={interLazosLogoImage} alt='' />
 
           <Box
             component='form'
@@ -178,6 +178,6 @@ export const Login: React.FC = () => {
       </Container>
     </ThemeProvider>
   );
-}
+};
 
 export default Login;

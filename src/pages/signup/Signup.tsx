@@ -14,7 +14,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-import entreLazosLogoImage from '../../assets/entreLazosLogoVertical.png';
+import interLazosLogoImage from '../../assets/entreLazosLogoVertical.png';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import * as yup from 'yup';
 import './Signup.scss';
@@ -65,7 +65,10 @@ export function Signup({ registerUserSuccess }: SignupProps) {
       ),
     confirmPassword: yup
       .string()
-      .oneOf([yup.ref('password'), undefined], 'Las contraseñas deben coincidir')
+      .oneOf(
+        [yup.ref('password'), undefined],
+        'Las contraseñas deben coincidir'
+      )
       .required('Por favor confirma tu contraseña'),
 
     identification: yup.string().required('La identificacion es obligatioria'),
@@ -153,7 +156,7 @@ export function Signup({ registerUserSuccess }: SignupProps) {
             alignItems: 'center',
           }}
         >
-          <img width={150} src={entreLazosLogoImage} alt='' />
+          <img width={150} src={interLazosLogoImage} alt='' />
 
           <Box
             component='form'
