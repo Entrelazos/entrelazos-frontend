@@ -41,7 +41,6 @@ const validationSchema = {
   password: yup.string().required('La contraseña es obligatoria'),
 };
 
-
 export const Login: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);

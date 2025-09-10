@@ -70,10 +70,12 @@ const validationSchema = {
 export const Signup: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [signupError, setSignupError] = useState<string | null>(null);
-  
+
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const registerUserSuccess = useSelector((state: RootState) => state.auth.registerUserSuccess);
+  const registerUserSuccess = useSelector(
+    (state: RootState) => state.auth.registerUserSuccess
+  );
 
   const formik = useFormValidation(
     {
@@ -87,7 +89,7 @@ export const Signup: React.FC = () => {
     validationSchema,
     async (values: SignupFormValues) => {
       const { cellphone, email, password, identification, name } = values;
-      
+
       setIsLoading(true);
       setSignupError(null);
 
@@ -104,10 +106,13 @@ export const Signup: React.FC = () => {
           })
         ).unwrap();
 
-        toast.success('¡Registro exitoso! Redirigiendo al inicio de sesión...', {
-          autoClose: 2000,
-        });
-        
+        toast.success(
+          '¡Registro exitoso! Redirigiendo al inicio de sesión...',
+          {
+            autoClose: 2000,
+          }
+        );
+
         setTimeout(() => {
           navigate('/', { replace: true });
         }, 2000);
@@ -148,10 +153,10 @@ export const Signup: React.FC = () => {
             alignItems: 'center',
           }}
         >
-          <img 
-            width={LOGO_WIDTH} 
-            src={interLazosLogoImage} 
-            alt='Logo de Interlazos' 
+          <img
+            width={LOGO_WIDTH}
+            src={interLazosLogoImage}
+            alt='Logo de Interlazos'
           />
 
           <Box
@@ -160,11 +165,11 @@ export const Signup: React.FC = () => {
             noValidate
             sx={{ mt: 3, width: '100%' }}
           >
-            <Box 
-              sx={{ 
-                display: 'grid', 
-                gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, 
-                gap: 2 
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+                gap: 2,
               }}
             >
               <TextField
@@ -184,7 +189,11 @@ export const Signup: React.FC = () => {
                 helperText={
                   formik.touched.name && (formik.errors.name as string)
                 }
-                aria-describedby={formik.touched.name && formik.errors.name ? 'name-error' : undefined}
+                aria-describedby={
+                  formik.touched.name && formik.errors.name
+                    ? 'name-error'
+                    : undefined
+                }
               />
               <TextField
                 margin='normal'
@@ -203,7 +212,11 @@ export const Signup: React.FC = () => {
                 helperText={
                   formik.touched.email && (formik.errors.email as string)
                 }
-                aria-describedby={formik.touched.email && formik.errors.email ? 'email-error' : undefined}
+                aria-describedby={
+                  formik.touched.email && formik.errors.email
+                    ? 'email-error'
+                    : undefined
+                }
               />
               <TextField
                 margin='normal'
@@ -226,8 +239,8 @@ export const Signup: React.FC = () => {
                   (formik.errors.identification as string)
                 }
                 aria-describedby={
-                  formik.touched.identification && formik.errors.identification 
-                    ? 'identification-error' 
+                  formik.touched.identification && formik.errors.identification
+                    ? 'identification-error'
                     : undefined
                 }
               />
@@ -270,12 +283,11 @@ export const Signup: React.FC = () => {
                   formik.touched.password && Boolean(formik.errors.password)
                 }
                 helperText={
-                  formik.touched.password &&
-                  (formik.errors.password as string)
+                  formik.touched.password && (formik.errors.password as string)
                 }
                 aria-describedby={
-                  formik.touched.password && formik.errors.password 
-                    ? 'password-error' 
+                  formik.touched.password && formik.errors.password
+                    ? 'password-error'
                     : undefined
                 }
               />
@@ -301,16 +313,17 @@ export const Signup: React.FC = () => {
                   (formik.errors.confirmPassword as string)
                 }
                 aria-describedby={
-                  formik.touched.confirmPassword && formik.errors.confirmPassword 
-                    ? 'confirmPassword-error' 
+                  formik.touched.confirmPassword &&
+                  formik.errors.confirmPassword
+                    ? 'confirmPassword-error'
                     : undefined
                 }
               />
             </Box>
 
             {signupError && (
-              <Alert 
-                severity='error' 
+              <Alert
+                severity='error'
                 sx={{ mt: 2 }}
                 role='alert'
                 aria-live='polite'
@@ -324,13 +337,13 @@ export const Signup: React.FC = () => {
               fullWidth
               variant='contained'
               disabled={isLoading || !formik.isValid}
-              sx={{ 
-                mt: 3, 
-                mb: 2, 
+              sx={{
+                mt: 3,
+                mb: 2,
                 position: 'relative',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
               }}
               aria-describedby={isLoading ? 'loading-text' : undefined}
             >
@@ -352,19 +365,19 @@ export const Signup: React.FC = () => {
             <Box sx={{ textAlign: 'center', mt: 2 }}>
               <Typography variant='body2'>
                 ¿Ya tienes una cuenta?{' '}
-                <Link 
+                <Link
                   component='button'
                   type='button'
                   variant='body2'
                   onClick={handleGoToLogin}
                   disabled={isLoading}
-                  sx={{ 
+                  sx={{
                     fontWeight: 'bold',
                     color: 'primary.main',
                     textDecoration: 'none',
                     '&:hover': {
-                      textDecoration: 'underline'
-                    }
+                      textDecoration: 'underline',
+                    },
                   }}
                 >
                   Inicia sesión aquí
