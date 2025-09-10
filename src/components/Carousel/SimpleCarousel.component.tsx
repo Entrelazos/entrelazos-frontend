@@ -14,10 +14,7 @@ const SimpleCarousel: React.FC<SimpleCarouselProps> = ({ images }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
 
-  console.log('SimpleCarousel rendered with images:', images);
-
   if (!images || images.length === 0) {
-    console.log('SimpleCarousel: No images provided');
     return null;
   }
 
