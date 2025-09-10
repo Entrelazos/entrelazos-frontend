@@ -1,9 +1,9 @@
 import { useFormik, FormikValues } from 'formik';
-import { createValidationSchema } from '../utils/validation';
+import { createValidationSchema, ValidationSchemaMap } from '../utils/validation';
 
 export const useFormValidation = <T extends FormikValues>(
   initialValues: T,
-  validationSchema: any,
+  validationSchema: ValidationSchemaMap<T>,
   onSubmit: (values: T) => void | Promise<void>
 ) => {
   const formik = useFormik({
