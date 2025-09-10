@@ -295,8 +295,6 @@ const ProductPage: FC = () => {
 
   // Effect to load data
   useEffect(() => {
-    console.log('useEffect triggered with productId:', productId);
-
     const fetchData = async () => {
       if (!productId) {
         setLoading(false);
@@ -309,7 +307,6 @@ const ProductPage: FC = () => {
         setError(null);
         setImageError(false);
 
-        console.log('Fetching product with ID:', productId);
         const productData = await getSingleProduct(productId);
 
         if (!productData) {
@@ -319,7 +316,6 @@ const ProductPage: FC = () => {
         }
 
         setProduct(productData);
-        console.log('Product data loaded:', productData);
 
         // Load images
         try {
@@ -333,7 +329,6 @@ const ProductPage: FC = () => {
               `${import.meta.env.VITE_BASE_FILES_URL}${image.url}`
           );
 
-          console.log('Product images loaded:', imageUrls);
           setImages(imageUrls);
           setImageError(imageUrls.length === 0);
         } catch (imageError) {
@@ -421,13 +416,11 @@ const ProductPage: FC = () => {
 
   // Loading state
   if (loading) {
-    console.log('Rendering loading state');
     return <LoadingSkeleton />;
   }
 
   // Error state
   if (error) {
-    console.log('Rendering error state:', error);
     return (
       <ErrorState
         error={error}
@@ -439,7 +432,6 @@ const ProductPage: FC = () => {
 
   // No product found
   if (!product) {
-    console.log('Rendering no product found state');
     return (
       <ErrorState
         error='Producto no encontrado'
@@ -448,8 +440,6 @@ const ProductPage: FC = () => {
       />
     );
   }
-
-  console.log('Rendering product page with:', { product, images, imageError });
 
   return (
     <>
