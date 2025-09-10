@@ -241,24 +241,29 @@ const CompaniesTable: FC<CompaniesTableProps> = ({
             border: 'none',
             minHeight: 400,
             '& .MuiDataGrid-columnHeaders': {
-              backgroundColor: 'grey.50',
               borderRadius: '8px 8px 0 0',
               fontSize: '0.875rem',
               fontWeight: 600,
             },
             '& .MuiDataGrid-row': {
               cursor: 'pointer',
+              minHeight: '56px !important',
               '&:hover': {
                 backgroundColor: 'action.hover',
               },
             },
             '& .MuiDataGrid-cell': {
-              borderBottom: '1px solid',
               borderColor: 'divider',
+              display: 'flex',
+              alignItems: 'center',
+              padding: '8px 16px',
             },
             '& .MuiDataGrid-footerContainer': {
               borderTop: '1px solid',
               borderColor: 'divider',
+            },
+            '& .MuiDataGrid-filler div': {
+              border: 'none',
             },
           }}
           aria-label='Tabla de empresas registradas'
