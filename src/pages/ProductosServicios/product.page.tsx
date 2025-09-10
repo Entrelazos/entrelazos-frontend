@@ -110,7 +110,9 @@ const ErrorState: React.FC<{
 const ProductBreadcrumbs: React.FC<{
   productName?: string;
   companyName?: string;
-}> = ({ productName, companyName }) => (
+  companyId?: number;
+  onCompanyClick?: () => void;
+}> = ({ productName, companyName, companyId, onCompanyClick }) => (
   <Breadcrumbs aria-label='breadcrumb' sx={{ mb: 2 }}>
     <Link
       underline='hover'
@@ -124,7 +126,24 @@ const ProductBreadcrumbs: React.FC<{
     <Link underline='hover' color='inherit' href='/productos'>
       Productos y Servicios
     </Link>
-    {companyName && <Typography color='text.primary'>{companyName}</Typography>}
+    {companyName && (
+      <Link
+        component='button'
+        variant='inherit'
+        onClick={onCompanyClick}
+        underline='hover'
+        color='inherit'
+        sx={{
+          border: 'none',
+          background: 'none',
+          cursor: 'pointer',
+          padding: 0,
+          font: 'inherit',
+        }}
+      >
+        {companyName}
+      </Link>
+    )}
     {productName && <Typography color='text.primary'>{productName}</Typography>}
   </Breadcrumbs>
 );
@@ -244,6 +263,12 @@ const ProductPage: FC = () => {
   const handleBackClick = useCallback(() => {
     navigate(-1);
   }, [navigate]);
+
+  const handleCompanyClick = useCallback(() => {
+    if (product) {
+      navigate(`/empresas/perfil-compania/${product.company.name}`);
+    }
+  }, [navigate, product]);
 
   const handleShareClick = useCallback(async () => {
     if (!product) return;
@@ -390,6 +415,8 @@ const ProductPage: FC = () => {
           <ProductBreadcrumbs
             productName={product.product_name}
             companyName={product.company.name}
+            companyId={product.company.id}
+            onCompanyClick={handleCompanyClick}
           />
 
           {/* Main Content */}
@@ -427,9 +454,25 @@ const ProductPage: FC = () => {
                 <Typography variant='h6' gutterBottom>
                   Información de la empresa
                 </Typography>
-                <Typography variant='body1' color='primary' gutterBottom>
+                <Link
+                  component='button'
+                  variant='body1'
+                  color='primary'
+                  onClick={handleCompanyClick}
+                  underline='hover'
+                  sx={{
+                    border: 'none',
+                    background: 'none',
+                    cursor: 'pointer',
+                    padding: 0,
+                    font: 'inherit',
+                    fontWeight: 'medium',
+                    mb: 1,
+                    display: 'block',
+                  }}
+                >
                   {product.company.name}
-                </Typography>
+                </Link>
                 {product.company.description && (
                   <Typography variant='body2' color='text.secondary'>
                     {product.company.description}
