@@ -19,15 +19,16 @@ import {
   WhatsApp,
 } from '@mui/icons-material';
 import XIcon from '@mui/icons-material/X';
-import { CompanyItem } from '../../../types/companies/CompaniesTypes';
 import ProductsByCompany from '../../ProductosServicios/ProductsByCompany';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../store/store';
 
-const ProfileComponent: FC<CompanyItem> = ({
-  id,
-  description,
-  addresses,
-  social,
-}) => {
+const ProfileComponent: FC = () => {
+  const company = useSelector((state: RootState) => state.company.data);
+
+  if (!company) return null;
+
+  const { id, description, addresses, social } = company;
   const renderSocial = (key: string, value: string) => {
     let IconComponent;
 
@@ -77,7 +78,7 @@ const ProfileComponent: FC<CompanyItem> = ({
                 <Stack direction='row' spacing={1.5}>
                   <Typography>{description}</Typography>
                 </Stack>
-                {addresses.map(
+                {addresses?.map(
                   (
                     {
                       nomenclature,
@@ -100,20 +101,26 @@ const ProfileComponent: FC<CompanyItem> = ({
                   )
                 )}
 
-                <Stack direction='row' spacing={1.5}>
-                  <Email></Email>
-                  <Link href={`mailto:${social.email}`} underline='none'>
-                    <Typography>{social.email}</Typography>
-                  </Link>
-                </Stack>
-                <Stack direction='row' spacing={1.5}>
-                  <Smartphone></Smartphone>
-                  <Typography>{social.phone_number}</Typography>
-                </Stack>
-                <Stack direction='row' spacing={1.5}>
-                  <WhatsApp></WhatsApp>
-                  <Typography>{social.whatsapp}</Typography>
-                </Stack>
+                {social?.email && (
+                  <Stack direction='row' spacing={1.5}>
+                    <Email></Email>
+                    <Link href={`mailto:${social.email}`} underline='none'>
+                      <Typography>{social.email}</Typography>
+                    </Link>
+                  </Stack>
+                )}
+                {social?.phone_number && (
+                  <Stack direction='row' spacing={1.5}>
+                    <Smartphone></Smartphone>
+                    <Typography>{social.phone_number}</Typography>
+                  </Stack>
+                )}
+                {social?.whatsapp && (
+                  <Stack direction='row' spacing={1.5}>
+                    <WhatsApp></WhatsApp>
+                    <Typography>{social.whatsapp}</Typography>
+                  </Stack>
+                )}
               </Box>
             </CardContent>
           </Card>
@@ -127,9 +134,10 @@ const ProfileComponent: FC<CompanyItem> = ({
             />
             <CardContent>
               <Box display='flex' flexDirection='column' gap={2}>
-                {Object.entries(social).map(([key, socialN]) =>
-                  renderSocial(key, socialN)
-                )}
+                {social &&
+                  Object.entries(social).map(([key, socialN]) =>
+                    renderSocial(key, socialN)
+                  )}
               </Box>
             </CardContent>
           </Card>
