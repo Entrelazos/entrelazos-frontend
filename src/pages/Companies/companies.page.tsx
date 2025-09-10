@@ -2,7 +2,9 @@ import { FC, useEffect, useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import CardComponent from '../../components/Card';
-import { fetchCompaniesData } from '../../store/companies/companiesThunks';
+import { fetchCompaniesData, fetchMoreCompanies } from '../../store/companies/companiesThunks';
+import { resetPagination } from '../../store/companies/companiesSlice';
+import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { useNavigate } from 'react-router-dom';
 import ChipsFilter, {
   FilteredCategoryItem,
@@ -16,12 +18,13 @@ import Icon from '@mui/material/Icon';
 import Grid from '@mui/material/Grid';
 import { Search } from '@mui/icons-material';
 import { useState } from 'react';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const CompaniesPage: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { companiesData, loading } = useSelector(
+  const { companiesData, loading, loadingMore, hasMorePages, currentPage } = useSelector(
     (state: RootState) => state.companies
   );
   const { data: categories } = useSelector(
@@ -60,7 +63,28 @@ const CompaniesPage: FC = () => {
     }
   }, [categories, dispatch]);
 
+  const loadMoreCompanies = useCallback(() => {
+    if (!loadingMore && hasMorePages) {
+      dispatch(
+        fetchMoreCompanies({
+          page: currentPage + 1,
+          limit: 10,
+          categoryIds: selectedCategories,
+          search: debouncedSearchTerm,
+        })
+      );
+    }
+  }, [dispatch, currentPage, loadingMore, hasMorePages, selectedCategories, debouncedSearchTerm]);
+
+  const { lastElementRef } = useInfiniteScroll({
+    hasMorePages,
+    loading: loadingMore,
+    onLoadMore: loadMoreCompanies,
+  });
+
   useEffect(() => {
+    // Reset pagination when filters change
+    dispatch(resetPagination());
     dispatch(
       fetchCompaniesData({
         page: 1,
@@ -122,26 +146,48 @@ const CompaniesPage: FC = () => {
       ) : companies.length === 0 ? (
         <Typography variant='body1'>No hay empresas registradas.</Typography>
       ) : (
-        <Grid container spacing={2}>
-          {companies.map((item) => {
-            const placeholderImage = `https://placehold.co/600x400?text=${encodeURIComponent(item.name)}`;
-            const mainImage = item?.images?.[0]?.url
-              ? getImageUrl(item.images[0].url)
-              : placeholderImage;
+        <>
+          <Grid container spacing={2}>
+            {companies.map((item, index) => {
+              const placeholderImage = `https://placehold.co/600x400?text=${encodeURIComponent(item.name)}`;
+              const mainImage = item?.images?.[0]?.url
+                ? getImageUrl(item.images[0].url)
+                : placeholderImage;
 
-            return (
-              <Grid key={item.id} size={{ xs: 12, md: 6, lg: 4 }}>
-                <CardComponent
-                  avatarImage={getImageUrl(item?.images?.[1]?.url)} // avatar stays as it is
-                  title={item.name}
-                  content={item.description}
-                  image={mainImage} // safe with fallback!
-                  onClick={() => handleCardClick(item.name)}
-                />
-              </Grid>
-            );
-          })}
-        </Grid>
+              const isLastItem = index === companies.length - 1;
+
+              return (
+                <Grid 
+                  key={item.id} 
+                  size={{ xs: 12, md: 6, lg: 4 }}
+                  ref={isLastItem ? lastElementRef : null}
+                >
+                  <CardComponent
+                    avatarImage={getImageUrl(item?.images?.[1]?.url)}
+                    title={item.name}
+                    content={item.description}
+                    image={mainImage}
+                    onClick={() => handleCardClick(item.name)}
+                  />
+                </Grid>
+              );
+            })}
+          </Grid>
+          
+          {loadingMore && (
+            <Box display="flex" justifyContent="center" mt={4}>
+              <CircularProgress />
+            </Box>
+          )}
+          
+          {!hasMorePages && companies.length > 0 && (
+            <Box display="flex" justifyContent="center" mt={4}>
+              <Typography variant="body2" color="text.secondary">
+                No hay más empresas para cargar
+              </Typography>
+            </Box>
+          )}
+        </>
       )}
     </Box>
   );
