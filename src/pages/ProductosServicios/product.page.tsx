@@ -23,8 +23,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
-import CarouselComponent from '../../components/Carousel/carousel.component';
+import SimpleCarousel from '../../components/Carousel/SimpleCarousel.component';
 import ProductCard from './components/ProductCard';
+import ErrorBoundary from '../../components/ErrorBoundary';
 import { getSingleProduct } from '../../services/products/productsService';
 import { getFilesByEntityIdAndType } from '../../services/upload/uploadService';
 import { ProductItem } from '../../types/products/ProductsTypes';
@@ -292,70 +293,108 @@ const ProductPage: FC = () => {
     }
   }, [product]);
 
-  const handleRetry = useCallback(() => {
-    if (productId) {
-      setLoading(true);
-      setError(null);
-      // Trigger re-fetch by changing the key or calling fetchData directly
-      fetchProductData();
-    }
-  }, [productId]);
+  // Effect to load data
+  useEffect(() => {
+    console.log('useEffect triggered with productId:', productId);
 
-  // Data fetching function
-  const fetchProductData = useCallback(async () => {
-    if (!productId) {
-      setLoading(false);
-      setError('ID del producto no proporcionado');
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      const productData = await getSingleProduct(productId);
-
-      if (!productData) {
+    const fetchData = async () => {
+      if (!productId) {
         setLoading(false);
-        setError('Producto no encontrado');
+        setError('ID del producto no proporcionado');
         return;
       }
 
-      setProduct(productData);
-
-      // Load images
       try {
-        const productImages = await getFilesByEntityIdAndType(
-          productData.id,
-          'product'
-        );
+        setLoading(true);
+        setError(null);
+        setImageError(false);
 
-        const imageUrls = productImages.map(
-          (image: { url: string }) =>
-            `${import.meta.env.VITE_BASE_FILES_URL}${image.url}`
-        );
+        console.log('Fetching product with ID:', productId);
+        const productData = await getSingleProduct(productId);
 
-        setImages(imageUrls);
-        setImageError(imageUrls.length === 0);
-      } catch (imageError) {
-        console.warn('Failed to load product images:', imageError);
-        setImageError(true);
+        if (!productData) {
+          setLoading(false);
+          setError('Producto no encontrado');
+          return;
+        }
+
+        setProduct(productData);
+        console.log('Product data loaded:', productData);
+
+        // Load images
+        try {
+          const productImages = await getFilesByEntityIdAndType(
+            productData.id,
+            'product'
+          );
+
+          const imageUrls = productImages.map(
+            (image: { url: string }) =>
+              `${import.meta.env.VITE_BASE_FILES_URL}${image.url}`
+          );
+
+          console.log('Product images loaded:', imageUrls);
+          setImages(imageUrls);
+          setImageError(imageUrls.length === 0);
+        } catch (imageError) {
+          console.warn('Failed to load product images:', imageError);
+          setImageError(true);
+        }
+
+        setLoading(false);
+      } catch (error) {
+        const errorMessage = getErrorMessage(error);
+        console.error('Error fetching product:', error);
+        setLoading(false);
+        setError(errorMessage);
+        toast.error(`Error al cargar el producto: ${errorMessage}`);
       }
+    };
 
-      setLoading(false);
-    } catch (error) {
-      const errorMessage = getErrorMessage(error);
-      console.error('Error fetching product:', error);
-      setLoading(false);
-      setError(errorMessage);
-      toast.error(`Error al cargar el producto: ${errorMessage}`);
-    }
+    fetchData();
   }, [productId]);
 
-  // Effect to load data
-  useEffect(() => {
-    fetchProductData();
-  }, [fetchProductData]);
+  const handleRetry = useCallback(() => {
+    setLoading(true);
+    setError(null);
+    setImageError(false);
+    // Trigger re-render by changing productId dependency
+    if (productId) {
+      const fetchData = async () => {
+        try {
+          const productData = await getSingleProduct(productId);
+          if (!productData) {
+            setError('Producto no encontrado');
+            setLoading(false);
+            return;
+          }
+          setProduct(productData);
+
+          try {
+            const productImages = await getFilesByEntityIdAndType(
+              productData.id,
+              'product'
+            );
+            const imageUrls = productImages.map(
+              (image: { url: string }) =>
+                `${import.meta.env.VITE_BASE_FILES_URL}${image.url}`
+            );
+            setImages(imageUrls);
+            setImageError(imageUrls.length === 0);
+          } catch (imageError) {
+            console.warn('Failed to load product images:', imageError);
+            setImageError(true);
+          }
+          setLoading(false);
+        } catch (error) {
+          const errorMessage = getErrorMessage(error);
+          setError(errorMessage);
+          setLoading(false);
+        }
+      };
+      fetchData();
+    }
+  }, [productId]);
 
   // Set document title for SEO
   useEffect(() => {
@@ -382,11 +421,13 @@ const ProductPage: FC = () => {
 
   // Loading state
   if (loading) {
+    console.log('Rendering loading state');
     return <LoadingSkeleton />;
   }
 
   // Error state
   if (error) {
+    console.log('Rendering error state:', error);
     return (
       <ErrorState
         error={error}
@@ -398,6 +439,7 @@ const ProductPage: FC = () => {
 
   // No product found
   if (!product) {
+    console.log('Rendering no product found state');
     return (
       <ErrorState
         error='Producto no encontrado'
@@ -406,6 +448,8 @@ const ProductPage: FC = () => {
       />
     );
   }
+
+  console.log('Rendering product page with:', { product, images, imageError });
 
   return (
     <>
@@ -431,7 +475,33 @@ const ProductPage: FC = () => {
             {/* Image Section */}
             <Box>
               {images.length > 0 ? (
-                <CarouselComponent images={images} width='100%' />
+                <ErrorBoundary
+                  fallback={
+                    <Box>
+                      <Typography variant='h6' gutterBottom>
+                        Imágenes del producto
+                      </Typography>
+                      {images.map((src, index) => (
+                        <Box
+                          key={index}
+                          component='img'
+                          src={src}
+                          alt={`Product image ${index + 1}`}
+                          sx={{
+                            width: '100%',
+                            height: 'auto',
+                            borderRadius: 1,
+                            mb: 2,
+                            maxHeight: 400,
+                            objectFit: 'contain',
+                          }}
+                        />
+                      ))}
+                    </Box>
+                  }
+                >
+                  <SimpleCarousel images={images} width='100%' />
+                </ErrorBoundary>
               ) : (
                 <NoImagePlaceholder productName={product.product_name} />
               )}
