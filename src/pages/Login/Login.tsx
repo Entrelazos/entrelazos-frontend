@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -8,7 +8,6 @@ import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import { startLoginWithEmailPassword } from '../../store/auth';
-import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +17,7 @@ import * as yup from 'yup';
 import { AppDispatch } from '../../store/store';
 import { toast } from 'react-toastify';
 import { getErrorMessage } from '../../utils/errorHandler';
+import { Copyright } from '../../components/common/Copyright';
 
 interface LoginFormValues {
   email: string;
@@ -41,29 +41,6 @@ const validationSchema = {
   password: yup.string().required('La contraseña es obligatoria'),
 };
 
-const Copyright = React.memo(
-  (props: React.ComponentProps<typeof Typography>) => {
-    const currentYear = useMemo(() => new Date().getFullYear(), []);
-
-    return (
-      <Typography
-        variant='body2'
-        color='text.secondary'
-        align='center'
-        {...props}
-      >
-        {'Copyright © '}
-        <Link color='inherit' href='#' onClick={(e) => e.preventDefault()}>
-          INTERLAZOS
-        </Link>{' '}
-        {currentYear}
-        {'.'}
-      </Typography>
-    );
-  }
-);
-
-Copyright.displayName = 'Copyright';
 
 export const Login: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
