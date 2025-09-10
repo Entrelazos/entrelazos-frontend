@@ -275,7 +275,7 @@ const ProductosServicios: FC = () => {
     debouncedSearchTerm && memoizedProducts.length > 0 && !isLoadingProducts;
 
   return (
-    <Container maxWidth='lg' sx={{ py: 4 }}>
+    <Container maxWidth='xl' sx={{ py: 4 }}>
       <Box>
         {/* Search Input */}
         <TextField

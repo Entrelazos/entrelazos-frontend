@@ -337,7 +337,7 @@ const CompaniesPage: FC = () => {
   const isInitialLoading = loading && companies.length === 0;
 
   return (
-    <Container maxWidth='lg'>
+    <Container maxWidth='xl'>
       <Box p={2}>
         {/* Header */}
         <Box mb={4}>
