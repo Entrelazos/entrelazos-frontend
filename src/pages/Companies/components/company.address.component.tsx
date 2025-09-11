@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState, memo, useCallback } from 'react';
 import CountrySelector from '../../../components/CountrySelect';
 import { fetchRegions, fetchCities } from '../../../store/geo/geoThunks'; // Assuming fetchCities function exists
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,7 +21,7 @@ interface CompanyAddressComponentProps {
   onChange: (newData: AddressData) => void;
 }
 
-const CompanyAddressComponent: FC<CompanyAddressComponentProps> = ({
+const CompanyAddressComponent: FC<CompanyAddressComponentProps> = memo(({
   address,
   onChange,
 }) => {
@@ -30,21 +30,17 @@ const CompanyAddressComponent: FC<CompanyAddressComponentProps> = ({
     city: address.city || '',
   });
 
-  const handleRegionChange = (event: SelectChangeEvent<string>) => {
+  const handleRegionChange = useCallback((event: SelectChangeEvent<string>) => {
     const region = event.target.value;
-    setSelectedLocation({ ...selectedLocation, region });
-    if (onChange) {
-      onChange({ ...address, region });
-    }
-  };
+    setSelectedLocation(prev => ({ ...prev, region }));
+    onChange({ ...address, region });
+  }, [address, onChange]);
 
-  const handleCityChange = (event: SelectChangeEvent<string>) => {
+  const handleCityChange = useCallback((event: SelectChangeEvent<string>) => {
     const city = event.target.value;
-    setSelectedLocation({ ...selectedLocation, city });
-    if (onChange) {
-      onChange({ ...address, city });
-    }
-  };
+    setSelectedLocation(prev => ({ ...prev, city }));
+    onChange({ ...address, city });
+  }, [address, onChange]);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -160,6 +156,8 @@ const CompanyAddressComponent: FC<CompanyAddressComponentProps> = ({
       </Grid>
     </>
   );
-};
+});
+
+CompanyAddressComponent.displayName = 'CompanyAddressComponent';
 
 export default CompanyAddressComponent;
