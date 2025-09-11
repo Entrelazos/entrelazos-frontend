@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState, useCallback } from 'react';
+import { FC, useMemo, useState, useCallback } from 'react';
 import {
   Box,
   Button,
@@ -11,9 +11,8 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { Add, Business, Dashboard as DashboardIcon } from '@mui/icons-material';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchUserCompanies } from '../../store/companies/companiesThunks';
-import { AppDispatch, RootState } from '../../store/store';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 import { CompanyItem } from '../../types/companies/CompaniesTypes';
 import {
   DataGrid,
@@ -352,13 +351,11 @@ const EmptyState: FC = () => (
 
 const Dashboard: FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
 
   // Redux selectors
   const { userCompaniesData, loading, error } = useSelector(
     (state: RootState) => state.companies
   );
-  const { uid } = useSelector((state: RootState) => state.auth);
 
   // Local state
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -384,9 +381,16 @@ const Dashboard: FC = () => {
     [items]
   );
 
+  // Client-side pagination for transformed companies
+  const paginatedCompanies = useMemo(() => {
+    const start = paginationModel.page * paginationModel.pageSize;
+    const end = start + paginationModel.pageSize;
+    return transformedCompanies.slice(start, end);
+  }, [transformedCompanies, paginationModel]);
+
   // Memoized statistics
   const stats = useMemo(() => {
-    const totalCompanies = meta.totalItems;
+    const totalCompanies = items.length;
     const categoriesCount = new Set(
       items.map((company) => company.categories?.[0]?.category_name || 'Otro')
     ).size;
@@ -403,7 +407,7 @@ const Dashboard: FC = () => {
       categoriesCount,
       countriesCount,
     };
-  }, [items, meta.totalItems]);
+  }, [items]);
 
   // Memoized callbacks
   const handlePaginationChange = useCallback((model: GridPaginationModel) => {
@@ -421,35 +425,6 @@ const Dashboard: FC = () => {
     [navigate]
   );
 
-  const handleRetry = useCallback(() => {
-    if (uid) {
-      dispatch(
-        fetchUserCompanies({
-          userId: parseInt(uid),
-          options: {
-            page: paginationModel.page + 1,
-            limit: paginationModel.pageSize,
-          },
-        })
-      );
-    }
-  }, [dispatch, uid, paginationModel]);
-
-  // Effects
-  useEffect(() => {
-    if (uid) {
-      dispatch(
-        fetchUserCompanies({
-          userId: parseInt(uid),
-          options: {
-            page: paginationModel.page + 1,
-            limit: paginationModel.pageSize,
-          },
-        })
-      );
-    }
-  }, [paginationModel, dispatch, uid]);
-
   // Early returns for loading and error states
   if (loading && !userCompaniesData) {
     return (
@@ -462,7 +437,7 @@ const Dashboard: FC = () => {
   if (error && !userCompaniesData) {
     return (
       <Container maxWidth='xl' sx={{ py: 4 }}>
-        <ErrorState error={error} onRetry={handleRetry} />
+        <ErrorState error={error} />
       </Container>
     );
   }
@@ -475,7 +450,7 @@ const Dashboard: FC = () => {
       <DashboardHeader totalCompanies={stats.totalCompanies} />
 
       {/* Error State */}
-      {error && <ErrorState error={error} onRetry={handleRetry} />}
+      {error && <ErrorState error={error} />}
 
       {/* Statistics Cards */}
       {hasCompanies && (
@@ -512,9 +487,9 @@ const Dashboard: FC = () => {
         <Grid size={{ xs: 12 }}>
           {hasCompanies ? (
             <CompaniesTable
-              companies={transformedCompanies}
+              companies={paginatedCompanies}
               loading={loading}
-              totalCount={meta.totalItems}
+              totalCount={transformedCompanies.length}
               paginationModel={paginationModel}
               onPaginationChange={handlePaginationChange}
               onRowClick={handleRowClick}
