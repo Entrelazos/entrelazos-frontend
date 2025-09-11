@@ -7,6 +7,8 @@ import {
   CreateProductType,
   ProductItem,
 } from '../../types/products/ProductsTypes';
+import { ProductFormData } from '../../types/product-form/ProductFormTypes';
+import { ApprovalStatus } from '../../constants/constants';
 import {
   DataGrid,
   GridColDef,
@@ -135,22 +137,43 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
     navigate(`/productos/${params.row.dbId}`);
   };
 
-  const handleModalSubmit = async (products: CreateProductType[]) => {
+  // Transform ProductFormData to CreateProductType
+  const transformProductData = (formData: ProductFormData): CreateProductType => {
+    return {
+      product_name: formData.product_name,
+      productDescription: formData.productDescription,
+      is_service: formData.is_service,
+      is_public: formData.is_public,
+      approval_status: ApprovalStatus.PENDING, // Default to pending
+      price: typeof formData.price === 'string' ? parseFloat(formData.price) : formData.price,
+      category_ids: formData.category_ids,
+      company_id: formData.company_id,
+      files: formData.files || [],
+      existingImages: [], // Default to empty array for new products
+    };
+  };
+
+  const handleModalSubmit = async (products: ProductFormData[]) => {
     try {
-      await createProducts(products);
+      // Transform the form data to the expected API format
+      const transformedProducts = products.map(transformProductData);
+      await createProducts(transformedProducts);
 
       // Reset to first page to see newly created products
       setPaginationModel((prev) => ({ ...prev, page: 0 }));
 
       // The useEffect will automatically reload data when page changes
-      toast.success('Producto creado exitosamente.', {
-        position: 'top-right',
-        autoClose: 3000,
-      });
+      toast.success(
+        `${products.length} producto${products.length !== 1 ? 's' : ''} creado${products.length !== 1 ? 's' : ''} exitosamente.`,
+        {
+          position: 'top-right',
+          autoClose: 3000,
+        }
+      );
       setOpenModal(false);
     } catch (error) {
       console.error('Error creating products:', error);
-      toast.error('Hubo un error creando el producto.');
+      toast.error('Hubo un error creando los productos.');
     }
   };
 

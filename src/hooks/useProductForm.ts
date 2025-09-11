@@ -29,11 +29,8 @@ export const useProductForm = ({
       createdAt: new Date(),
     };
     
-    setProducts(prev => {
-      const updated = [...prev, newProduct];
-      onProductAdd?.(newProduct);
-      return updated;
-    });
+    setProducts(prev => [...prev, newProduct]);
+    onProductAdd?.(newProduct);
   }, [onProductAdd]);
 
   const updateProduct = useCallback((index: number, data: ProductFormData) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Modal,
   Box,
@@ -6,23 +6,17 @@ import {
   Button,
   IconButton,
   Stack,
-  Alert,
   CircularProgress,
   Divider,
   Paper,
 } from '@mui/material';
-import { Close, Add, Save, ShoppingCart } from '@mui/icons-material';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useDispatch, useSelector } from 'react-redux';
+import { Close, ShoppingCart, Clear } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
-import { fetchCategories } from '../../../store/categories/categoriesThunks';
-import { AppDispatch, RootState } from '../../../store/store';
-import { AddProductModalProps, ProductFormData } from '../../../types/product-form/ProductFormTypes';
+import { AddProductModalProps } from '../../../types/product-form/ProductFormTypes';
+import { UnifiedProductFormData } from '../../../types/product-form/UnifiedProductFormTypes';
 import { useProductForm } from '../../../hooks/useProductForm';
-import { productValidationSchema } from '../../../utils/validation/productValidationSchema';
-import ProductFormFields from './ProductFormFields';
+import UnifiedProductForm from '../../../components/ProductForm/UnifiedProductForm';
 import ProductListItem from './ProductListItem';
 
 const modalStyles = {
@@ -56,53 +50,16 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
   onSubmit,
   companyId,
 }) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { 
-    data: categories, 
-    loading: categoriesLoading, 
-    error: categoriesError 
-  } = useSelector((state: RootState) => state.categories);
-
-  // Fetch categories on mount
-  useEffect(() => {
-    if (open && !categories) {
-      dispatch(fetchCategories());
-    }
-  }, [dispatch, categories, open]);
-
-  // Form management
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    control,
-    formState: { errors, isValid },
-  } = useForm<ProductFormData>({
-    resolver: yupResolver(productValidationSchema),
-    mode: 'onBlur',
-    defaultValues: {
-      product_name: '',
-      productDescription: '',
-      is_service: false,
-      is_public: false,
-      price: 0,
-      category_ids: [],
-      company_id: companyId,
-      files: [],
-    },
-  });
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [currentEditData, setCurrentEditData] = useState<UnifiedProductFormData | null>(null);
 
   // Product list management
   const {
     products,
-    editIndex,
     isSubmitting,
     addProduct,
     updateProduct,
     deleteProduct,
-    editProduct,
     submitAllProducts,
     clearProducts,
   } = useProductForm({
@@ -116,58 +73,52 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
         throw error;
       }
     },
-    onProductAdd: (product) => {
-      toast.success(`Producto \"${product.product_name}\" agregado a la lista`);
-    },
-    onProductDelete: () => {
-      toast.info('Producto eliminado de la lista');
-    },
   });
 
   // Form submission handler
-  const onFormSubmit = useCallback((data: ProductFormData) => {
+  const handleFormSubmit = useCallback((data: UnifiedProductFormData) => {
     if (editIndex !== null) {
       updateProduct(editIndex, data);
-      toast.success('Producto actualizado');
+      toast.success('Producto actualizado en la lista');
+      setEditIndex(null);
+      setCurrentEditData(null);
     } else {
       addProduct(data);
+      toast.success(`Producto "${data.product_name}" agregado a la lista`);
     }
-
-    // Reset form
-    reset({
-      product_name: '',
-      productDescription: '',
-      is_service: false,
-      is_public: false,
-      price: 0,
-      category_ids: [],
-      company_id: companyId,
-      files: [],
-    });
-  }, [editIndex, updateProduct, addProduct, reset, companyId]);
+  }, [editIndex, updateProduct, addProduct]);
 
   // Edit product handler
   const handleEditProduct = useCallback((index: number) => {
     const productToEdit = products[index];
-    editProduct(index);
-
-    // Prefill form fields
-    Object.entries(productToEdit).forEach(([key, value]) => {
-      if (key !== 'id' && key !== 'createdAt') {
-        setValue(key as keyof ProductFormData, value);
-      }
+    setEditIndex(index);
+    setCurrentEditData({
+      product_name: productToEdit.product_name,
+      productDescription: productToEdit.productDescription,
+      is_service: productToEdit.is_service,
+      is_public: productToEdit.is_public,
+      price: productToEdit.price,
+      category_ids: productToEdit.category_ids,
+      company_id: productToEdit.company_id,
+      files: productToEdit.files || [],
     });
-
     toast.info(`Editando producto \"${productToEdit.product_name}\"`);
-  }, [products, editProduct, setValue]);
+  }, [products]);
+
+  // Cancel edit handler
+  const handleCancelEdit = useCallback(() => {
+    setEditIndex(null);
+    setCurrentEditData(null);
+    toast.info('Edición cancelada');
+  }, []);
 
   // Modal close handler
   const handleModalClose = useCallback(() => {
-    reset();
     clearProducts();
+    setEditIndex(null);
+    setCurrentEditData(null);
     handleClose();
-  }, [reset, clearProducts, handleClose]);
-
+  }, [clearProducts, handleClose]);
 
   return (
     <Modal 
@@ -215,45 +166,31 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
           }}
         >
           <Stack spacing={3}>
-            {/* Error alerts */}
-            {categoriesError && (
-              <Alert severity='error' onClose={() => dispatch({ type: 'CLEAR_CATEGORIES_ERROR' })}>
-                Error cargando categorías: {categoriesError}
-              </Alert>
-            )}
-
             {/* Form section */}
             <Paper elevation={1} sx={{ p: 3 }}>
-              <Typography variant='h6' gutterBottom>
-                {editIndex !== null ? 'Editar información del producto' : 'Información del producto'}
-              </Typography>
-              
-              <form onSubmit={handleSubmit(onFormSubmit)}>
-                <ProductFormFields
-                  control={control}
-                  register={register}
-                  errors={errors}
-                  watch={watch}
-                  setValue={setValue}
-                  categories={categories || []}
-                  categoriesLoading={categoriesLoading}
-                  categoriesError={categoriesError}
-                />
-                
-                <Box sx={{ mt: 3 }}>
+              <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+                <Typography variant='h6'>
+                  {editIndex !== null ? 'Editar información del producto' : 'Información del producto'}
+                </Typography>
+                {editIndex !== null && (
                   <Button
-                    type='submit'
-                    variant='contained'
-                    color='primary'
-                    size='large'
-                    fullWidth
-                    disabled={!isValid}
-                    startIcon={editIndex !== null ? <Save /> : <Add />}
+                    variant='outlined'
+                    size='small'
+                    startIcon={<Clear />}
+                    onClick={handleCancelEdit}
                   >
-                    {editIndex !== null ? 'Actualizar producto' : 'Agregar producto a la lista'}
+                    Cancelar edición
                   </Button>
-                </Box>
-              </form>
+                )}
+              </Stack>
+              
+              <UnifiedProductForm
+                mode='create'
+                onSubmit={handleFormSubmit}
+                companyId={companyId}
+                initialData={currentEditData || undefined}
+                submitButtonText={editIndex !== null ? 'Actualizar producto' : 'Agregar producto a la lista'}
+              />
             </Paper>
 
             {/* Products list */}
@@ -284,7 +221,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
                         index={index}
                         onEdit={handleEditProduct}
                         onDelete={deleteProduct}
-                        categories={categories || []}
+                        categories={[]} // Categories will be fetched inside the component
                       />
                     ))}
                   </Stack>
