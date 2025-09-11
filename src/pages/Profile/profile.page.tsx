@@ -22,6 +22,7 @@ import { uploadFile } from '../../services/upload/uploadService';
 import { FileResponseType, imageType } from '../../types/uploads/uploadTypes';
 import ImageUploadV2 from '../../components/ImageUpload/ImageUploadV2';
 import { getErrorMessage } from '../../utils/errorHandler';
+import EditCompanyForm from './components/EditCompanyForm';
 
 interface ProfilePageProperties {
   isCompany: boolean;
@@ -190,22 +191,55 @@ const ProfilePage: FC<ProfilePageProperties> = ({ isCompany }) => {
                   >
                     <Avatar
                       alt={safeDisplayName}
-                      src={profileImageData?.url ? `${import.meta.env.VITE_BASE_FILES_URL}${profileImageData.url}` : undefined}
+                      src={
+                        profileImageData?.url
+                          ? `${import.meta.env.VITE_BASE_FILES_URL}${profileImageData.url}`
+                          : undefined
+                      }
                       sx={{ width: '128px', height: '128px' }}
                     />
                   </ImageUploadV2>
                 ) : (
                   <Avatar
                     alt={safeDisplayName}
-                    src={profileImageData?.url ? `${import.meta.env.VITE_BASE_FILES_URL}${profileImageData.url}` : undefined}
+                    src={
+                      profileImageData?.url
+                        ? `${import.meta.env.VITE_BASE_FILES_URL}${profileImageData.url}`
+                        : undefined
+                    }
                     sx={{ width: '128px', height: '128px' }}
                   />
                 )}
               </Box>
               <ListItemText>
-                <Typography fontSize='1.5rem' fontWeight={700}>
-                  {data.name}
-                </Typography>
+                <Stack direction='row' alignItems='center' spacing={2}>
+                  <Typography fontSize='1.5rem' fontWeight={700}>
+                    {data.name}
+                  </Typography>
+                  {compayIsMine && (
+                    <EditCompanyForm
+                      company={data}
+                      trigger={
+                        <Box
+                          sx={{
+                            cursor: 'pointer',
+                            p: 1,
+                            borderRadius: 1,
+                            bgcolor: 'rgba(255, 255, 255, 0.1)',
+                            '&:hover': {
+                              bgcolor: 'rgba(255, 255, 255, 0.2)',
+                            },
+                            transition: 'background-color 0.2s',
+                          }}
+                        >
+                          <SvgIcon sx={{ fontSize: 20, color: 'white' }}>
+                            <path d='M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z' />
+                          </SvgIcon>
+                        </Box>
+                      }
+                    />
+                  )}
+                </Stack>
                 {!isCompany && (
                   <Typography
                     fontSize='1rem'
@@ -248,13 +282,13 @@ const ProfilePage: FC<ProfilePageProperties> = ({ isCompany }) => {
         </Paper>
         {PROFILE_TABS.map(({ component: Component }, index) => (
           <CustomTabPanelComponent index={index} value={value} key={index}>
-            <Component {...data} />
+            <Component />
           </CustomTabPanelComponent>
         ))}
       </Box>
     );
   }
-  
+
   return <Typography>No data available</Typography>;
 };
 

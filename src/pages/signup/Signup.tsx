@@ -1,43 +1,37 @@
-import { useEffect } from 'react';
-import { useDispatch, connect } from 'react-redux';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
-import { MuiTelInput } from 'mui-tel-input';
-import { startRegister, startClearAuthState } from '../../store/auth';
+import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { MuiTelInput } from 'mui-tel-input';
 import { useNavigate } from 'react-router-dom';
 import interLazosLogoImage from '../../assets/entreLazosLogoVertical.png';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import * as yup from 'yup';
-import './Signup.scss';
-import { AppDispatch } from '../../store/store';
-import { AuthState } from '../../types/auth/AuthTypes';
+import { startRegister } from '../../store/auth';
+import { AppDispatch, RootState } from '../../store/store';
+import { getErrorMessage } from '../../utils/errorHandler';
+import { Copyright } from '../../components/common/Copyright';
 
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant='body2'
-      color='text.secondary'
-      align='center'
-      {...props}
-    >
-      {'Copyright © '}
-      <Link color='inherit' href='https://mui.com/'>
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
+interface SignupFormValues {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  identification: string;
+  cellphone: string;
+  name: string;
 }
+
+const LOGO_WIDTH = 150;
+const CONTAINER_MAX_WIDTH = 'sm' as const;
 
 const darkTheme = createTheme({
   palette: {
@@ -45,45 +39,43 @@ const darkTheme = createTheme({
   },
 });
 
-interface SignupProps {
-  registerUserSuccess?: boolean | null;
-}
+const validationSchema = {
+  name: yup.string().required('El nombre completo es obligatorio'),
+  email: yup
+    .string()
+    .email('Formato de correo electrónico inválido')
+    .required('El correo electrónico es obligatorio'),
+  identification: yup.string().required('La identificación es obligatoria'),
+  cellphone: yup
+    .string()
+    .required('El número de celular es obligatorio')
+    .matches(
+      /^\+\d{1,3}\s?\d{1,3}\s?\d{1,10}$/,
+      'Formato de número de celular incorrecto'
+    ),
+  password: yup
+    .string()
+    .required('La contraseña es obligatoria')
+    .min(8, 'La contraseña debe tener al menos 8 caracteres')
+    .matches(
+      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+      'La contraseña debe contener al menos: una mayúscula, una minúscula, un número y un carácter especial (@$!%*?&)'
+    ),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref('password'), undefined], 'Las contraseñas no coinciden')
+    .required('Por favor confirma tu contraseña'),
+};
 
-export function Signup({ registerUserSuccess }: SignupProps) {
-  const validationSchema = {
-    email: yup
-      .string()
-      .email('Correo invalido')
-      .required('El correo es obligatorio'),
-    password: yup
-      .string()
-      .required('La contraseña es obligatoria')
-      .min(8, 'La contraseña debe tener al menos 8 caracteres')
-      .matches(
-        /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-        'La contraseña debe de estar conformada por una letra mayuscula, una letra minuscula, un digito, y un caracter especial'
-      ),
-    confirmPassword: yup
-      .string()
-      .oneOf(
-        [yup.ref('password'), undefined],
-        'Las contraseñas deben coincidir'
-      )
-      .required('Por favor confirma tu contraseña'),
-
-    identification: yup.string().required('La identificacion es obligatioria'),
-    cellphone: yup
-      .string()
-      .required('El numero de celular es obligatiorio')
-      .matches(
-        /^\+\d{1,3}\s?\d{1,3}\s?\d{1,10}$/,
-        'Formato de numero de celular incorrecto'
-      ),
-    name: yup.string().required('El nombre es obligatorio'),
-  };
+export const Signup: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [signupError, setSignupError] = useState<string | null>(null);
 
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+  const registerUserSuccess = useSelector(
+    (state: RootState) => state.auth.registerUserSuccess
+  );
 
   const formik = useFormValidation(
     {
@@ -95,8 +87,11 @@ export function Signup({ registerUserSuccess }: SignupProps) {
       name: '',
     },
     validationSchema,
-    async (values: any) => {
+    async (values: SignupFormValues) => {
       const { cellphone, email, password, identification, name } = values;
+
+      setIsLoading(true);
+      setSignupError(null);
 
       try {
         await dispatch(
@@ -110,43 +105,45 @@ export function Signup({ registerUserSuccess }: SignupProps) {
             roleIds: [2],
           })
         ).unwrap();
-      } catch (error: any) {
-        console.error('Login failed:', error);
-        toast.error(error.message || 'Something went wrong during login');
+
+        toast.success(
+          '¡Registro exitoso! Redirigiendo al inicio de sesión...',
+          {
+            autoClose: 2000,
+          }
+        );
+
+        setTimeout(() => {
+          navigate('/', { replace: true });
+        }, 2000);
+      } catch (error: unknown) {
+        const errorMessage = getErrorMessage(error);
+        console.error('Registration failed:', error);
+        setSignupError(errorMessage);
+        toast.error(errorMessage);
+      } finally {
+        setIsLoading(false);
       }
     }
   );
 
-  const handleGoToLogin = () => {
-    dispatch(startClearAuthState());
+  const handleGoToLogin = useCallback(() => {
     navigate('/', { replace: true });
-  };
+  }, [navigate]);
 
-  const successRegisterNotification = (registerUserSuccess?: boolean) => {
+  // Handle success state from Redux if needed
+  React.useEffect(() => {
     if (registerUserSuccess === true) {
-      toast.success('Usuario registrado!', {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
-      });
+      toast.success('¡Usuario registrado exitosamente!');
       setTimeout(() => {
         handleGoToLogin();
       }, 1000);
     }
-  };
-
-  useEffect(() => {
-    successRegisterNotification(registerUserSuccess || undefined);
-  }, [registerUserSuccess]);
+  }, [registerUserSuccess, handleGoToLogin]);
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <Container component='main' maxWidth='xs'>
+      <Container component='main' maxWidth={CONTAINER_MAX_WIDTH}>
         <CssBaseline />
         <Box
           sx={{
@@ -156,169 +153,243 @@ export function Signup({ registerUserSuccess }: SignupProps) {
             alignItems: 'center',
           }}
         >
-          <img width={150} src={interLazosLogoImage} alt='' />
+          <img
+            width={LOGO_WIDTH}
+            src={interLazosLogoImage}
+            alt='Logo de Interlazos'
+          />
 
           <Box
             component='form'
             onSubmit={formik.handleSubmit}
             noValidate
-            sx={{ mt: 1 }}
+            sx={{ mt: 3, width: '100%' }}
           >
-            <Grid container spacing={2} className='grid-system-form'>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <TextField
-                  margin='normal'
-                  required
-                  fullWidth
-                  id='name'
-                  label='Nombre completo'
-                  name='name'
-                  autoComplete='name'
-                  autoFocus
-                  value={formik.values.name}
-                  onChange={formik.handleChange}
-                  error={formik.touched.name && Boolean(formik.errors.name)}
-                  helperText={
-                    formik.touched.name && (formik.errors.name as string)
-                  }
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <TextField
-                  margin='normal'
-                  required
-                  fullWidth
-                  id='email'
-                  label='Correo electrónico'
-                  name='email'
-                  autoComplete='email'
-                  autoFocus
-                  value={formik.values.email}
-                  onChange={formik.handleChange}
-                  error={formik.touched.email && Boolean(formik.errors.email)}
-                  helperText={
-                    formik.touched.email && (formik.errors.email as string)
-                  }
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <TextField
-                  margin='normal'
-                  required
-                  fullWidth
-                  id='identification'
-                  label='Identificación'
-                  name='identification'
-                  autoComplete='identification'
-                  autoFocus
-                  value={formik.values.identification}
-                  onChange={formik.handleChange}
-                  error={
-                    formik.touched.identification &&
-                    Boolean(formik.errors.identification)
-                  }
-                  helperText={
-                    formik.touched.identification &&
-                    (formik.errors.identification as string)
-                  }
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <MuiTelInput
-                  defaultCountry='CO'
-                  margin='normal'
-                  required
-                  fullWidth
-                  id='cellphone'
-                  label='Celular'
-                  name='cellphone'
-                  autoComplete='cellphone'
-                  autoFocus
-                  value={formik.values.cellphone}
-                  onChange={(value) => formik.setFieldValue('cellphone', value)}
-                  error={
-                    formik.touched.cellphone && Boolean(formik.errors.cellphone)
-                  }
-                  helperText={
-                    formik.touched.cellphone &&
-                    (formik.errors.cellphone as string)
-                  }
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <TextField
-                  margin='normal'
-                  required
-                  fullWidth
-                  name='password'
-                  label='Contraseña'
-                  type='password'
-                  id='password'
-                  autoComplete='current-password'
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  error={
-                    formik.touched.password && Boolean(formik.errors.password)
-                  }
-                  helperText={
-                    formik.touched.password &&
-                    (formik.errors.password as string)
-                  }
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <TextField
-                  margin='normal'
-                  required
-                  fullWidth
-                  name='confirmPassword'
-                  label='Confirmar contraseña'
-                  type='password'
-                  id='confirmPassword'
-                  autoComplete='confirm-password'
-                  value={formik.values.confirmPassword}
-                  onChange={formik.handleChange}
-                  error={
-                    formik.touched.confirmPassword &&
-                    Boolean(formik.errors.confirmPassword)
-                  }
-                  helperText={
-                    formik.touched.confirmPassword &&
-                    (formik.errors.confirmPassword as string)
-                  }
-                />
-              </Grid>
-            </Grid>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+                gap: 2,
+              }}
+            >
+              <TextField
+                margin='normal'
+                required
+                fullWidth
+                id='name'
+                label='Nombre completo'
+                name='name'
+                autoComplete='name'
+                autoFocus
+                disabled={isLoading}
+                value={formik.values.name}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.name && Boolean(formik.errors.name)}
+                helperText={
+                  formik.touched.name && (formik.errors.name as string)
+                }
+                aria-describedby={
+                  formik.touched.name && formik.errors.name
+                    ? 'name-error'
+                    : undefined
+                }
+              />
+              <TextField
+                margin='normal'
+                required
+                fullWidth
+                id='email'
+                label='Correo electrónico'
+                name='email'
+                type='email'
+                autoComplete='email'
+                disabled={isLoading}
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.email && Boolean(formik.errors.email)}
+                helperText={
+                  formik.touched.email && (formik.errors.email as string)
+                }
+                aria-describedby={
+                  formik.touched.email && formik.errors.email
+                    ? 'email-error'
+                    : undefined
+                }
+              />
+              <TextField
+                margin='normal'
+                required
+                fullWidth
+                id='identification'
+                label='Identificación'
+                name='identification'
+                autoComplete='off'
+                disabled={isLoading}
+                value={formik.values.identification}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.identification &&
+                  Boolean(formik.errors.identification)
+                }
+                helperText={
+                  formik.touched.identification &&
+                  (formik.errors.identification as string)
+                }
+                aria-describedby={
+                  formik.touched.identification && formik.errors.identification
+                    ? 'identification-error'
+                    : undefined
+                }
+              />
+              <MuiTelInput
+                defaultCountry='CO'
+                margin='normal'
+                required
+                fullWidth
+                id='cellphone'
+                label='Número de celular'
+                name='cellphone'
+                disabled={isLoading}
+                value={formik.values.cellphone}
+                onChange={(value) => {
+                  formik.setFieldValue('cellphone', value);
+                  formik.setFieldTouched('cellphone', true);
+                }}
+                error={
+                  formik.touched.cellphone && Boolean(formik.errors.cellphone)
+                }
+                helperText={
+                  formik.touched.cellphone &&
+                  (formik.errors.cellphone as string)
+                }
+              />
+              <TextField
+                margin='normal'
+                required
+                fullWidth
+                name='password'
+                label='Contraseña'
+                type='password'
+                id='password'
+                autoComplete='new-password'
+                disabled={isLoading}
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.password && Boolean(formik.errors.password)
+                }
+                helperText={
+                  formik.touched.password && (formik.errors.password as string)
+                }
+                aria-describedby={
+                  formik.touched.password && formik.errors.password
+                    ? 'password-error'
+                    : undefined
+                }
+              />
+              <TextField
+                margin='normal'
+                required
+                fullWidth
+                name='confirmPassword'
+                label='Confirmar contraseña'
+                type='password'
+                id='confirmPassword'
+                autoComplete='new-password'
+                disabled={isLoading}
+                value={formik.values.confirmPassword}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.confirmPassword &&
+                  Boolean(formik.errors.confirmPassword)
+                }
+                helperText={
+                  formik.touched.confirmPassword &&
+                  (formik.errors.confirmPassword as string)
+                }
+                aria-describedby={
+                  formik.touched.confirmPassword &&
+                  formik.errors.confirmPassword
+                    ? 'confirmPassword-error'
+                    : undefined
+                }
+              />
+            </Box>
+
+            {signupError && (
+              <Alert
+                severity='error'
+                sx={{ mt: 2 }}
+                role='alert'
+                aria-live='polite'
+              >
+                {signupError}
+              </Alert>
+            )}
 
             <Button
               type='submit'
               fullWidth
               variant='contained'
-              sx={{ mt: 1, mb: 1 }}
+              disabled={isLoading || !formik.isValid}
+              sx={{
+                mt: 3,
+                mb: 2,
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              aria-describedby={isLoading ? 'loading-text' : undefined}
             >
-              REGISTRARSE
+              {isLoading ? (
+                <>
+                  <CircularProgress size={20} sx={{ mr: 1 }} />
+                  Registrando...
+                </>
+              ) : (
+                'Registrarse'
+              )}
+              {isLoading && (
+                <span id='loading-text' className='sr-only'>
+                  Procesando registro de usuario
+                </span>
+              )}
             </Button>
 
-            <Typography
-              style={{ fontSize: 18, color: '#1976d2', marginTop: '10px' }}
-              variant='body2'
-              color='text.secondary'
-              align='center'
-            >
-              <Link onClick={handleGoToLogin} color='inherit'>
-                <b>¿Ya tienes una cuenta?</b>
-              </Link>
-            </Typography>
+            <Box sx={{ textAlign: 'center', mt: 2 }}>
+              <Typography variant='body2'>
+                ¿Ya tienes una cuenta?{' '}
+                <Link
+                  component='button'
+                  type='button'
+                  variant='body2'
+                  onClick={handleGoToLogin}
+                  disabled={isLoading}
+                  sx={{
+                    fontWeight: 'bold',
+                    color: 'primary.main',
+                    textDecoration: 'none',
+                    '&:hover': {
+                      textDecoration: 'underline',
+                    },
+                  }}
+                >
+                  Inicia sesión aquí
+                </Link>
+              </Typography>
+            </Box>
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   );
-}
+};
 
-const mapStateToProps = (state: AuthState) => ({
-  registerUserSuccess: state.registerUserSuccess,
-});
-
-export default connect(mapStateToProps)(Signup);
+export default Signup;

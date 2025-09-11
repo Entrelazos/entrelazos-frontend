@@ -12,8 +12,6 @@ const ProductCard: FC<ProductCardProperties> = ({ product }) => {
     <Box
       sx={{
         maxWidth: 400,
-        bgcolor: '#121212',
-        color: '#fff',
         p: 3,
         borderRadius: 2,
       }}

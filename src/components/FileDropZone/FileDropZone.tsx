@@ -15,7 +15,11 @@ interface FileDropZoneProps {
   onRemoveImage: (file: FileWithPreview) => void;
 }
 
-const FileDropZone: React.FC<FileDropZoneProps> = ({ onDrop, existingFiles = [], onRemoveImage }) => {
+const FileDropZone: React.FC<FileDropZoneProps> = ({
+  onDrop,
+  existingFiles = [],
+  onRemoveImage,
+}) => {
   const [files, setFiles] = useState<FileWithPreview[]>([]);
 
   const { getRootProps, getInputProps } = useDropzone({

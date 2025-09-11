@@ -136,7 +136,6 @@ export const createProducts = async (
       });
 
     return response.data;
-     
   } catch (error) {
     return handleApiError(error);
   }
@@ -192,7 +191,6 @@ export const updateProduct = async (
       });
 
     return response.data;
-     
   } catch (error) {
     return handleApiError(error);
   }

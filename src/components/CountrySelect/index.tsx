@@ -15,7 +15,7 @@ import { fetchCountries } from '../../store/geo/geoThunks';
 
 interface CountrySelectorProps {
   value?: string;
-  onChange?: (countryCode: string) => void;
+  onChange?: (_countryCode: string) => void;
   sx?: CSSProperties;
 }
 

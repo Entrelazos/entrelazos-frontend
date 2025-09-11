@@ -1,47 +1,31 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 import { startLoginWithEmailPassword } from '../../store/auth';
-import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import interLazosLogoImage from '../../assets/entreLazosLogoVertical.png';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import * as yup from 'yup';
-import { AppDispatch, RootState } from '../../store/store';
+import { AppDispatch } from '../../store/store';
 import { toast } from 'react-toastify';
 import { getErrorMessage } from '../../utils/errorHandler';
+import { Copyright } from '../../components/common/Copyright';
 
 interface LoginFormValues {
   email: string;
   password: string;
 }
 
-function Copyright(props: React.ComponentProps<typeof Typography>) {
-  return (
-    <Typography
-      variant='body2'
-      color='text.secondary'
-      align='center'
-      {...props}
-    >
-      {'Copyright © '}
-      <Link color='inherit' href='https://mui.com/'>
-        INTERLAZOS
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+const LOGO_WIDTH = 150;
+const CONTAINER_MAX_WIDTH = 'xs' as const;
 
 const darkTheme = createTheme({
   palette: {
@@ -49,15 +33,17 @@ const darkTheme = createTheme({
   },
 });
 
+const validationSchema = {
+  email: yup
+    .string()
+    .email('Formato de correo inválido')
+    .required('El correo electrónico es obligatorio'),
+  password: yup.string().required('La contraseña es obligatoria'),
+};
+
 export const Login: React.FC = () => {
-  const authError = useSelector((state: RootState) => state.auth.authError);
-  const validationSchema = {
-    email: yup
-      .string()
-      .email('Formato de correo invalido')
-      .required('El correo es obligatorio'),
-    password: yup.string().required('La contraseña es obligatoria'),
-  };
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const formik = useFormValidation(
     {
@@ -68,17 +54,23 @@ export const Login: React.FC = () => {
     async (values: LoginFormValues) => {
       const { email, password } = values;
 
+      setIsLoading(true);
+      setLoginError(null);
+
       try {
         await dispatch(
           startLoginWithEmailPassword({ email, password })
-        ).unwrap(); // 🔥 unwrap to catch rejectedWithValue
+        ).unwrap();
 
-        // Optional: redirect on success
+        toast.success('Inicio de sesión exitoso');
         navigate('/', { replace: true });
       } catch (error: unknown) {
-        // 👇 Handle and display error nicely
+        const errorMessage = getErrorMessage(error);
         console.error('Login failed:', error);
-        toast.error(getErrorMessage(error));
+        setLoginError(errorMessage);
+        toast.error(errorMessage);
+      } finally {
+        setIsLoading(false);
       }
     }
   );
@@ -90,9 +82,16 @@ export const Login: React.FC = () => {
     navigate('/signup', { replace: true });
   };
 
+  const handleForgotPassword = () => {
+    // TODO: Implement forgot password functionality
+    toast.info(
+      'La funcionalidad de recuperar contraseña estará disponible pronto'
+    );
+  };
+
   return (
     <ThemeProvider theme={darkTheme}>
-      <Container component='main' maxWidth='xs'>
+      <Container component='main' maxWidth={CONTAINER_MAX_WIDTH}>
         <CssBaseline />
         <Box
           sx={{
@@ -102,7 +101,11 @@ export const Login: React.FC = () => {
             alignItems: 'center',
           }}
         >
-          <img width={150} src={interLazosLogoImage} alt='' />
+          <img
+            width={LOGO_WIDTH}
+            src={interLazosLogoImage}
+            alt='Logo de Interlazos'
+          />
 
           <Box
             component='form'
@@ -115,15 +118,23 @@ export const Login: React.FC = () => {
               required
               fullWidth
               id='email'
-              label='Email Address'
+              label='Correo electrónico'
               name='email'
+              type='email'
               autoComplete='email'
               autoFocus
+              disabled={isLoading}
               value={formik.values.email}
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               error={formik.touched.email && Boolean(formik.errors.email)}
               helperText={
                 formik.touched.email && (formik.errors.email as string)
+              }
+              aria-describedby={
+                formik.touched.email && formik.errors.email
+                  ? 'email-error'
+                  : undefined
               }
             />
             <TextField
@@ -131,47 +142,87 @@ export const Login: React.FC = () => {
               required
               fullWidth
               name='password'
-              label='Password'
+              label='Contraseña'
               type='password'
               id='password'
               autoComplete='current-password'
+              disabled={isLoading}
               value={formik.values.password}
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               error={formik.touched.password && Boolean(formik.errors.password)}
               helperText={
                 formik.touched.password && (formik.errors.password as string)
               }
+              aria-describedby={
+                formik.touched.password && formik.errors.password
+                  ? 'password-error'
+                  : undefined
+              }
             />
-            <FormControlLabel
-              control={<Checkbox value='remember' color='primary' />}
-              label='Remember me'
-            />
-            {authError ? (
-              <h6 style={{ color: 'red' }}>
-                Oops, parece que ha habido un error. Revise su correo y
-                contraseña e inténtelo de nuevo.
-              </h6>
-            ) : null}
+            {loginError && (
+              <Alert
+                severity='error'
+                sx={{ mt: 2 }}
+                role='alert'
+                aria-live='polite'
+              >
+                {loginError}
+              </Alert>
+            )}
             <Button
               type='submit'
               fullWidth
               variant='contained'
-              sx={{ mt: 1, mb: 2 }}
+              disabled={isLoading || !formik.isValid}
+              sx={{
+                mt: 3,
+                mb: 2,
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              aria-describedby={isLoading ? 'loading-text' : undefined}
             >
-              Iniciar Sesión
+              {isLoading ? (
+                <>
+                  <CircularProgress size={20} sx={{ mr: 1 }} />
+                  Iniciando sesión...
+                </>
+              ) : (
+                'Iniciar Sesión'
+              )}
             </Button>
-            <Grid container>
-              <Grid>
-                <Link href='#' variant='body2'>
-                  Forgot password?
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
+                gap: 2,
+                mt: 2,
+              }}
+            >
+              <Box sx={{ flex: 1, textAlign: { xs: 'center', sm: 'left' } }}>
+                <Link
+                  component='button'
+                  type='button'
+                  variant='body2'
+                  onClick={handleForgotPassword}
+                >
+                  ¿Olvidaste tu contraseña?
                 </Link>
-              </Grid>
-              <Grid>
-                <Link onClick={handleGoToRegister} variant='body2'>
-                  {'No tienes una cuenta? regístrate'}
+              </Box>
+              <Box sx={{ flex: 1, textAlign: { xs: 'center', sm: 'right' } }}>
+                <Link
+                  component='button'
+                  type='button'
+                  variant='body2'
+                  onClick={handleGoToRegister}
+                >
+                  ¿No tienes una cuenta? Regístrate
                 </Link>
-              </Grid>
-            </Grid>
+              </Box>
+            </Box>
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />

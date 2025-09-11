@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState, useRef } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import {
   Grid,
   TextField,
@@ -8,27 +8,25 @@ import {
   CardContent,
   Box,
   Stack,
-  InputAdornment,
   Chip,
   FormControl,
   InputLabel,
   MenuItem,
   OutlinedInput,
   Select,
+  CircularProgress,
+  Alert,
+  Skeleton,
   Typography,
-  SelectChangeEvent,
 } from '@mui/material';
-import CompanyAddressComponent from './company.address.component';
+import SocialMediaFields from './SocialMediaFields';
+import AddressSection from './AddressSection';
 import { AddressData } from '../../../types/address/AddressTypes';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import '../companies.form.styles.scss';
 import { SocialType } from '../../../types/social/SocialTypes';
-import { SOCIAL_NETWORK_DATA } from '../../../constants/constants';
-import { MuiTelInput } from 'mui-tel-input';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../store/store';
 import { fetchCategories } from '../../../store/categories/categoriesThunks';
-import { useRefsList } from '../../../hooks/useRefsList';
+import { useCompanyForm } from '../../../hooks/useCompanyForm';
 
 export interface FormData {
   name: string;
@@ -43,6 +41,7 @@ export interface FormData {
 interface CompanyFormProperties {
   handleSubmit: (formData: FormData) => void;
 }
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -56,88 +55,69 @@ const MenuProps = {
 
 const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { data } = useSelector((state: RootState) => state.categories);
+  const {
+    data,
+    loading: categoriesLoading,
+    error: categoriesError,
+  } = useSelector((state: RootState) => state.categories);
   const { uid } = useSelector((state: RootState) => state.auth);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const {
+    companyInfo,
+    addresses,
+    social,
+    errors,
+    handleCompanyInfoChange,
+    handleCategoryChange,
+    handleSocialChange,
+    handleSocialDirectChange,
+    handleAddressChange,
+    addAddress,
+    removeAddress,
+    validateForm,
+  } = useCompanyForm();
+
   useEffect(() => {
     if (!data) {
       dispatch(fetchCategories());
     }
-  }, [dispatch]);
+  }, [dispatch, data]);
+
   // Create a mapping of category IDs to category names
   const categoryMap = useMemo(
     () =>
       new Map(data?.map((category) => [category.id, category.category_name])),
     [data]
   );
-  const [companyInfo, setCompanyInfo] = useState({
-    name: '',
-    nit: '',
-    description: '',
-    categories: [],
-  });
-  const [addresses, setAddresses] = useState<AddressData[]>([]);
-  const [social, setSocial] = useState<SocialType>({
-    email: '',
-    facebook: '',
-    instagram: '',
-    linkedin: '',
-    phone_number: '',
-    whatsapp: '',
-    x: '',
-  });
-  const nodeRefs = useRefsList<HTMLDivElement>(addresses.length);
 
-  const handleCompanyInfoChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setCompanyInfo({ ...companyInfo, [event.target.name]: event.target.value });
-  };
-
-  const handleSocialChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    basePath: string
-  ) => {
-    setSocial({
-      ...social,
-      [event.target.name]: `${basePath}${event.target.value}`,
-    });
-  };
-
-  const handleAddressChange = (index: number, newData: AddressData) => {
-    setAddresses((prevAddresses) => {
-      const updatedAddresses = [...prevAddresses];
-      updatedAddresses[index] = newData;
-      return updatedAddresses;
-    });
-  };
-
-  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const { name, nit, description, categories } = companyInfo;
 
-    handleSubmit({
-      name,
-      nit,
-      description,
-      addresses,
-      social,
-      categoryIds: categories,
-      userIds: uid ? [parseInt(uid)] : [],
-    });
+    const { isValid } = validateForm();
+    if (!isValid) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const { name, nit, description, categories } = companyInfo;
+
+      await handleSubmit({
+        name,
+        nit,
+        description,
+        addresses,
+        social,
+        categoryIds: categories,
+        userIds: uid ? [parseInt(uid)] : [],
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const addAddressComponent = () => {
-    setAddresses((prevAddresses) => [
-      ...prevAddresses,
-      { nomenclature: '', region: '', city: '', country: '' },
-    ]);
-  };
-
-  const removeAddressComponent = () => {
-    setAddresses((prevAddresses) => prevAddresses.slice(0, -1));
-  };
-
-  // No need to implement useRef manually, just import it from React.
   return (
     <form
       onSubmit={handleFormSubmit}
@@ -149,7 +129,7 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
       }}
     >
       <Card raised sx={{ borderRadius: '12px' }}>
-        <CardHeader title='Informacion' />
+        <CardHeader title='Información' />
         <CardContent>
           <Grid container spacing={2}>
             <Grid size={{ xs: 12, md: 6 }}>
@@ -162,6 +142,8 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                   fullWidth
                   value={companyInfo.name}
                   onChange={handleCompanyInfoChange}
+                  error={!!errors.name}
+                  helperText={errors.name}
                 />
                 <TextField
                   name='nit'
@@ -171,22 +153,33 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                   fullWidth
                   value={companyInfo.nit}
                   onChange={handleCompanyInfoChange}
+                  error={!!errors.nit}
+                  helperText={errors.nit}
+                  placeholder='123456789-0'
                 />
-                {data && (
-                  <FormControl>
-                    <InputLabel id='demo-multiple-chip-label'>
-                      Categorias
-                    </InputLabel>
+                {categoriesError && (
+                  <Alert severity='error' sx={{ mb: 2 }}>
+                    Error cargando categorías: {categoriesError}
+                  </Alert>
+                )}
+                {categoriesLoading ? (
+                  <Skeleton variant='rectangular' height={56} />
+                ) : data ? (
+                  <FormControl error={!!errors.categories}>
+                    <InputLabel id='categories-label'>Categorías</InputLabel>
                     <Select<number[]>
                       name='categories'
-                      labelId='demo-multiple-chip-label'
-                      id='demo-multiple-chip'
+                      labelId='categories-label'
+                      id='categories-select'
                       required
                       multiple
                       value={companyInfo.categories}
-                      onChange={(event: SelectChangeEvent<number[]>) => handleCompanyInfoChange(event as any)}
+                      onChange={(event) => handleCategoryChange(event)}
                       input={
-                        <OutlinedInput id='select-multiple-chip' label='Chip' />
+                        <OutlinedInput
+                          id='select-multiple-chip'
+                          label='Categorías'
+                        />
                       }
                       renderValue={(selected) => (
                         <Box
@@ -205,15 +198,24 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                         </MenuItem>
                       ))}
                     </Select>
+                    {errors.categories && (
+                      <Typography
+                        variant='caption'
+                        color='error'
+                        sx={{ mt: 0.5, ml: 1.5 }}
+                      >
+                        {errors.categories}
+                      </Typography>
+                    )}
                   </FormControl>
-                )}
+                ) : null}
               </Stack>
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
               <Stack direction='column' spacing={3}>
                 <TextField
                   name='description'
-                  label='Descripcion'
+                  label='Descripción'
                   variant='outlined'
                   multiline
                   rows={8}
@@ -232,127 +234,33 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
           <Card raised sx={{ borderRadius: '12px' }}>
             <CardHeader title='Redes Sociales' />
             <CardContent>
-              <Stack direction='column' spacing={3}>
-                {SOCIAL_NETWORK_DATA.map(
-                  ({
-                    name,
-                    label,
-                    icon: Icon,
-                    fieldType,
-                    basePath,
-                    isRequired,
-                  }) =>
-                    name === 'phone_number' || name === 'whatsapp' ? (
-                      <MuiTelInput
-                        defaultCountry='CO'
-                        margin='normal'
-                        fullWidth
-                        key={name}
-                        label={label}
-                        name={name}
-                        autoComplete={name}
-                        required={isRequired}
-                        value={social[name] ?? ''}
-                        onChange={(value) => {
-                          setSocial({
-                            ...social,
-                            [name]: value,
-                          });
-                        }}
-                      />
-                    ) : (
-                      <TextField
-                        name={name}
-                        label={label}
-                        type={fieldType}
-                        key={name}
-                        required={isRequired}
-                        onChange={(event) =>
-                          handleSocialChange(event, basePath || '')
-                        }
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              <Icon />
-                              <Typography
-                                variant='body2'
-                                color='textSecondary'
-                                style={{ marginLeft: 8 }} // Adjust spacing as needed
-                              >
-                                {basePath}
-                              </Typography>
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    )
-                )}
-              </Stack>
+              <SocialMediaFields
+                social={social}
+                onSocialChange={handleSocialChange}
+                onSocialDirectChange={handleSocialDirectChange}
+              />
             </CardContent>
           </Card>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <Card variant='outlined' sx={{ borderRadius: '12px' }}>
-            <CardHeader title='Direcciones' />
-            <CardContent
-              sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
-            >
-              <TransitionGroup
-                style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}
-              >
-                {addresses.map((address, index) => (
-                  <CSSTransition
-                    key={index}
-                    timeout={300}
-                    classNames='fade'
-                    nodeRef={nodeRefs[index]}
-                  >
-                    <div ref={nodeRefs[index]} style={{ flex: '1 1 500px' }}>
-                      <Card raised sx={{ borderRadius: '12px' }}>
-                        <CardHeader title={`Dirección ${index + 1}`} />
-                        <CardContent>
-                          <Grid container spacing={2}>
-                            <CompanyAddressComponent
-                              address={address}
-                              onChange={(newData: AddressData) =>
-                                handleAddressChange(index, newData)
-                              }
-                            />
-                          </Grid>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </CSSTransition>
-                ))}
-              </TransitionGroup>
-              <Box display='flex' gap={2} justifyContent='end'>
-                {addresses.length > 0 && (
-                  <Button
-                    type='button'
-                    variant='contained'
-                    color='primary'
-                    onClick={removeAddressComponent}
-                  >
-                    Remover Dirección
-                  </Button>
-                )}
-                <Button
-                  type='button'
-                  variant='contained'
-                  color='primary'
-                  onClick={addAddressComponent}
-                >
-                  Agregar Dirección
-                </Button>
-              </Box>
-            </CardContent>
-          </Card>
+          <AddressSection
+            addresses={addresses}
+            onAddressChange={handleAddressChange}
+            onAddAddress={addAddress}
+            onRemoveAddress={removeAddress}
+          />
         </Grid>
       </Grid>
 
       <Box display='flex' gap={2} justifyContent='end'>
-        <Button type='submit' variant='contained' color='primary'>
-          Crear
+        <Button
+          type='submit'
+          variant='contained'
+          color='primary'
+          disabled={isSubmitting}
+          startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+        >
+          {isSubmitting ? 'Creando...' : 'Crear'}
         </Button>
       </Box>
     </form>

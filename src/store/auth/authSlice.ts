@@ -1,4 +1,3 @@
- 
 import { createSlice } from '@reduxjs/toolkit';
 import { AuthState } from '../../types/auth/AuthTypes';
 import {
@@ -82,6 +81,7 @@ export const authSlice = createSlice({
 });
 
 export const hasRole = (role: any) => (state: RootState) =>
-  state.auth.roles?.some((findRole: any) => findRole.role_name === role) || false;
+  state.auth.roles?.some((findRole: any) => findRole.role_name === role) ||
+  false;
 
 export default authSlice.reducer;

@@ -54,4 +54,17 @@ export const createCompany = async (
   }
 };
 
+export const updateCompany = async (
+  companyId: number,
+  payload: Partial<FormData>
+): Promise<CompanyItem> => {
+  try {
+    const { data }: AxiosResponse<CompanyItem> =
+      await companyServiceWithAuth.put(`/${companyId}`, payload);
+    return data;
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
 export default companyService;
