@@ -1,88 +1,54 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useCallback } from 'react';
 import {
   Modal,
   Box,
   Typography,
-  TextField,
   Button,
-  FormControlLabel,
   IconButton,
-  Card,
-  CardContent,
-  Chip,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  FormHelperText,
-  Switch,
+  Stack,
+  Alert,
+  CircularProgress,
+  Divider,
+  Paper,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { useForm, Controller } from 'react-hook-form';
+import { Close, Add, Save, ShoppingCart } from '@mui/icons-material';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+
 import { fetchCategories } from '../../../store/categories/categoriesThunks';
 import { AppDispatch, RootState } from '../../../store/store';
-import FileDropZone from '../../../components/FileDropZone/FileDropZone';
-import TiptapEditor from '../../../components/TipTapEditor/TipTapEditor';
-// Validation schema
-const validationSchema = yup.object({
-  product_name: yup.string().required('Product name is required'),
-  productDescription: yup.string().required('Product description is required'),
-  is_service: yup.boolean().required(),
-  is_public: yup.boolean().required(),
-  price: yup
-    .number()
-    .required('Price is required')
-    .min(0, 'Price must be a positive number'),
-  category_ids: yup
-    .array()
-    .of(
-      yup
-        .number()
-        .required('Category is required')
-        .integer('Category ID must be an integer')
-    )
-    .min(1, 'At least one category is required'),
-  company_id: yup.number().required('Company is required').integer(),
-  files: yup.array().of(
-    yup
-      .mixed()
-      .test('fileSize', 'File size is too large', (value: any) => {
-        // Validate file size (example: max 2MB per file)
-        return value && value.size <= 2000000;
-      })
-      .test('fileType', 'Unsupported file type', (value: any) => {
-        // Validate file type (example: only images)
-        return (
-          value &&
-          ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(
-            value.type
-          )
-        );
-      })
-  ),
-});
+import { AddProductModalProps, ProductFormData } from '../../../types/product-form/ProductFormTypes';
+import { useProductForm } from '../../../hooks/useProductForm';
+import { productValidationSchema } from '../../../utils/validation/productValidationSchema';
+import ProductFormFields from './ProductFormFields';
+import ProductListItem from './ProductListItem';
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
+const modalStyles = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: {
+    xs: '95vw',
+    sm: '90vw', 
+    md: '80vw',
+    lg: '70vw',
+    xl: '60vw',
   },
+  maxWidth: '900px',
+  height: {
+    xs: '95vh',
+    sm: '90vh',
+  },
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  borderRadius: 2,
+  overflow: 'hidden',
+  display: 'flex',
+  flexDirection: 'column',
 };
-
-interface AddProductModalProps {
-  open: boolean;
-  handleClose: () => void;
-  onSubmit: (data: any) => void;
-  companyId: number;
-}
 
 const AddProductModal: React.FC<AddProductModalProps> = ({
   open,
@@ -91,18 +57,20 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
   companyId,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { data } = useSelector((state: RootState) => state.categories);
+  const { 
+    data: categories, 
+    loading: categoriesLoading, 
+    error: categoriesError 
+  } = useSelector((state: RootState) => state.categories);
+
+  // Fetch categories on mount
   useEffect(() => {
-    if (!data) {
+    if (open && !categories) {
       dispatch(fetchCategories());
     }
-  }, [dispatch]);
-  // Create a mapping of category IDs to category names
-  const categoryMap =
-    data &&
-    new Map(data.map((category) => [category.id, category.category_name]));
-  const [products, setProducts] = useState<any[]>([]); // State for storing multiple products
-  const [editIndex, setEditIndex] = useState<number | null>(null); // Track the index of the product being edited
+  }, [dispatch, categories, open]);
+
+  // Form management
   const {
     register,
     handleSubmit,
@@ -110,311 +78,254 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
     setValue,
     watch,
     control,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(validationSchema),
+    formState: { errors, isValid },
+  } = useForm<ProductFormData>({
+    resolver: yupResolver(productValidationSchema),
+    mode: 'onBlur',
     defaultValues: {
       product_name: '',
       productDescription: '',
-      is_service: false, // Reset boolean to default
-      is_public: false, // Reset boolean to default
-      price: '',
-      category_ids: [] as number[],
+      is_service: false,
+      is_public: false,
+      price: 0,
+      category_ids: [],
       company_id: companyId,
-      files: [] as File[],
+      files: [],
     },
   });
 
-  const isServiceChecked = watch('is_service');
-  const isPublicChecked = watch('is_public');
-  const existingFilesWatch = watch('files');
+  // Product list management
+  const {
+    products,
+    editIndex,
+    isSubmitting,
+    addProduct,
+    updateProduct,
+    deleteProduct,
+    editProduct,
+    submitAllProducts,
+    clearProducts,
+  } = useProductForm({
+    onSubmit: async (productsData) => {
+      try {
+        await onSubmit(productsData);
+        toast.success(`${productsData.length} producto${productsData.length !== 1 ? 's' : ''} creado${productsData.length !== 1 ? 's' : ''} exitosamente`);
+        handleModalClose();
+      } catch (error) {
+        toast.error('Error al crear los productos');
+        throw error;
+      }
+    },
+    onProductAdd: (product) => {
+      toast.success(`Producto \"${product.product_name}\" agregado a la lista`);
+    },
+    onProductDelete: () => {
+      toast.info('Producto eliminado de la lista');
+    },
+  });
 
-  // Handle form submission
-  const handleAddOrEditProduct = (data: any) => {
+  // Form submission handler
+  const onFormSubmit = useCallback((data: ProductFormData) => {
     if (editIndex !== null) {
-      // If editing a product, update it in the list
-      const updatedProducts = [...products];
-      updatedProducts[editIndex] = data;
-      setProducts(updatedProducts);
-      setEditIndex(null); // Reset edit state
+      updateProduct(editIndex, data);
+      toast.success('Producto actualizado');
     } else {
-      // Add a new product to the list
-      setProducts([...products, data]);
+      addProduct(data);
     }
 
-    // Reset the form including booleans
+    // Reset form
     reset({
       product_name: '',
       productDescription: '',
-      is_service: false, // Reset boolean to default
-      is_public: false, // Reset boolean to default
-      price: '',
-      category_ids: [] as number[],
+      is_service: false,
+      is_public: false,
+      price: 0,
+      category_ids: [],
       company_id: companyId,
-      files: [] as File[],
+      files: [],
     });
-  };
+  }, [editIndex, updateProduct, addProduct, reset, companyId]);
 
-  // Handle edit action (prefill form with selected product)
-  const handleEditProduct = (index: number) => {
+  // Edit product handler
+  const handleEditProduct = useCallback((index: number) => {
     const productToEdit = products[index];
-    setEditIndex(index);
+    editProduct(index);
 
-    // Prefill form fields with product data
-    setValue('product_name', productToEdit.product_name);
-    setValue('productDescription', productToEdit.productDescription);
-    setValue('is_service', productToEdit.is_service);
-    setValue('is_public', productToEdit.is_public);
-    setValue('price', productToEdit.price);
-    setValue('category_ids', productToEdit.category_ids);
-    setValue('company_id', productToEdit.company_id);
-    setValue('files', productToEdit.files);
-  };
-
-  const handleDeleteProduct = (index: number) => {
-    // Confirm deletion if necessary
-    const confirmDelete = window.confirm('¿Quieres eliminar el producto?');
-    if (confirmDelete) {
-      // Remove the product from the products array
-      const updatedProducts = products.filter((_, idx) => idx !== index);
-
-      // Update the state with the new products array
-      setProducts(updatedProducts);
-
-      // Optionally reset the form if you have an active edit
-      if (editIndex === index) {
-        setEditIndex(null);
-        reset(); // Reset the form to its initial state
+    // Prefill form fields
+    Object.entries(productToEdit).forEach(([key, value]) => {
+      if (key !== 'id' && key !== 'createdAt') {
+        setValue(key as keyof ProductFormData, value);
       }
-    }
-  };
+    });
 
-  // Submit all products at once
-  const handleSubmitAllProducts = () => {
-    onSubmit(products); // Send the products array to parent
-    setProducts([]); // Clear the products list
-    // handleClose(); // Close the modal
-  };
+    toast.info(`Editando producto \"${productToEdit.product_name}\"`);
+  }, [products, editProduct, setValue]);
+
+  // Modal close handler
+  const handleModalClose = useCallback(() => {
+    reset();
+    clearProducts();
+    handleClose();
+  }, [reset, clearProducts, handleClose]);
+
 
   return (
-    <Modal open={open} onClose={handleClose}>
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: {
-            xs: '90%', // 90% width on extra-small screens
-            sm: '80%', // 80% width on small screens
-            md: 700, // 700px width on medium screens
-            lg: 800, // 800px width on large screens
-          },
-          height: '90%',
-          bgcolor: 'background.paper',
-          boxShadow: 24,
-          p: {
-            xs: 2, // Smaller padding on extra-small screens
-            sm: 3, // Slightly more padding on small screens
-            md: 4, // Default padding on medium and larger screens
-          },
-          borderRadius: 2,
-          overflow: 'auto', // Enable scrolling if content overflows
-        }}
-      >
-        {/* Close button */}
-        <IconButton
-          onClick={handleClose}
-          sx={{ position: 'absolute', top: 8, right: 8 }}
+    <Modal 
+      open={open} 
+      onClose={handleModalClose}
+      aria-labelledby='add-product-modal-title'
+      aria-describedby='add-product-modal-description'
+    >
+      <Box sx={modalStyles}>
+        {/* Header */}
+        <Paper 
+          elevation={1} 
+          sx={{ 
+            p: 2, 
+            borderRadius: 0,
+            borderBottom: '1px solid',
+            borderColor: 'divider',
+          }}
         >
-          <CloseIcon />
-        </IconButton>
-        <Typography variant='h6' component='h2' gutterBottom>
-          {editIndex !== null ? 'Editar Producto' : 'Agregar Producto'}
-        </Typography>
-        <form onSubmit={handleSubmit(handleAddOrEditProduct)}>
-          <TextField
-            label='Nombre del producto'
-            {...register('product_name')}
-            error={!!errors.product_name}
-            helperText={
-              errors.product_name ? errors.product_name.message?.toString() : ''
-            }
-            fullWidth
-            margin='normal'
-          />
-          <Controller
-            name='productDescription'
-            control={control}
-            rules={{ required: 'Product description is required' }}
-            render={({ field }) => (
-              <div>
-                <TiptapEditor value={field.value} onChange={field.onChange} />
-                {errors.productDescription && (
-                  <FormHelperText error>
-                    {errors.productDescription.message}
-                  </FormHelperText>
-                )}
-              </div>
+          <Stack direction='row' justifyContent='space-between' alignItems='center'>
+            <Typography 
+              id='add-product-modal-title'
+              variant='h5' 
+              component='h2'
+              fontWeight='bold'
+            >
+              {editIndex !== null ? 'Editar Producto' : 'Agregar Productos'}
+            </Typography>
+            <IconButton 
+              onClick={handleModalClose}
+              size='large'
+              aria-label='Cerrar modal'
+            >
+              <Close />
+            </IconButton>
+          </Stack>
+        </Paper>
+
+        {/* Content */}
+        <Box 
+          sx={{ 
+            flex: 1, 
+            overflow: 'auto', 
+            p: 3,
+          }}
+        >
+          <Stack spacing={3}>
+            {/* Error alerts */}
+            {categoriesError && (
+              <Alert severity='error' onClose={() => dispatch({ type: 'CLEAR_CATEGORIES_ERROR' })}>
+                Error cargando categorías: {categoriesError}
+              </Alert>
             )}
-          />
-          <FormControlLabel
-            control={<Switch {...register('is_service')} />}
-            label='Servicio'
-            checked={isServiceChecked}
-          />
-          <FormControlLabel
-            control={<Switch {...register('is_public')} />}
-            label='Público'
-            checked={isPublicChecked}
-          />
-          <TextField
-            label='Precio'
-            type='number'
-            {...register('price')}
-            error={!!errors.price}
-            helperText={errors.price ? errors.price.message?.toString() : ''}
-            fullWidth
-            margin='normal'
-          />
-          <Controller
-            name='files'
-            control={control}
-            render={({ field: { onChange } }) => (
-              <FileDropZone
-                onDrop={(acceptedFiles: File[]) => {
-                  onChange(acceptedFiles); // Set files in form state
-                  setValue('files', acceptedFiles); // Save to form state
-                }}
-                onRemoveImage={(file: File) => {
-                  setValue(
-                    'files',
-                    existingFilesWatch.filter((f) => f !== file)
-                  );
-                }}
-                existingFiles={existingFilesWatch}
-              />
-            )}
-          />
-          {data && (
-            <Controller
-              name='category_ids'
-              control={control}
-              render={({ field }) => (
-                <FormControl fullWidth margin='normal'>
-                  <InputLabel id='demo-multiple-chip-label'>
-                    Categorias
-                  </InputLabel>
-                  <Select
-                    labelId='demo-multiple-chip-label'
-                    id='demo-multiple-chip'
-                    multiple
-                    {...field}
-                    value={field.value || []} // Ensure value is an array
-                    input={
-                      <OutlinedInput
-                        id='select-multiple-chip'
-                        label='Categorias'
+
+            {/* Form section */}
+            <Paper elevation={1} sx={{ p: 3 }}>
+              <Typography variant='h6' gutterBottom>
+                {editIndex !== null ? 'Editar información del producto' : 'Información del producto'}
+              </Typography>
+              
+              <form onSubmit={handleSubmit(onFormSubmit)}>
+                <ProductFormFields
+                  control={control}
+                  register={register}
+                  errors={errors}
+                  watch={watch}
+                  setValue={setValue}
+                  categories={categories || []}
+                  categoriesLoading={categoriesLoading}
+                  categoriesError={categoriesError}
+                />
+                
+                <Box sx={{ mt: 3 }}>
+                  <Button
+                    type='submit'
+                    variant='contained'
+                    color='primary'
+                    size='large'
+                    fullWidth
+                    disabled={!isValid}
+                    startIcon={editIndex !== null ? <Save /> : <Add />}
+                  >
+                    {editIndex !== null ? 'Actualizar producto' : 'Agregar producto a la lista'}
+                  </Button>
+                </Box>
+              </form>
+            </Paper>
+
+            {/* Products list */}
+            {products.length > 0 && (
+              <Paper elevation={1} sx={{ p: 3 }}>
+                <Stack spacing={2}>
+                  <Box display='flex' justifyContent='space-between' alignItems='center'>
+                    <Typography variant='h6'>
+                      Productos agregados ({products.length})
+                    </Typography>
+                    <Button
+                      variant='outlined'
+                      size='small'
+                      onClick={clearProducts}
+                      disabled={isSubmitting}
+                    >
+                      Limpiar lista
+                    </Button>
+                  </Box>
+                  
+                  <Divider />
+                  
+                  <Stack spacing={2}>
+                    {products.map((product, index) => (
+                      <ProductListItem
+                        key={product.id}
+                        product={product}
+                        index={index}
+                        onEdit={handleEditProduct}
+                        onDelete={deleteProduct}
+                        categories={categories || []}
                       />
-                    }
-                    renderValue={(selected: number[]) => (
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {selected.map((id) => (
-                          <Chip
-                            key={id}
-                            label={categoryMap?.get(id) || 'Unknown'}
-                          />
-                        ))}
-                      </Box>
-                    )}
-                    MenuProps={MenuProps}
-                  >
-                    {data?.map((category) => (
-                      <MenuItem key={category.id} value={category.id}>
-                        {category.category_name}
-                      </MenuItem>
                     ))}
-                  </Select>
-                </FormControl>
-              )}
-            />
-          )}
-          <Button type='submit' variant='contained' color='primary' fullWidth>
-            {editIndex !== null
-              ? 'Actualizar producto'
-              : 'Agregar producto a la lista'}
-          </Button>
-        </form>
+                  </Stack>
+                </Stack>
+              </Paper>
+            )}
+          </Stack>
+        </Box>
 
-        {/* Button to submit all products */}
-        <Button
-          variant='contained'
-          color='secondary'
-          fullWidth
-          sx={{ mt: 2 }}
-          onClick={handleSubmitAllProducts}
-          disabled={products.length === 0} // Disable if no products
-        >
-          Guardar productos ({products.length})
-        </Button>
-
-        {/* List of added products with full details */}
+        {/* Footer */}
         {products.length > 0 && (
-          <Box sx={{ mt: 2 }}>
-            <Typography variant='subtitle1'>Added Products:</Typography>
-            {products.map((product, index) => (
-              <Card key={index} sx={{ mt: 2 }}>
-                <CardContent>
-                  <Typography variant='body1'>
-                    <strong>Product Name:</strong> {product.product_name}
-                  </Typography>
-                  <Typography variant='body1'>
-                    <strong>Description:</strong> {product.productDescription}
-                  </Typography>
-                  <Typography variant='body1'>
-                    <strong>Service:</strong>{' '}
-                    {product.is_service ? 'Yes' : 'No'}
-                  </Typography>
-                  <Typography variant='body1'>
-                    <strong>Public:</strong> {product.is_public ? 'Yes' : 'No'}
-                  </Typography>
-                  <Typography variant='body1'>
-                    <strong>Price:</strong> ${product.price}
-                  </Typography>
-                  <Typography variant='body1'>
-                    <strong>Categorias: </strong>
-                    {product.category_ids.map(
-                      (category: number, index: number) => {
-                        const categoryItem = data?.find(
-                          (categoryItem) => categoryItem.id === category
-                        );
-                        return (
-                          <span key={category} style={{ display: 'inline' }}>
-                            {categoryItem?.category_name}
-                            {index < product.category_ids.length - 1 && ', '}
-                          </span>
-                        );
-                      }
-                    )}
-                  </Typography>
-                  <Button
-                    variant='text'
-                    color='primary'
-                    onClick={() => handleEditProduct(index)}
-                  >
-                    Editar
-                  </Button>
-                  <Button
-                    variant='text'
-                    color='primary'
-                    onClick={() => handleDeleteProduct(index)}
-                  >
-                    Eliminar
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </Box>
+          <Paper 
+            elevation={1} 
+            sx={{ 
+              p: 2, 
+              borderRadius: 0,
+              borderTop: '1px solid',
+              borderColor: 'divider',
+            }}
+          >
+            <Button
+              variant='contained'
+              color='success'
+              size='large'
+              fullWidth
+              onClick={submitAllProducts}
+              disabled={isSubmitting}
+              startIcon={
+                isSubmitting ? (
+                  <CircularProgress size={20} color='inherit' />
+                ) : (
+                  <ShoppingCart />
+                )
+              }
+            >
+              {isSubmitting 
+                ? 'Guardando productos...' 
+                : `Guardar todos los productos (${products.length})`
+              }
+            </Button>
+          </Paper>
         )}
       </Box>
     </Modal>
