@@ -11,7 +11,7 @@
     "lint:fix": "eslint 'src/**/*.{ts,tsx}' --fix",
     "prettier": "prettier -c 'src/**/*.{ts,tsx,json,css,md}'",
     "prettier:fix": "prettier --write 'src/**/*.{ts,tsx,json,css,md}'",
-    "test": "echo \"No tests yet\" && exit 0",
+    "test": "echo \"No tests implemented yet - skipping tests\" && exit 0",
     "semantic-release": "semantic-release",
     "commit": "git-cz",
     "prepare": "husky"
