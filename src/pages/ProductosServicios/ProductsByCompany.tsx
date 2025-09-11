@@ -138,14 +138,19 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
   };
 
   // Transform ProductFormData to CreateProductType
-  const transformProductData = (formData: ProductFormData): CreateProductType => {
+  const transformProductData = (
+    formData: ProductFormData
+  ): CreateProductType => {
     return {
       product_name: formData.product_name,
       productDescription: formData.productDescription,
       is_service: formData.is_service,
       is_public: formData.is_public,
       approval_status: ApprovalStatus.PENDING, // Default to pending
-      price: typeof formData.price === 'string' ? parseFloat(formData.price) : formData.price,
+      price:
+        typeof formData.price === 'string'
+          ? parseFloat(formData.price)
+          : formData.price,
       category_ids: formData.category_ids,
       company_id: formData.company_id,
       files: formData.files || [],
@@ -161,16 +166,6 @@ const ProductsByCompany: FC<ProductsByCompanyProps> = ({
 
       // Reset to first page to see newly created products
       setPaginationModel((prev) => ({ ...prev, page: 0 }));
-
-      // The useEffect will automatically reload data when page changes
-      toast.success(
-        `${products.length} producto${products.length !== 1 ? 's' : ''} creado${products.length !== 1 ? 's' : ''} exitosamente.`,
-        {
-          position: 'top-right',
-          autoClose: 3000,
-        }
-      );
-      setOpenModal(false);
     } catch (error) {
       console.error('Error creating products:', error);
       toast.error('Hubo un error creando los productos.');
