@@ -16,7 +16,7 @@ jobs:
   test:
     name: Test & Build
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -44,6 +44,13 @@ jobs:
       - name: Run tests
         run: pnpm run test
 
+      - name: Create production environment file
+        run: |
+          cp .env.production.sample .env.production
+          # Replace with actual production values from secrets
+          sed -i 's|VITE_BASE_URL=.*|VITE_BASE_URL=${{ secrets.VITE_BASE_URL }}|' .env.production
+          sed -i 's|VITE_LAM_TOKEN=.*|VITE_LAM_TOKEN=${{ secrets.VITE_LAM_TOKEN }}|' .env.production
+
       - name: Build project
         run: pnpm run build
 
@@ -58,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/alpha'
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -96,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test, release]
     if: github.ref == 'refs/heads/main'
-    
+
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -114,7 +121,7 @@ jobs:
           script: |
             echo "Deploying new release..."
             sudo rm -rf /var/www/html/entrelazos-react/*
-            
+
       - name: Copy build files to server
         uses: appleboy/scp-action@master
         with:
@@ -122,6 +129,6 @@ jobs:
           username: ${{ secrets.SSH_HOST_USERNAME }}
           key: ${{ secrets.SSH_HOST_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_HOST_PASSPHRASE }}
-          source: "dist/*"
-          target: "/var/www/html/entrelazos-react/"
+          source: 'dist/*'
+          target: '/var/www/html/entrelazos-react/'
           strip_components: 1
