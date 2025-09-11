@@ -20,72 +20,69 @@ interface AddressSectionProps {
   onRemoveAddress: () => void;
 }
 
-const AddressSection: FC<AddressSectionProps> = memo(({
-  addresses,
-  onAddressChange,
-  onAddAddress,
-  onRemoveAddress,
-}) => {
-  const nodeRefs = useRefsList<HTMLDivElement>(addresses.length);
+const AddressSection: FC<AddressSectionProps> = memo(
+  ({ addresses, onAddressChange, onAddAddress, onRemoveAddress }) => {
+    const nodeRefs = useRefsList<HTMLDivElement>(addresses.length);
 
-  return (
-    <Card variant='outlined' sx={{ borderRadius: '12px' }}>
-      <CardHeader title='Direcciones' />
-      <CardContent
-        sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
-      >
-        <TransitionGroup
-          style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}
+    return (
+      <Card variant='outlined' sx={{ borderRadius: '12px' }}>
+        <CardHeader title='Direcciones' />
+        <CardContent
+          sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
         >
-          {addresses.map((address, index) => (
-            <CSSTransition
-              key={index}
-              timeout={300}
-              classNames='fade'
-              nodeRef={nodeRefs[index]}
-            >
-              <div ref={nodeRefs[index]} style={{ flex: '1 1 500px' }}>
-                <Card raised sx={{ borderRadius: '12px' }}>
-                  <CardHeader title={`Dirección ${index + 1}`} />
-                  <CardContent>
-                    <Grid container spacing={2}>
-                      <CompanyAddressComponent
-                        address={address}
-                        onChange={(newData: AddressData) =>
-                          onAddressChange(index, newData)
-                        }
-                      />
-                    </Grid>
-                  </CardContent>
-                </Card>
-              </div>
-            </CSSTransition>
-          ))}
-        </TransitionGroup>
-        <Box display='flex' gap={2} justifyContent='end'>
-          {addresses.length > 0 && (
+          <TransitionGroup
+            style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}
+          >
+            {addresses.map((address, index) => (
+              <CSSTransition
+                key={index}
+                timeout={300}
+                classNames='fade'
+                nodeRef={nodeRefs[index]}
+              >
+                <div ref={nodeRefs[index]} style={{ flex: '1 1 500px' }}>
+                  <Card raised sx={{ borderRadius: '12px' }}>
+                    <CardHeader title={`Dirección ${index + 1}`} />
+                    <CardContent>
+                      <Grid container spacing={2}>
+                        <CompanyAddressComponent
+                          address={address}
+                          onChange={(newData: AddressData) =>
+                            onAddressChange(index, newData)
+                          }
+                        />
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CSSTransition>
+            ))}
+          </TransitionGroup>
+          <Box display='flex' gap={2} justifyContent='end'>
+            {addresses.length > 0 && (
+              <Button
+                type='button'
+                variant='contained'
+                color='primary'
+                onClick={onRemoveAddress}
+              >
+                Remover Dirección
+              </Button>
+            )}
             <Button
               type='button'
               variant='contained'
               color='primary'
-              onClick={onRemoveAddress}
+              onClick={onAddAddress}
             >
-              Remover Dirección
+              Agregar Dirección
             </Button>
-          )}
-          <Button
-            type='button'
-            variant='contained'
-            color='primary'
-            onClick={onAddAddress}
-          >
-            Agregar Dirección
-          </Button>
-        </Box>
-      </CardContent>
-    </Card>
-  );
-});
+          </Box>
+        </CardContent>
+      </Card>
+    );
+  }
+);
 
 AddressSection.displayName = 'AddressSection';
 

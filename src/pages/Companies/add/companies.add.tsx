@@ -10,24 +10,30 @@ const AddCompanies: FC = () => {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = useCallback(async (formData: FormData): Promise<void> => {
-    setError(null);
-    
-    try {
-      const createdCompany = await createCompany(formData);
-      
-      if (createdCompany) {
-        toast.success('Empresa creada exitosamente!');
-        navigate(`/empresas/perfil-compania/${createdCompany.name}`);
-      } else {
-        throw new Error('No se pudo crear la empresa');
+  const handleSubmit = useCallback(
+    async (formData: FormData): Promise<void> => {
+      setError(null);
+
+      try {
+        const createdCompany = await createCompany(formData);
+
+        if (createdCompany) {
+          toast.success('Empresa creada exitosamente!');
+          navigate(`/empresas/perfil-compania/${createdCompany.name}`);
+        } else {
+          throw new Error('No se pudo crear la empresa');
+        }
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error
+            ? err.message
+            : 'Error desconocido al crear la empresa';
+        setError(errorMessage);
+        toast.error(errorMessage);
       }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Error desconocido al crear la empresa';
-      setError(errorMessage);
-      toast.error(errorMessage);
-    }
-  }, [navigate]);
+    },
+    [navigate]
+  );
 
   return (
     <Container maxWidth='xl' sx={{ py: 4 }}>

@@ -6,7 +6,6 @@ type PaymentMethodInputProps = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
 };
 
- 
 export const PaymentMethodInput = forwardRef<
   HTMLInputElement,
   PaymentMethodInputProps

@@ -40,11 +40,11 @@ export interface UseUnifiedProductFormReturn {
   control: any;
   formState: any;
   trigger: any;
-  
+
   // Custom state
   currentExistingImages: ExistingImage[];
   newFiles: File[];
-  
+
   // Handlers
   handleRemoveExistingImage: (_imageId: number) => void;
   handleNewFilesChange: (_files: File[]) => void;

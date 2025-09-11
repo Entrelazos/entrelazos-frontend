@@ -12,14 +12,18 @@ class TokenManager {
   private static readonly ACCESS_TOKEN_KEY = 'at';
   private static readonly REFRESH_TOKEN_KEY = 'rt';
   private static readonly EXPIRES_AT_KEY = 'eat';
-  
+
   // Use sessionStorage for more security (cleared on tab close)
   private static storage = window.sessionStorage;
 
-  static setTokens(accessToken: string, refreshToken: string, expiresIn: number = 3600): void {
+  static setTokens(
+    accessToken: string,
+    refreshToken: string,
+    expiresIn: number = 3600
+  ): void {
     try {
-      const expiresAt = Date.now() + (expiresIn * 1000);
-      
+      const expiresAt = Date.now() + expiresIn * 1000;
+
       // Store tokens separately and encode them
       this.storage.setItem(this.ACCESS_TOKEN_KEY, btoa(accessToken));
       this.storage.setItem(this.REFRESH_TOKEN_KEY, btoa(refreshToken));
@@ -33,13 +37,13 @@ class TokenManager {
     try {
       const token = this.storage.getItem(this.ACCESS_TOKEN_KEY);
       if (!token) return null;
-      
+
       // Check if token is expired
       if (this.isTokenExpired()) {
         this.clearTokens();
         return null;
       }
-      
+
       return atob(token);
     } catch (error) {
       console.error('Failed to retrieve access token:', error);
@@ -61,7 +65,7 @@ class TokenManager {
     try {
       const expiresAt = this.storage.getItem(this.EXPIRES_AT_KEY);
       if (!expiresAt) return true;
-      
+
       return Date.now() >= parseInt(expiresAt);
     } catch {
       return true;
@@ -87,10 +91,10 @@ class TokenManager {
     try {
       const accessToken = localStorage.getItem('accessToken');
       const refreshToken = localStorage.getItem('refreshToken');
-      
+
       if (accessToken && refreshToken) {
         this.setTokens(accessToken, refreshToken);
-        
+
         // Clean up old tokens
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');

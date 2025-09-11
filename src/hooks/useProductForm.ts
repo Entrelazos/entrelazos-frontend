@@ -1,5 +1,9 @@
 import { useState, useCallback } from 'react';
-import { ProductFormData, ProductListItem, UseProductFormReturn } from '../types/product-form/ProductFormTypes';
+import {
+  ProductFormData,
+  ProductListItem,
+  UseProductFormReturn,
+} from '../types/product-form/ProductFormTypes';
 // Simple UUID generator without external dependency
 const generateId = (): string => {
   return Math.random().toString(36).substring(2) + Date.now().toString(36);
@@ -22,44 +26,53 @@ export const useProductForm = ({
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const addProduct = useCallback((data: ProductFormData) => {
-    const newProduct: ProductListItem = {
-      ...data,
-      id: generateId(),
-      createdAt: new Date(),
-    };
-    
-    setProducts(prev => [...prev, newProduct]);
-    onProductAdd?.(newProduct);
-  }, [onProductAdd]);
+  const addProduct = useCallback(
+    (data: ProductFormData) => {
+      const newProduct: ProductListItem = {
+        ...data,
+        id: generateId(),
+        createdAt: new Date(),
+      };
 
-  const updateProduct = useCallback((index: number, data: ProductFormData) => {
-    setProducts(prev => {
-      const updated = [...prev];
-      const updatedProduct = { ...updated[index], ...data };
-      updated[index] = updatedProduct;
-      onProductUpdate?.(updatedProduct, index);
-      return updated;
-    });
-    setEditIndex(null);
-  }, [onProductUpdate]);
+      setProducts((prev) => [...prev, newProduct]);
+      onProductAdd?.(newProduct);
+    },
+    [onProductAdd]
+  );
 
-  const deleteProduct = useCallback((index: number) => {
-    setProducts(prev => {
-      const updated = prev.filter((_, idx) => idx !== index);
-      return updated;
-    });
-    
-    // Reset edit state if we're deleting the item being edited
-    if (editIndex === index) {
+  const updateProduct = useCallback(
+    (index: number, data: ProductFormData) => {
+      setProducts((prev) => {
+        const updated = [...prev];
+        const updatedProduct = { ...updated[index], ...data };
+        updated[index] = updatedProduct;
+        onProductUpdate?.(updatedProduct, index);
+        return updated;
+      });
       setEditIndex(null);
-    } else if (editIndex !== null && editIndex > index) {
-      // Adjust edit index if needed
-      setEditIndex(editIndex - 1);
-    }
-    
-    onProductDelete?.(index);
-  }, [editIndex, onProductDelete]);
+    },
+    [onProductUpdate]
+  );
+
+  const deleteProduct = useCallback(
+    (index: number) => {
+      setProducts((prev) => {
+        const updated = prev.filter((_, idx) => idx !== index);
+        return updated;
+      });
+
+      // Reset edit state if we're deleting the item being edited
+      if (editIndex === index) {
+        setEditIndex(null);
+      } else if (editIndex !== null && editIndex > index) {
+        // Adjust edit index if needed
+        setEditIndex(editIndex - 1);
+      }
+
+      onProductDelete?.(index);
+    },
+    [editIndex, onProductDelete]
+  );
 
   const editProduct = useCallback((index: number) => {
     setEditIndex(index);

@@ -10,8 +10,8 @@ const ThemeSwitcher: React.FC = () => {
     <Tooltip title={`Cambiar a modo ${mode === 'light' ? 'oscuro' : 'claro'}`}>
       <IconButton
         onClick={toggleTheme}
-        color="inherit"
-        aria-label="toggle theme"
+        color='inherit'
+        aria-label='toggle theme'
         sx={{
           ml: 1,
           color: mode === 'light' ? '#000' : '#fff',

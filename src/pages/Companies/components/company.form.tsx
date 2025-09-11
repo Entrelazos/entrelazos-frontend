@@ -55,10 +55,14 @@ const MenuProps = {
 
 const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { data, loading: categoriesLoading, error: categoriesError } = useSelector((state: RootState) => state.categories);
+  const {
+    data,
+    loading: categoriesLoading,
+    error: categoriesError,
+  } = useSelector((state: RootState) => state.categories);
   const { uid } = useSelector((state: RootState) => state.auth);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const {
     companyInfo,
     addresses,
@@ -89,14 +93,14 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    
+
     const { isValid } = validateForm();
     if (!isValid) {
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       const { name, nit, description, categories } = companyInfo;
 
@@ -162,9 +166,7 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                   <Skeleton variant='rectangular' height={56} />
                 ) : data ? (
                   <FormControl error={!!errors.categories}>
-                    <InputLabel id='categories-label'>
-                      Categorías
-                    </InputLabel>
+                    <InputLabel id='categories-label'>Categorías</InputLabel>
                     <Select<number[]>
                       name='categories'
                       labelId='categories-label'
@@ -174,7 +176,10 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                       value={companyInfo.categories}
                       onChange={(event) => handleCategoryChange(event)}
                       input={
-                        <OutlinedInput id='select-multiple-chip' label='Categorías' />
+                        <OutlinedInput
+                          id='select-multiple-chip'
+                          label='Categorías'
+                        />
                       }
                       renderValue={(selected) => (
                         <Box
@@ -194,7 +199,11 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
                       ))}
                     </Select>
                     {errors.categories && (
-                      <Typography variant='caption' color='error' sx={{ mt: 0.5, ml: 1.5 }}>
+                      <Typography
+                        variant='caption'
+                        color='error'
+                        sx={{ mt: 0.5, ml: 1.5 }}
+                      >
                         {errors.categories}
                       </Typography>
                     )}
@@ -244,9 +253,9 @@ const CompanyForm: FC<CompanyFormProperties> = ({ handleSubmit }) => {
       </Grid>
 
       <Box display='flex' gap={2} justifyContent='end'>
-        <Button 
-          type='submit' 
-          variant='contained' 
+        <Button
+          type='submit'
+          variant='contained'
           color='primary'
           disabled={isSubmitting}
           startIcon={isSubmitting ? <CircularProgress size={20} /> : null}

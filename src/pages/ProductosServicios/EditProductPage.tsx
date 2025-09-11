@@ -7,12 +7,13 @@ import {
   getSingleProduct,
   updateProduct,
 } from '../../services/products/productsService';
-import {
-  getFilesByEntityIdAndType,
-} from '../../services/upload/uploadService';
+import { getFilesByEntityIdAndType } from '../../services/upload/uploadService';
 import { ProductItem } from '../../types/products/ProductsTypes';
 import { CategoryItem } from '../../types/categories/CategoryTypes';
-import { UnifiedProductFormData, ExistingImage } from '../../types/product-form/UnifiedProductFormTypes';
+import {
+  UnifiedProductFormData,
+  ExistingImage,
+} from '../../types/product-form/UnifiedProductFormTypes';
 import UnifiedProductForm from '../../components/ProductForm/UnifiedProductForm';
 
 const EditProductPage: React.FC = () => {
@@ -24,7 +25,8 @@ const EditProductPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [product, setProduct] = useState<ProductItem | null>(null);
   const [existingImages, setExistingImages] = useState<ExistingImage[]>([]);
-  const [initialFormData, setInitialFormData] = useState<UnifiedProductFormData | null>(null);
+  const [initialFormData, setInitialFormData] =
+    useState<UnifiedProductFormData | null>(null);
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -62,13 +64,14 @@ const EditProductPage: React.FC = () => {
           is_service: productData.is_service || false,
           is_public: productData.is_public || false,
           price: productData.price || 0,
-          category_ids: (productData.categories?.map((c: CategoryItem) => c.id) || []) as number[],
+          category_ids: (productData.categories?.map(
+            (c: CategoryItem) => c.id
+          ) || []) as number[],
           company_id: productData.company?.id || 0,
           files: [],
-          existingImages: imageUrls.map(img => img.id),
+          existingImages: imageUrls.map((img) => img.id),
         };
         setInitialFormData(formData);
-
       } catch (error) {
         console.error('Error fetching product:', error);
         setError('Error cargando los datos del producto');
@@ -89,14 +92,15 @@ const EditProductPage: React.FC = () => {
 
     try {
       setUpdating(true);
-      
+
       await updateProduct(parseInt(productId), {
         product_name: data.product_name,
         productDescription: data.productDescription,
         is_service: data.is_service,
         is_public: data.is_public,
         approval_status: product.approval_status, // Keep existing approval status
-        price: typeof data.price === 'string' ? parseFloat(data.price) : data.price,
+        price:
+          typeof data.price === 'string' ? parseFloat(data.price) : data.price,
         category_ids: data.category_ids,
         company_id: data.company_id,
         files: data.files || [],

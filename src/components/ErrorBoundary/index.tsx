@@ -23,7 +23,7 @@ class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
-    
+
     // You could send error to monitoring service here
     // Example: Sentry.captureException(error, { extra: errorInfo });
   }
@@ -39,26 +39,29 @@ class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <Container maxWidth="md">
+        <Container maxWidth='md'>
           <Box sx={{ mt: 4, mb: 4 }}>
-            <Alert severity="error" variant="outlined">
+            <Alert severity='error' variant='outlined'>
               <AlertTitle>Algo salió mal</AlertTitle>
-              Ha ocurrido un error inesperado. Por favor, intenta refrescar la página.
+              Ha ocurrido un error inesperado. Por favor, intenta refrescar la
+              página.
               {process.env.NODE_ENV === 'development' && (
-                <Box sx={{ mt: 2, fontFamily: 'monospace', fontSize: '0.8rem' }}>
+                <Box
+                  sx={{ mt: 2, fontFamily: 'monospace', fontSize: '0.8rem' }}
+                >
                   {this.state.error?.message}
                 </Box>
               )}
               <Box sx={{ mt: 2 }}>
-                <Button 
-                  variant="contained" 
+                <Button
+                  variant='contained'
                   onClick={this.handleReset}
                   sx={{ mr: 1 }}
                 >
                   Reintentar
                 </Button>
-                <Button 
-                  variant="outlined" 
+                <Button
+                  variant='outlined'
                   onClick={() => window.location.reload()}
                 >
                   Refrescar página

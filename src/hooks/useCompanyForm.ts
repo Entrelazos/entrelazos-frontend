@@ -35,61 +35,75 @@ interface ValidationErrors {
 }
 
 export const useCompanyForm = () => {
-  const [companyInfo, setCompanyInfo] = useState<CompanyInfo>(initialCompanyInfo);
+  const [companyInfo, setCompanyInfo] =
+    useState<CompanyInfo>(initialCompanyInfo);
   const [addresses, setAddresses] = useState<AddressData[]>([]);
   const [social, setSocial] = useState<SocialType>(initialSocialState);
   const [errors, setErrors] = useState<ValidationErrors>({});
 
-  const handleCompanyInfoChange = useCallback((
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = event.target;
-    setCompanyInfo(prev => ({ ...prev, [name]: value }));
-  }, []);
+  const handleCompanyInfoChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = event.target;
+      setCompanyInfo((prev) => ({ ...prev, [name]: value }));
+    },
+    []
+  );
 
   const handleCategoryChange = useCallback((event: any) => {
     const { name, value } = event.target;
-    setCompanyInfo(prev => ({ ...prev, [name]: value }));
+    setCompanyInfo((prev) => ({ ...prev, [name]: value }));
   }, []);
 
-  const handleSocialChange = useCallback((
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    basePath: string
-  ) => {
-    const { name, value } = event.target;
-    setSocial(prev => ({
-      ...prev,
-      [name]: `${basePath}${value}`,
-    }));
-  }, []);
+  const handleSocialChange = useCallback(
+    (
+      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+      basePath: string
+    ) => {
+      const { name, value } = event.target;
+      setSocial((prev) => ({
+        ...prev,
+        [name]: `${basePath}${value}`,
+      }));
+    },
+    []
+  );
 
-  const handleSocialDirectChange = useCallback((name: string, value: string) => {
-    setSocial(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-  }, []);
+  const handleSocialDirectChange = useCallback(
+    (name: string, value: string) => {
+      setSocial((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    },
+    []
+  );
 
-  const handleAddressChange = useCallback((index: number, newData: AddressData) => {
-    setAddresses(prevAddresses => {
-      const updatedAddresses = [...prevAddresses];
-      updatedAddresses[index] = newData;
-      return updatedAddresses;
-    });
-  }, []);
+  const handleAddressChange = useCallback(
+    (index: number, newData: AddressData) => {
+      setAddresses((prevAddresses) => {
+        const updatedAddresses = [...prevAddresses];
+        updatedAddresses[index] = newData;
+        return updatedAddresses;
+      });
+    },
+    []
+  );
 
   const addAddress = useCallback(() => {
-    setAddresses(prevAddresses => [
+    setAddresses((prevAddresses) => [
       ...prevAddresses,
       { nomenclature: '', region: '', city: '', country: '' },
     ]);
   }, []);
 
   const removeAddress = useCallback(() => {
-    setAddresses(prevAddresses => prevAddresses.slice(0, -1));
+    setAddresses((prevAddresses) => prevAddresses.slice(0, -1));
   }, []);
 
-  const validateForm = useCallback((): { isValid: boolean; errors: ValidationErrors } => {
+  const validateForm = useCallback((): {
+    isValid: boolean;
+    errors: ValidationErrors;
+  } => {
     const newErrors: ValidationErrors = {};
 
     // Validate company name

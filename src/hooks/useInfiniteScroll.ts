@@ -19,7 +19,7 @@ export const useInfiniteScroll = ({
     (node: HTMLDivElement | null) => {
       if (loading) return;
       if (observer.current) observer.current.disconnect();
-      
+
       observer.current = new IntersectionObserver(
         (entries) => {
           if (entries[0].isIntersecting && hasMorePages && !loading) {
@@ -30,7 +30,7 @@ export const useInfiniteScroll = ({
           rootMargin: `${threshold}px`,
         }
       );
-      
+
       if (node) observer.current.observe(node);
     },
     [loading, hasMorePages, onLoadMore, threshold]

@@ -68,7 +68,8 @@ export const companiesSlice = createSlice({
           state.loading = false;
           state.companiesData = action.payload;
           state.currentPage = action.payload.meta.currentPage;
-          state.hasMorePages = action.payload.meta.currentPage < action.payload.meta.totalPages;
+          state.hasMorePages =
+            action.payload.meta.currentPage < action.payload.meta.totalPages;
         }
       )
       .addCase(fetchCompaniesData.rejected, (state, action) => {
@@ -94,7 +95,8 @@ export const companiesSlice = createSlice({
             state.companiesData = action.payload;
           }
           state.currentPage = action.payload.meta.currentPage;
-          state.hasMorePages = action.payload.meta.currentPage < action.payload.meta.totalPages;
+          state.hasMorePages =
+            action.payload.meta.currentPage < action.payload.meta.totalPages;
         }
       )
       .addCase(fetchMoreCompanies.rejected, (state, action) => {
@@ -161,7 +163,9 @@ export const companySlice = createSlice({
 export const { resetPagination } = companiesSlice.actions;
 
 export const isMyCompany = () => (state: RootState) => {
-  return state.company?.data?.users?.some(
-    (userCompany) => userCompany.user.id === parseInt(state.auth.uid || '0')
-  ) || false;
+  return (
+    state.company?.data?.users?.some(
+      (userCompany) => userCompany.user.id === parseInt(state.auth.uid || '0')
+    ) || false
+  );
 };

@@ -26,7 +26,7 @@ const modalStyles = {
   transform: 'translate(-50%, -50%)',
   width: {
     xs: '95vw',
-    sm: '90vw', 
+    sm: '90vw',
     md: '80vw',
     lg: '70vw',
     xl: '60vw',
@@ -51,7 +51,8 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
   companyId,
 }) => {
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [currentEditData, setCurrentEditData] = useState<UnifiedProductFormData | null>(null);
+  const [currentEditData, setCurrentEditData] =
+    useState<UnifiedProductFormData | null>(null);
 
   // Product list management
   const {
@@ -66,7 +67,9 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
     onSubmit: async (productsData) => {
       try {
         await onSubmit(productsData);
-        toast.success(`${productsData.length} producto${productsData.length !== 1 ? 's' : ''} creado${productsData.length !== 1 ? 's' : ''} exitosamente`);
+        toast.success(
+          `${productsData.length} producto${productsData.length !== 1 ? 's' : ''} creado${productsData.length !== 1 ? 's' : ''} exitosamente`
+        );
         handleModalClose();
       } catch (error) {
         toast.error('Error al crear los productos');
@@ -76,34 +79,40 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
   });
 
   // Form submission handler
-  const handleFormSubmit = useCallback((data: UnifiedProductFormData) => {
-    if (editIndex !== null) {
-      updateProduct(editIndex, data);
-      toast.success('Producto actualizado en la lista');
-      setEditIndex(null);
-      setCurrentEditData(null);
-    } else {
-      addProduct(data);
-      toast.success(`Producto "${data.product_name}" agregado a la lista`);
-    }
-  }, [editIndex, updateProduct, addProduct]);
+  const handleFormSubmit = useCallback(
+    (data: UnifiedProductFormData) => {
+      if (editIndex !== null) {
+        updateProduct(editIndex, data);
+        toast.success('Producto actualizado en la lista');
+        setEditIndex(null);
+        setCurrentEditData(null);
+      } else {
+        addProduct(data);
+        toast.success(`Producto "${data.product_name}" agregado a la lista`);
+      }
+    },
+    [editIndex, updateProduct, addProduct]
+  );
 
   // Edit product handler
-  const handleEditProduct = useCallback((index: number) => {
-    const productToEdit = products[index];
-    setEditIndex(index);
-    setCurrentEditData({
-      product_name: productToEdit.product_name,
-      productDescription: productToEdit.productDescription,
-      is_service: productToEdit.is_service,
-      is_public: productToEdit.is_public,
-      price: productToEdit.price,
-      category_ids: productToEdit.category_ids,
-      company_id: productToEdit.company_id,
-      files: productToEdit.files || [],
-    });
-    toast.info(`Editando producto "${productToEdit.product_name}"`);
-  }, [products]);
+  const handleEditProduct = useCallback(
+    (index: number) => {
+      const productToEdit = products[index];
+      setEditIndex(index);
+      setCurrentEditData({
+        product_name: productToEdit.product_name,
+        productDescription: productToEdit.productDescription,
+        is_service: productToEdit.is_service,
+        is_public: productToEdit.is_public,
+        price: productToEdit.price,
+        category_ids: productToEdit.category_ids,
+        company_id: productToEdit.company_id,
+        files: productToEdit.files || [],
+      });
+      toast.info(`Editando producto "${productToEdit.product_name}"`);
+    },
+    [products]
+  );
 
   // Cancel edit handler
   const handleCancelEdit = useCallback(() => {
@@ -121,33 +130,37 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
   }, [clearProducts, handleClose]);
 
   return (
-    <Modal 
-      open={open} 
+    <Modal
+      open={open}
       onClose={handleModalClose}
       aria-labelledby='add-product-modal-title'
       aria-describedby='add-product-modal-description'
     >
       <Box sx={modalStyles}>
         {/* Header */}
-        <Paper 
-          elevation={1} 
-          sx={{ 
-            p: 2, 
+        <Paper
+          elevation={1}
+          sx={{
+            p: 2,
             borderRadius: 0,
             borderBottom: '1px solid',
             borderColor: 'divider',
           }}
         >
-          <Stack direction='row' justifyContent='space-between' alignItems='center'>
-            <Typography 
+          <Stack
+            direction='row'
+            justifyContent='space-between'
+            alignItems='center'
+          >
+            <Typography
               id='add-product-modal-title'
-              variant='h5' 
+              variant='h5'
               component='h2'
               fontWeight='bold'
             >
               {editIndex !== null ? 'Editar Producto' : 'Agregar Productos'}
             </Typography>
-            <IconButton 
+            <IconButton
               onClick={handleModalClose}
               size='large'
               aria-label='Cerrar modal'
@@ -158,19 +171,26 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
         </Paper>
 
         {/* Content */}
-        <Box 
-          sx={{ 
-            flex: 1, 
-            overflow: 'auto', 
+        <Box
+          sx={{
+            flex: 1,
+            overflow: 'auto',
             p: 3,
           }}
         >
           <Stack spacing={3}>
             {/* Form section */}
             <Paper elevation={1} sx={{ p: 3 }}>
-              <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+              <Stack
+                direction='row'
+                justifyContent='space-between'
+                alignItems='center'
+                mb={2}
+              >
                 <Typography variant='h6'>
-                  {editIndex !== null ? 'Editar información del producto' : 'Información del producto'}
+                  {editIndex !== null
+                    ? 'Editar información del producto'
+                    : 'Información del producto'}
                 </Typography>
                 {editIndex !== null && (
                   <Button
@@ -183,13 +203,17 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
                   </Button>
                 )}
               </Stack>
-              
+
               <UnifiedProductForm
                 mode='create'
                 onSubmit={handleFormSubmit}
                 companyId={companyId}
                 initialData={currentEditData || undefined}
-                submitButtonText={editIndex !== null ? 'Actualizar producto' : 'Agregar producto a la lista'}
+                submitButtonText={
+                  editIndex !== null
+                    ? 'Actualizar producto'
+                    : 'Agregar producto a la lista'
+                }
               />
             </Paper>
 
@@ -197,7 +221,11 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
             {products.length > 0 && (
               <Paper elevation={1} sx={{ p: 3 }}>
                 <Stack spacing={2}>
-                  <Box display='flex' justifyContent='space-between' alignItems='center'>
+                  <Box
+                    display='flex'
+                    justifyContent='space-between'
+                    alignItems='center'
+                  >
                     <Typography variant='h6'>
                       Productos agregados ({products.length})
                     </Typography>
@@ -210,9 +238,9 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
                       Limpiar lista
                     </Button>
                   </Box>
-                  
+
                   <Divider />
-                  
+
                   <Stack spacing={2}>
                     {products.map((product, index) => (
                       <ProductListItem
@@ -233,10 +261,10 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
 
         {/* Footer */}
         {products.length > 0 && (
-          <Paper 
-            elevation={1} 
-            sx={{ 
-              p: 2, 
+          <Paper
+            elevation={1}
+            sx={{
+              p: 2,
               borderRadius: 0,
               borderTop: '1px solid',
               borderColor: 'divider',
@@ -257,10 +285,9 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
                 )
               }
             >
-              {isSubmitting 
-                ? 'Guardando productos...' 
-                : `Guardar todos los productos (${products.length})`
-              }
+              {isSubmitting
+                ? 'Guardando productos...'
+                : `Guardar todos los productos (${products.length})`}
             </Button>
           </Paper>
         )}

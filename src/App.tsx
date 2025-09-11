@@ -1,6 +1,9 @@
 import { BrowserRouter } from 'react-router-dom';
 import { CartContextProvider } from './contexts/CartContext';
-import { ThemeProvider as CustomThemeProvider, useTheme } from './contexts/ThemeContext';
+import {
+  ThemeProvider as CustomThemeProvider,
+  useTheme,
+} from './contexts/ThemeContext';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import AppRouter from './router/AppRouter';

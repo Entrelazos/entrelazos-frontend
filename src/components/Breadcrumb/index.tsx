@@ -44,8 +44,8 @@ const Breadcrumb = () => {
             path: '/productos-servicios',
           });
           updatedBreadcrumbs.push({
-            name: Array.isArray(category.company.categories) 
-              ? category.company.categories.join(', ') 
+            name: Array.isArray(category.company.categories)
+              ? category.company.categories.join(', ')
               : category.company.categories || 'Categoría',
             path: `/productos-servicios/${productId}`,
           });

@@ -1,10 +1,5 @@
 import { Mail, Notifications, AccountCircle } from '@mui/icons-material';
-import {
-  Menu,
-  MenuItem,
-  IconButton,
-  Badge,
-} from '@mui/material';
+import { Menu, MenuItem, IconButton, Badge } from '@mui/material';
 import { FC, MouseEventHandler } from 'react';
 
 interface MobileMenuComponent {
