@@ -52,7 +52,7 @@ export const useUnifiedProductForm = ({
     defaultValues: getDefaultValues,
   });
 
-  const { register, handleSubmit, reset, setValue, watch, control, formState } = form;
+  const { register, handleSubmit, reset, setValue, watch, control, formState, trigger } = form;
 
   // Use refs to track changes and prevent infinite loops
   const initialDataSet = useRef(false);
@@ -88,8 +88,11 @@ export const useUnifiedProductForm = ({
         setValue('existingImages', existingImages.map(img => img.id));
       }
       existingImagesRef.current = existingImages;
+      
+      // Trigger validation to update form state
+      trigger();
     }
-  }, [existingImages, mode, setValue]);
+  }, [existingImages, mode, setValue, trigger]);
 
   // Handle removing existing images
   const handleRemoveExistingImage = useCallback((imageId: number) => {
@@ -98,13 +101,19 @@ export const useUnifiedProductForm = ({
     // Update the form's existingImages array
     const currentIds = watch('existingImages') || [];
     setValue('existingImages', currentIds.filter(id => id !== imageId));
-  }, [setValue, watch]);
+    
+    // Trigger validation to update form state
+    trigger();
+  }, [setValue, watch, trigger]);
 
   // Handle new files change
   const handleNewFilesChange = useCallback((files: File[]) => {
     setNewFiles(files);
     setValue('files', files);
-  }, [setValue]);
+    
+    // Trigger validation to update form state
+    trigger();
+  }, [setValue, trigger]);
 
   // Reset form to initial state
   const resetForm = useCallback(() => {
@@ -123,6 +132,7 @@ export const useUnifiedProductForm = ({
     watch,
     control,
     formState,
+    trigger,
     
     // Custom state
     currentExistingImages,

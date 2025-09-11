@@ -39,6 +39,7 @@ export interface UseUnifiedProductFormReturn {
   watch: any;
   control: any;
   formState: any;
+  trigger: any;
   
   // Custom state
   currentExistingImages: ExistingImage[];
