@@ -1,17 +1,22 @@
-name: CI/CD Pipeline
+name: CI Pipeline
 
 on:
-  push:
+  pull_request:
     branches:
       - main
+      - beta
+      - alpha
+  push:
+    branches:
+      - dev-*
+      - feature/*
+      - bugfix/*
 
 jobs:
-  build:
+  validate:
+    name: Validate PR
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20]
-
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -21,37 +26,27 @@ jobs:
         with:
           version: 10
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 20
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20
           cache: 'pnpm'
 
-      - name: Install dependencies with pnpm
-        run: pnpm install
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      # - name: Run tests
-      #   run: npm test
+      - name: Run linting
+        run: pnpm run lint
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to Debian SSH machine
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_HOST_USERNAME }}
-          key: ${{ secrets.SSH_HOST_PRIVATE_KEY }}
-          passphrase: ${{ secrets.SSH_HOST_PASSPHRASE }}
-          script: |
-            eval "$(ssh-agent -s)"
-            echo "Adding SSH key"
-            echo "${{ secrets.SSH_PRIVATE_KEY }}" | ssh-add -
-            cd entrelazos-frontend
-            git pull origin main
-            export NVM_DIR=~/.nvm
-            source ~/.nvm/nvm.sh
-            pnpm install
-            pnpm run build
-            sudo cp -r dist/* /var/www/html/entrelazos-react/
+      - name: Run prettier check
+        run: pnpm run prettier
+
+      - name: Run tests
+        run: pnpm run test
+
+      - name: Build project
+        run: pnpm run build
+
+      - name: Check for conventional commits (last 10 commits)
+        if: github.event_name == 'pull_request'
+        run: npx commitlint --from=HEAD~10 --to=HEAD --verbose
