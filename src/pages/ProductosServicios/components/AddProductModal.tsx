@@ -102,7 +102,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
       company_id: productToEdit.company_id,
       files: productToEdit.files || [],
     });
-    toast.info(`Editando producto \"${productToEdit.product_name}\"`);
+    toast.info(`Editando producto "${productToEdit.product_name}"`);
   }, [products]);
 
   // Cancel edit handler

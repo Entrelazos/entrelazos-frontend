@@ -364,7 +364,7 @@ const Dashboard: FC = () => {
   });
 
   // Memoized data transformations
-  const { items = [], meta = { totalItems: 0 } } = userCompaniesData || {};
+  const { items = [] } = userCompaniesData || {};
 
   const transformedCompanies = useMemo(
     () =>

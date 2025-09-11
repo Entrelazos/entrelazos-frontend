@@ -13,7 +13,7 @@ export type ProductFormMode = 'create' | 'edit';
 
 export interface UnifiedProductFormProps {
   mode: ProductFormMode;
-  onSubmit: (data: UnifiedProductFormData) => Promise<void> | void;
+  onSubmit: (_data: UnifiedProductFormData) => Promise<void> | void;
   onCancel?: () => void;
   initialData?: Partial<UnifiedProductFormData>;
   existingImages?: ExistingImage[];
@@ -46,7 +46,7 @@ export interface UseUnifiedProductFormReturn {
   newFiles: File[];
   
   // Handlers
-  handleRemoveExistingImage: (imageId: number) => void;
-  handleNewFilesChange: (files: File[]) => void;
+  handleRemoveExistingImage: (_imageId: number) => void;
+  handleNewFilesChange: (_files: File[]) => void;
   resetForm: () => void;
 }

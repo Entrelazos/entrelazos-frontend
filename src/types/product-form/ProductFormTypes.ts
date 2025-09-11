@@ -12,7 +12,7 @@ export interface ProductFormData {
 export interface AddProductModalProps {
   open: boolean;
   handleClose: () => void;
-  onSubmit: (data: ProductFormData[]) => Promise<void>;
+  onSubmit: (_data: ProductFormData[]) => Promise<void>;
   companyId: number;
 }
 
@@ -33,10 +33,10 @@ export interface UseProductFormReturn {
   products: ProductListItem[];
   editIndex: number | null;
   isSubmitting: boolean;
-  addProduct: (data: ProductFormData) => void;
-  updateProduct: (index: number, data: ProductFormData) => void;
-  deleteProduct: (index: number) => void;
-  editProduct: (index: number) => void;
+  addProduct: (_data: ProductFormData) => void;
+  updateProduct: (_index: number, _data: ProductFormData) => void;
+  deleteProduct: (_index: number) => void;
+  editProduct: (_index: number) => void;
   submitAllProducts: () => Promise<void>;
   clearProducts: () => void;
 }

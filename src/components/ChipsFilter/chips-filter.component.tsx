@@ -10,7 +10,7 @@ export interface FilteredCategoryItem extends CategoryItem {
 
 interface ChipsFilterProperties {
   categories: FilteredCategoryItem[];
-  onFilter?: (categoryId: number) => void;
+  onFilter?: (_categoryId: number) => void;
   onClear?: () => void;
 }
 

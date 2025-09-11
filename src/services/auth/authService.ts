@@ -8,7 +8,7 @@ import { createAxiosInstance } from '../axiosFactory';
 import { User } from '../../types/user/UserTypes';
 import { ERROR_CODES } from '../../constants/error-codes';
 import TokenManager from '../../utils/tokenManager';
-import { getErrorMessage, handleApiError } from '../../utils/errorHandler';
+import { handleApiError } from '../../utils/errorHandler';
 
 const authServiceWithAuth = createAxiosInstance({
   useAuth: true,

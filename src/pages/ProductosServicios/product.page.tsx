@@ -113,7 +113,7 @@ const ProductBreadcrumbs: React.FC<{
   companyName?: string;
   companyId?: number;
   onCompanyClick?: () => void;
-}> = ({ productName, companyName, companyId, onCompanyClick }) => (
+}> = ({ productName, companyName, onCompanyClick }) => (
   <Breadcrumbs aria-label='breadcrumb' sx={{ mb: 2 }}>
     <Link
       underline='hover'

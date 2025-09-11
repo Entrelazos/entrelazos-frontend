@@ -1,4 +1,4 @@
-import { FC, useEffect, useState, MouseEvent, useMemo } from 'react';
+import { FC, useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AppDispatch, RootState } from '../../store/store';

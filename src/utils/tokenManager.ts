@@ -2,11 +2,11 @@
 // Note: For full security, tokens should be stored in httpOnly cookies on the server side
 // This is a client-side improvement with better security practices
 
-interface TokenData {
-  accessToken: string;
-  refreshToken: string;
-  expiresAt: number;
-}
+// interface TokenData {
+//   accessToken: string;
+//   refreshToken: string;
+//   expiresAt: number;
+// }
 
 class TokenManager {
   private static readonly ACCESS_TOKEN_KEY = 'at';
@@ -63,7 +63,7 @@ class TokenManager {
       if (!expiresAt) return true;
       
       return Date.now() >= parseInt(expiresAt);
-    } catch (error) {
+    } catch {
       return true;
     }
   }

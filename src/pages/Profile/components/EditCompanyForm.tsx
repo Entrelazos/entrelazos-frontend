@@ -12,7 +12,6 @@ import {
   Divider,
   Box,
   IconButton,
-  Chip,
 } from '@mui/material';
 import { Close as CloseIcon, Edit as EditIcon, Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import CompanyAddressComponent from '../../Companies/components/company.address.component';
